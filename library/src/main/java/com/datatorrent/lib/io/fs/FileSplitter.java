@@ -31,6 +31,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Input operator that scans a directory for files and splits a file into blocks.<br/>
  * The operator emits block metadata and file metadata.<br/>
+ *
+ * @displayName File Splitter
+ * @category Input
+ * @tags file, input operator
  */
 public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.FileMetadata>
 {

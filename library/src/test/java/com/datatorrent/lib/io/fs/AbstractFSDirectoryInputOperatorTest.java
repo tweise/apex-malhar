@@ -92,7 +92,7 @@ public class AbstractFSDirectoryInputOperatorTest
   {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(TestFSDirectoryInputOperator.class);
 
-    @OutputPortFieldAnnotation(name = "output")
+    //@OutputPortFieldAnnotation(name = "output")
     public final transient DefaultOutputPort<String> output = new DefaultOutputPort<String>();
     private transient BufferedReader br = null;
 

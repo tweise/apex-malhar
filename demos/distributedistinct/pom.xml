@@ -12,7 +12,7 @@
 
   <properties>
     <!-- change this if you desire to use a different version of DataTorrent -->
-    <datatorrent.version>1.0.5-SNAPSHOT</datatorrent.version>
+    <datatorrent.version>2.0.0-SNAPSHOT</datatorrent.version>
     <datatorrent.apppackage.classpath>lib/*.jar</datatorrent.apppackage.classpath>
     <skipTests>true</skipTests>
   </properties>
@@ -151,6 +151,13 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <scope>test</scope>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>malhar-library</artifactId>
+      <version>${datatorrent.version}</version>
+      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>com.datatorrent</groupId>
