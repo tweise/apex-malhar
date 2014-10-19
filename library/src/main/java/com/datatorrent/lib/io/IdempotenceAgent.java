@@ -49,7 +49,7 @@ public abstract class IdempotenceAgent<T> implements CheckpointListener,
    * The codec used to serialize tuples to a byte array.
    */
   @NotNull
-  private transient StreamCodec<T> streamCodec;
+  private StreamCodec<T> streamCodec;
   /**
    * The parent operator's applicationId as determined by the setup context.
    */
