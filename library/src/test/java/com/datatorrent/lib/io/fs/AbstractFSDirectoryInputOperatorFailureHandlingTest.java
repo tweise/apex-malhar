@@ -16,7 +16,10 @@
 package com.datatorrent.lib.io.fs;
 
 import com.datatorrent.api.*;
+import com.datatorrent.api.Attribute.AttributeMap;
+import com.datatorrent.api.Attribute.AttributeMap.DefaultAttributeMap;
 import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
+import com.datatorrent.lib.helper.OperatorContextTestHelper;
 import com.datatorrent.lib.testbench.CollectorTestSink;
 import com.datatorrent.lib.util.TestUtils.TestInfo;
 import com.google.common.collect.*;
@@ -84,6 +87,13 @@ public class AbstractFSDirectoryInputOperatorFailureHandlingTest
   @Test
   public void testFailureHandling() throws Exception
   {
+    AttributeMap attributeMapA = new DefaultAttributeMap();
+    attributeMapA.put(DAG.APPLICATION_ID, "1");
+
+    OperatorContextTestHelper.TestIdOperatorContext operatorContextA =
+    new OperatorContextTestHelper.TestIdOperatorContext(1,
+                                                        attributeMapA);
+
     FileContext.getLocalFSFileContext().delete(new Path(new File(testMeta.getDir()).getAbsolutePath()), true);
     HashSet<String> allLines = Sets.newHashSet();
     // Create files with 100 records.
@@ -101,14 +111,14 @@ public class AbstractFSDirectoryInputOperatorFailureHandlingTest
     TestFSDirectoryInputOperator oper = new TestFSDirectoryInputOperator();
 
     CollectorTestSink<String> queryResults = new CollectorTestSink<String>();
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     CollectorTestSink<Object> sink = (CollectorTestSink) queryResults;
     oper.output.setSink(sink);
 
     oper.setDirectory(testMeta.getDir());
     oper.getScanner().setFilePatternRegexp(".*file[\\d]");
 
-    oper.setup(null);
+    oper.setup(operatorContextA);
     for (long wid=0; wid<1000; wid++) {
       oper.beginWindow(wid);
       oper.emitTuples();
@@ -118,6 +128,5 @@ public class AbstractFSDirectoryInputOperatorFailureHandlingTest
 
     Assert.assertEquals("number tuples", 100, queryResults.collectedTuples.size());
     Assert.assertEquals("lines", allLines, new HashSet<String>(queryResults.collectedTuples));
-
   }
 }

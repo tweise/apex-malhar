@@ -15,21 +15,18 @@
  */
 package com.datatorrent.lib.io.fs;
 
+import com.datatorrent.api.Context;
+import com.datatorrent.api.DefaultOutputPort;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.util.Iterator;
-
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
-
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Sets;
-
-import com.datatorrent.api.Context;
-import com.datatorrent.api.DefaultOutputPort;
 
 /**
  * Input operator that scans a directory for files and splits a file into blocks.<br/>
@@ -44,7 +41,7 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
   public FileSplitter()
   {
     processedFiles = Sets.newHashSet();
-    pendingFiles = Sets.newLinkedHashSet();
+    pendingFiles = Lists.newLinkedList();
     blockSize = null;
   }
 
