@@ -379,13 +379,13 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
    */
   private void replayTuples(IdempotenceRecoveryData idempotenceRecoveryData)
   {
-    FSDataInputStream replayInputStream = null;
     Path path = new Path(idempotenceRecoveryData.filePath);
+    boolean justOpened = false;
 
     if(inputStream == null) {
       try {
         inputStream = openFile(path);
-        replayInputStream = (FSDataInputStream) inputStream;
+        justOpened = true;
       }
       catch (IOException ex) {
         throw new RuntimeException(ex);
@@ -395,7 +395,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
       try {
         closeFile(inputStream);
         inputStream = openFile(path);
-        replayInputStream = (FSDataInputStream) inputStream;
+        justOpened = true;
       }
       catch (IOException ex) {
         throw new RuntimeException(ex);
@@ -403,7 +403,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     }
 
     try {
-      if(replayInputStream.getPos() == 0L) {
+      if(justOpened) {
         LOG.debug("Reading until start offset file {}, start {}",
                   idempotenceRecoveryData.filePath,
                   idempotenceRecoveryData.startOffset);
