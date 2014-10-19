@@ -77,13 +77,12 @@ public class AbstractFSDirectoryInputOperatorTest
     @Override
     protected void finished(org.junit.runner.Description description)
     {
-      /*
       try {
         FileUtils.deleteDirectory(new File(this.dir));
       }
       catch (IOException ex) {
         throw new RuntimeException(ex);
-      }*/
+      }
     }
   };
 
