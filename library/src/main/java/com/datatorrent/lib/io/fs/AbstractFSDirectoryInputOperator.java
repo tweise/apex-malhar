@@ -274,6 +274,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     try {
       filePath = new Path(directory);
       configuration = new Configuration();
+      configuration.setBoolean("fs.hdfs.impl.disable.cache", true);
       fs = FileSystem.newInstance(filePath.toUri(), configuration);
     }
     catch (IOException ex) {
