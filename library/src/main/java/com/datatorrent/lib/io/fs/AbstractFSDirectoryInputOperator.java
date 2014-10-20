@@ -278,7 +278,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
       fs = FileSystem.newInstance(filePath.toUri(), configuration);
     }
     catch (IOException ex) {
-      failureHandling(ex);
+      throw new RuntimeException(ex);
     }
 
     //Make sure our list of directories is up to date
@@ -715,8 +715,8 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   protected InputStream openFile(Path path) throws IOException
   {
     LOG.info("opening file {}", path);
-    FSDataInputStream input = fs.open(path);
     currentFile = path.toString();
+    FSDataInputStream input = fs.open(path);
     offset = 0;
     retryCount = 0;
     skipCount = 0;
