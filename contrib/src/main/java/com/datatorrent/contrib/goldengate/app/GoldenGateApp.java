@@ -29,12 +29,11 @@ public class GoldenGateApp implements StreamingApplication
   public void populateDAG(DAG dag, Configuration conf)
   {
     KafkaInput kafkaInput = dag.addOperator("GoldenGateInput", KafkaInput.class);
-    OracleDBOutputOperator db = dag.addOperator("OracleReplicator", OracleDBOutputOperator.class);
     CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
     CSVFileInput csvFileReader = dag.addOperator("CSVReader", CSVFileInput.class);
     ConsoleOutputOperator console = dag.addOperator("debug", ConsoleOutputOperator.class);
 
-    JMSOutputOperator jms = new JMSOutputOperator();
+    GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
 
     jms.setUser("");
     jms.setPassword("");
@@ -50,8 +49,8 @@ public class GoldenGateApp implements StreamingApplication
     jms.setTransacted(false);
     jms.setVerbose(true);
 
-    dag.addStream("GoldenGateConsoleStream", kafkaInput.outputPort, csvFileOutput.input);
-    dag.addStream("GoldenGateWriter", kafkaInput.transactionPort, jms.inputPort);
+    dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, console.input);
+    dag.addStream("GoldenGateWriterStream", kafkaInput.transactionPort, jms.inputPort);
 
     dag.addStream("csvOutputLines", csvFileReader.outputPort, console.input);
 

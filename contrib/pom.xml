@@ -48,7 +48,7 @@
                         <outputDirectory>target/dist</outputDirectory>
                         <overWriteIfNewer>true</overWriteIfNewer>
                         <includeArtifactIds>
-                          activemq-client,activemq-broker,activemq-kahadb-store,commons-compress,kafka_2.10,metrics-core,scala-library,super-csv,zkclient,zookeeper,malhar-library,malhar-contrib,jdbc,guava,ggaddons,ggcache,ggcmdui,ggcoh,ggdbutil,ggjms,ggtrail,gguserexitapi,ggutil
+                          activemq-all,commons-compress,kafka_2.10,metrics-core,scala-library,super-csv,zkclient,zookeeper,malhar-library,malhar-contrib,jdbc,guava,ggaddons,ggcache,ggcmdui,ggcoh,ggdbutil,ggjms,ggtrail,gguserexitapi,ggutil
                         </includeArtifactIds>
                     </configuration>
                 </execution>
@@ -623,20 +623,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-client</artifactId>
+      <artifactId>activemq-all</artifactId>
       <version>5.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-broker</artifactId>
-      <version>5.8.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-kahadb-store</artifactId>
-      <version>5.8.0</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
