@@ -49,7 +49,7 @@ public class GoldenGateApp implements StreamingApplication
     jms.setTransacted(false);
     jms.setVerbose(true);
 
-    dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, console.input);
+    dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, csvFileOutput.input);
     dag.addStream("GoldenGateWriterStream", kafkaInput.transactionPort, jms.inputPort);
 
     dag.addStream("csvOutputLines", csvFileReader.outputPort, console.input);
