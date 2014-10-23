@@ -19,9 +19,10 @@ import com.datatorrent.api.*;
 import com.datatorrent.api.Attribute.AttributeMap;
 import com.datatorrent.api.Attribute.AttributeMap.DefaultAttributeMap;
 import com.datatorrent.api.Partitioner.Partition;
-import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
+
 import com.datatorrent.lib.codec.JavaSerializationStreamCodec;
 import com.datatorrent.lib.helper.OperatorContextTestHelper;
+import com.datatorrent.lib.io.FSIdempotenceAgent;
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator.DirectoryScanner;
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator.IdempotenceRecoveryData;
 import com.datatorrent.lib.testbench.CollectorTestSink;

@@ -25,6 +25,7 @@ import com.datatorrent.common.util.DTThrowable;
 import com.datatorrent.common.util.Slice;
 import com.datatorrent.lib.codec.JavaSerializationStreamCodec;
 import com.datatorrent.lib.helper.OperatorContextTestHelper;
+import com.datatorrent.lib.io.FSIdempotenceAgent;
 import com.datatorrent.lib.io.IdempotenceAgent;
 import com.datatorrent.lib.io.fs.AbstractFSWriterTest.FSTestWatcher;
 import com.esotericsoftware.kryo.Kryo;
