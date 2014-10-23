@@ -5,24 +5,16 @@
 
 package com.datatorrent.contrib.goldengate.app;
 
-import java.util.Properties;
-
-import org.apache.hadoop.conf.Configuration;
-
-import com.datatorrent.lib.io.ConsoleOutputOperator;
-
-import com.datatorrent.contrib.goldengate.DBQueryProcessor;
-import com.datatorrent.contrib.goldengate.FileQueryProcessor;
-import com.datatorrent.contrib.goldengate.KafkaJsonEncoder;
-import com.datatorrent.contrib.goldengate.lib.CSVFileOutput;
-import com.datatorrent.contrib.goldengate.lib.KafkaInput;
-import com.datatorrent.contrib.goldengate.lib.OracleDBOutputOperator;
-import com.datatorrent.contrib.kafka.KafkaSinglePortOutputOperator;
-import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
-
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.StreamingApplication;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
+import com.datatorrent.contrib.goldengate.*;
+import com.datatorrent.contrib.goldengate.lib.*;
+import com.datatorrent.contrib.kafka.KafkaSinglePortOutputOperator;
+import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
+import com.datatorrent.lib.io.ConsoleOutputOperator;
+import java.util.Properties;
+import org.apache.hadoop.conf.Configuration;
 
 @ApplicationAnnotation(name="GoldenGateDemo")
 public class GoldenGateApp implements StreamingApplication
@@ -35,9 +27,26 @@ public class GoldenGateApp implements StreamingApplication
     ConsoleOutputOperator console = dag.addOperator("Console", ConsoleOutputOperator.class);
     CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
 
+    JMSOutputOperator jms = new JMSOutputOperator();
+
+    jms.setUser("");
+    jms.setPassword("");
+    jms.setUrl("tcp://node0.morado.com:61616");
+    jms.setAckMode("CLIENT_ACKNOWLEDGE");
+    jms.setClientId("ggdemo_jms_client");
+    jms.setSubject("ggdemo");
+    jms.setMaximumSendMessages(Integer.MAX_VALUE);
+    jms.setMessageSize(Integer.MAX_VALUE);
+    jms.setBatch(1);
+    jms.setTopic(false);
+    jms.setDurable(false);
+    jms.setTransacted(false);
+    jms.setVerbose(true);
+
     dag.addStream("GoldenGateConsoleStream", kafkaInput.outputPort, console.input);
-    dag.addStream("OracleReplicatorStream", kafkaInput.employeePort, db.input);
+    dag.addStream("GoldenGateWriter", kafkaInput.transactionPort, jms.inputPort);
     dag.addStream("CSVReplicatorStream", kafkaInput.employeePort1, csvFileOutput.input);
+
 
     ////
 

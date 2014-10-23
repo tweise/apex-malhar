@@ -8,7 +8,6 @@ package com.datatorrent.contrib.goldengate.lib;
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
-import com.datatorrent.contrib.kafka.PartitionableKafkaSinglePortStringInputOperator;
 import com.goldengate.atg.datasource.DsOperation.OpType;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class KafkaInput extends KafkaSinglePortStringInputOperator
 {
   private static final Logger logger = LoggerFactory.getLogger(KafkaInput.class);
-  public final transient DefaultOutputPort<Employee> employeePort = new DefaultOutputPort<Employee>();
+  public final transient DefaultOutputPort<_DsTransaction> transactionPort = new DefaultOutputPort<_DsTransaction>();
   public final transient DefaultOutputPort<Employee> employeePort1 = new DefaultOutputPort<Employee>();
 
   private transient ObjectMapper mapper = new ObjectMapper();
@@ -64,13 +63,13 @@ public class KafkaInput extends KafkaSinglePortStringInputOperator
       _DsColumn[] cols = op.getCols().toArray(new _DsColumn[] {});
 
       Employee employee = new Employee();
-
       employee.eid = Integer.parseInt(cols[0].getAfterValue());
       employee.ename = cols[1].getAfterValue();
       employee.did = Integer.parseInt(cols[2].getAfterValue());
 
-      employeePort.emit(employee);
       employeePort1.emit(employee);
     }
+
+    transactionPort.emit(_dt);
   }
 }

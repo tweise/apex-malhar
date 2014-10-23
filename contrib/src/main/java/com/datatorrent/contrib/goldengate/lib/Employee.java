@@ -5,6 +5,9 @@
 
 package com.datatorrent.contrib.goldengate.lib;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Employee
 {
   int eid;
