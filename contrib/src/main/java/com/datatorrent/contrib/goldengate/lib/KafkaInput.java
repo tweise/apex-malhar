@@ -5,22 +5,32 @@
 
 package com.datatorrent.contrib.goldengate.lib;
 
-import com.datatorrent.api.Context.OperatorContext;
-import com.datatorrent.api.DefaultOutputPort;
-import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
-import com.goldengate.atg.datasource.DsOperation.OpType;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import kafka.message.Message;
+
+import com.goldengate.atg.datasource.DsOperation.OpType;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KafkaInput extends KafkaSinglePortStringInputOperator
+import com.datatorrent.contrib.kafka.AbstractKafkaInputOperator;
+import com.datatorrent.contrib.kafka.KafkaConsumer;
+
+import com.datatorrent.api.Context.OperatorContext;
+import com.datatorrent.api.DefaultOutputPort;
+
+import com.datatorrent.common.util.DTThrowable;
+
+import kafka.message.Message;
+
+public class KafkaInput extends AbstractKafkaInputOperator<KafkaConsumer>
 {
   private static final Logger logger = LoggerFactory.getLogger(KafkaInput.class);
+
+  public final transient DefaultOutputPort<Employee> outputPort = new DefaultOutputPort<Employee>();
   public final transient DefaultOutputPort<_DsTransaction> transactionPort = new DefaultOutputPort<_DsTransaction>();
-  public final transient DefaultOutputPort<Employee> employeePort1 = new DefaultOutputPort<Employee>();
 
   private transient ObjectMapper mapper = new ObjectMapper();
 
@@ -31,19 +41,26 @@ public class KafkaInput extends KafkaSinglePortStringInputOperator
     mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS"));
   }
 
-  @Override
-  public String getTuple(Message message)
+  public String getMessageString(Message message)
   {
-    String result = super.getTuple(message);
-    logger.debug("recieved message {} " + result);
-    return result;
+    String data = "";
+    try {
+      ByteBuffer buffer = message.payload();
+      byte[] bytes = new byte[buffer.remaining()];
+      buffer.get(bytes);
+      data = new String(bytes);
+      //logger.debug("Consuming {}", data);
+    }
+    catch (Exception ex) {
+      DTThrowable.rethrow(ex);
+    }
+    return data;
   }
 
   @Override
   public void emitTuple(Message msg)
   {
-    String tupleJSON = getTuple(msg);
-    outputPort.emit(tupleJSON);
+    String tupleJSON = getMessageString(msg);
 
     // enrichment and save to mysql
     _DsTransaction _dt = null;
@@ -67,7 +84,7 @@ public class KafkaInput extends KafkaSinglePortStringInputOperator
       employee.ename = cols[1].getAfterValue();
       employee.did = Integer.parseInt(cols[2].getAfterValue());
 
-      employeePort1.emit(employee);
+      outputPort.emit(employee);
     }
 
     transactionPort.emit(_dt);
