@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
-public class JMSOutputOperator extends AbstractActiveMQSinglePortOutputOperator<_DsTransaction>
+public class GoldenGateJMSOutputOperator extends AbstractActiveMQSinglePortOutputOperator<_DsTransaction>
 {
   private transient SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
 

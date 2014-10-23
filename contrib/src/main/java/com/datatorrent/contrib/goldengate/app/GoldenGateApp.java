@@ -26,7 +26,7 @@ public class GoldenGateApp implements StreamingApplication
     ConsoleOutputOperator console = dag.addOperator("Console", ConsoleOutputOperator.class);
     CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
 
-    JMSOutputOperator jms = dag.addOperator("GoldenGateWriter", JMSOutputOperator.class);
+    GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
 
     jms.setUser("");
     jms.setPassword("");
