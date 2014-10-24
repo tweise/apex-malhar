@@ -58,8 +58,8 @@ public class GoldenGateApp implements StreamingApplication
     dag.addStream("dbQueries", dbQueryInput.outputPort, dbQueryProcessor.queryInput);
     dag.addStream("dbRows", dbQueryProcessor.queryOutput, dbQueryOutput.inputPort);
 
-    dag.addStream("dbQueries", odbQueryInput.outputPort, odbQueryProcessor.queryInput);
-    dag.addStream("dbRows", odbQueryProcessor.queryOutput, odbQueryOutput.inputPort);
+    dag.addStream("odbQueries", odbQueryInput.outputPort, odbQueryProcessor.queryInput);
+    dag.addStream("odbRows", odbQueryProcessor.queryOutput, odbQueryOutput.inputPort);
 
     ////
 
