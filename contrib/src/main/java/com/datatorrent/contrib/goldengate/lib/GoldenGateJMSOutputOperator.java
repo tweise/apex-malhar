@@ -32,7 +32,7 @@ public class GoldenGateJMSOutputOperator extends AbstractActiveMQSinglePortOutpu
       }
 
       sb.append("<o t='");
-      sb.append(op.getTableName());
+      sb.append(op.getTableName().getFullName());
       sb.append("' s='I' d='");
       sb.append(date);
       sb.append("' p='");
