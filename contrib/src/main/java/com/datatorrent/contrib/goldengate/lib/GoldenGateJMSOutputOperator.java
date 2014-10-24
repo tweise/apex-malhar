@@ -10,16 +10,19 @@ import com.goldengate.atg.datasource.DsOperation.OpType;
 import java.text.SimpleDateFormat;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GoldenGateJMSOutputOperator extends AbstractActiveMQSinglePortOutputOperator<_DsTransaction>
 {
+  private static transient Logger logger = LoggerFactory.getLogger(GoldenGateJMSOutputOperator.class);
   private transient SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
 
   @Override
   protected Message createMessage(_DsTransaction tuple)
   {
     StringBuilder sb = new StringBuilder();
-    sb.append("<t>");
+    sb.append("<t>\n");
 
     String date = dateFormat.format(tuple.getReadTime());
 
@@ -34,7 +37,7 @@ public class GoldenGateJMSOutputOperator extends AbstractActiveMQSinglePortOutpu
       sb.append(date);
       sb.append("' p='");
       sb.append(op.getPositionSeqno());
-      sb.append("'>");
+      sb.append("'>\n");
 
       _DsColumn[] cols = op.getCols().toArray(new _DsColumn[] {});
 
@@ -46,14 +49,16 @@ public class GoldenGateJMSOutputOperator extends AbstractActiveMQSinglePortOutpu
         sb.append("'>");
         sb.append("<a><![CDATA[");
         sb.append(cols[columnCounter].getAfterValue());
-        sb.append("]]></a></c>");
+        sb.append("]]></a></c>\n");
       }
 
-      sb.append("</o>");
+      sb.append("</o>\n");
     }
 
-    sb.append("</t>");
+    sb.append("</t>\n");
     Message message = null;
+
+    logger.info(sb.toString());
 
     try {
       message = getSession().createTextMessage(sb.toString());
