@@ -32,26 +32,10 @@ public class GoldenGateApp implements StreamingApplication
     CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
     CSVFileInput csvFileReader = dag.addOperator("CSVReader", CSVFileInput.class);
     ConsoleOutputOperator console = dag.addOperator("debug", ConsoleOutputOperator.class);
-
     GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
-
-    jms.setUser("");
-    jms.setPassword("");
-    jms.setUrl("tcp://node0.morado.com:61616");
-    jms.setAckMode("CLIENT_ACKNOWLEDGE");
-    jms.setClientId("ggdemo_jms_client");
-    jms.setSubject("ggdemo");
-    jms.setMaximumSendMessages(Integer.MAX_VALUE);
-    jms.setMessageSize(Integer.MAX_VALUE);
-    jms.setBatch(1);
-    jms.setTopic(false);
-    jms.setDurable(false);
-    jms.setTransacted(false);
-    jms.setVerbose(true);
 
     dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, csvFileOutput.input);
     dag.addStream("GoldenGateWriterStream", kafkaInput.transactionPort, jms.inputPort);
-
     dag.addStream("csvOutputLines", csvFileReader.outputPort, console.input);
 
     ////
