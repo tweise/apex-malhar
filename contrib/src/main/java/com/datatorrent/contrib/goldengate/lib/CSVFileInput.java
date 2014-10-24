@@ -40,15 +40,20 @@ public class CSVFileInput extends AbstractHDFSInputOperator
   public void setup(Context.OperatorContext context)
   {
     super.setup(context);
-    FSDataInputStream inputStream = openFile(getFilePath());
-    bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
     lines = new ArrayBlockingQueue<String>(lineBufferCapacity);
+  }
+
+  @Override
+  public void activate(Context.OperatorContext ctx)
+  {
+    super.activate(ctx);
+    bufferedReader = new BufferedReader(new InputStreamReader(input));
     fileThStop = false;
     fileHelperTh.start();
   }
 
   @Override
-  public void teardown()
+  public void deactivate()
   {
     fileThStop = true;
     try {
@@ -63,6 +68,12 @@ public class CSVFileInput extends AbstractHDFSInputOperator
         DTThrowable.rethrow(e);
       }
     }
+    super.deactivate();
+  }
+
+  @Override
+  public void teardown()
+  {
     super.teardown();
   }
 
@@ -93,6 +104,13 @@ public class CSVFileInput extends AbstractHDFSInputOperator
     while (((line = lines.poll()) != null) && (count < maxLineEmit)) {
       outputPort.emit(line);
       ++count;
+    }
+    if (count == 0) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        DTThrowable.rethrow(e);
+      }
     }
   }
 
