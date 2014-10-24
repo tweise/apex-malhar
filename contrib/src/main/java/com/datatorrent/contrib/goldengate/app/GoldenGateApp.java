@@ -44,13 +44,22 @@ public class GoldenGateApp implements StreamingApplication
     DBQueryProcessor dbQueryProcessor = dag.addOperator("DBQueryProcessor", DBQueryProcessor.class);
     KafkaSinglePortOutputOperator<Object, Object> dbQueryOutput = dag.addOperator("DBQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
 
+    KafkaSinglePortStringInputOperator odbQueryInput = dag.addOperator("ODBQuery", KafkaSinglePortStringInputOperator.class);
+    DBQueryProcessor odbQueryProcessor = dag.addOperator("ODBQueryProcessor", DBQueryProcessor.class);
+    KafkaSinglePortOutputOperator<Object, Object> odbQueryOutput = dag.addOperator("ODBQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
+
+
     Properties configProperties = new Properties();
     configProperties.setProperty("serializer.class", KafkaJsonEncoder.class.getName());
     configProperties.setProperty("metadata.broker.list", "node25.morado.com:9092");
     dbQueryOutput.setConfigProperties(configProperties);
+    odbQueryOutput.setConfigProperties(configProperties);
 
     dag.addStream("dbQueries", dbQueryInput.outputPort, dbQueryProcessor.queryInput);
     dag.addStream("dbRows", dbQueryProcessor.queryOutput, dbQueryOutput.inputPort);
+
+    dag.addStream("dbQueries", odbQueryInput.outputPort, odbQueryProcessor.queryInput);
+    dag.addStream("dbRows", odbQueryProcessor.queryOutput, odbQueryOutput.inputPort);
 
     ////
 
