@@ -18,65 +18,123 @@ package com.datatorrent.lib.io;
 import java.io.IOException;
 import java.util.*;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.collect.TreeMultimap;
 
+import com.datatorrent.api.Component;
+import com.datatorrent.api.Context;
+import com.datatorrent.api.DAG;
 import com.datatorrent.api.StorageAgent;
 import com.datatorrent.api.annotation.Stateless;
 
+import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator;
 import com.datatorrent.lib.util.FSStorageAgent;
+import com.datatorrent.stram.util.FSUtil;
 
 /**
- * This interface should be implemented by an idempotence agent. An idempotence agent allows
- * an operator to always emit the same tuples in every application window. An idempotent agent
- * cannot make any gaurantees about the tuples emitted in the application window which fails.
+ * An idempotent storage manager allows an operator to emit the same tuples in every replayed application window. An idempotent agent
+ * cannot make any guarantees about the tuples emitted in the application window which fails.
  *
- * The order of tuples is gauranteed for ordered input sources when input operators are not partitioned.
+ * The order of tuples is guaranteed for ordered input sources.
  *
- * <b>Important:</b> In order for an idempotent agent to function correctly it cannot allow
+ * <b>Important:</b> In order for an idempotent storage manager to function correctly it cannot allow
  * checkpoints to occur within an application window and checkpoints must be aligned with
  * application window boundaries.
  */
 
-public interface IdempotentStorageManager extends StorageAgent
+public interface IdempotentStorageManager extends StorageAgent, Component<Context.OperatorContext>
 {
   /**
    * Gets the largest window for which there is recovery data.
    */
   boolean isWindowOld(long windowId);
 
-  public static class FSIdempotentStorageManager extends FSStorageAgent implements IdempotentStorageManager
+  /**
+   * When an operator can partition itself dynamically then there is no guarantee that an input state which was being handled
+   * by one instance previously will be handled by the same instance after partitioning. <br/>
+   * For eg. An {@link AbstractFSDirectoryInputOperator} instance which reads a File X till offset l (not check-pointed) may no longer be the
+   * instance that handles file X after repartitioning as no. of instances may have changed and file X is re-hashed to another instance. <br/>
+   * The new instance wouldn't know from what point to read the File X unless it reads the idempotent storage of all the operators for the window
+   * being replayed and fix it's state.
+   */
+  List<Object> load(long windowId) throws IOException;
+
+  /**
+   * This informs the idempotent storage manager that operator is partitioned so that it can set properties and distribute state.
+   *
+   * @param newManagers        all the new idempotent storage managers.
+   * @param removedOperatorIds set of operator ids which were removed after partitioning.
+   */
+  void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds);
+
+  public static class FSIdempotentStorageManager implements IdempotentStorageManager
   {
-    //largest window for which there is recovery data.
-    private long largestRecoveryWindow = Stateless.WINDOW_ID;
+
+    protected FSStorageAgent storageAgent;
+
+    @NotNull
+    protected String recoveryPath;
 
     /**
-     * This value is null if the recovery state is unknown. Recovery state is undefined (null) until
-     * setup and begin window are called. This property is true if the idempotent agent is still
-     * recovering tuples.
+     * largest window for which there is recovery data across all physical operator instances.
      */
-    private transient Boolean recovering;
+    protected transient long largestRecoveryWindow;
 
-    private FSIdempotentStorageManager()
+    /**
+     * This is not null only for one physical instance.<br/>
+     * It consists of operator ids which have been deleted but have some state that can be replayed.
+     * Only one of the instances would be handling (modifying) the files that belong to this state.
+     */
+    protected Set<Integer> deletedOperators;
+
+    /**
+     * Sorted mapping from window id to all the operators that have state to replay for that window.
+     */
+    protected final transient TreeMultimap<Long, Integer> replayState;
+
+    protected transient FileSystem fs;
+    protected transient Path appPath;
+
+    public FSIdempotentStorageManager()
     {
-      this(null, null);
+      replayState = TreeMultimap.create();
+      deletedOperators = Sets.newHashSet();
+      largestRecoveryWindow = Stateless.WINDOW_ID;
     }
 
-    public FSIdempotentStorageManager(String path, Configuration conf)
+    @Override
+    public void setup(Context.OperatorContext context)
     {
-      super(path, conf);
+      Configuration configuration = new Configuration();
+      appPath = new Path(recoveryPath + '/' + context.getValue(DAG.APPLICATION_ID));
 
+      if (storageAgent == null) {
+        storageAgent = new FSStorageAgent(appPath.toString(), configuration);
+      }
       try {
-        FileStatus[] fileStatuses = fs.listStatus(new Path(path));
+        fs = FileSystem.newInstance(appPath.toUri(), configuration);
+        if (FSUtil.mkdirs(fs, appPath)) {
+          fs.setWorkingDirectory(appPath);
+        }
+
+        FileStatus[] fileStatuses = fs.listStatus(appPath);
 
         for (FileStatus operatorDirStatus : fileStatuses) {
+          int operatorId = Integer.parseInt(operatorDirStatus.getPath().getName());
+
           for (FileStatus status : fs.listStatus(operatorDirStatus.getPath())) {
             String fileName = status.getPath().getName();
             long windowId = Long.parseLong(fileName, 16);
+            replayState.put(windowId, operatorId);
             if (windowId > largestRecoveryWindow) {
               largestRecoveryWindow = windowId;
             }
@@ -89,206 +147,122 @@ public interface IdempotentStorageManager extends StorageAgent
     }
 
     @Override
+    public void save(Object object, int operatorId, long windowId) throws IOException
+    {
+      storageAgent.save(object, operatorId, windowId);
+    }
+
+    @Override
+    public Object load(int operatorId, long windowId) throws IOException
+    {
+      return storageAgent.load(operatorId, windowId);
+    }
+
+    @Override
+    public List<Object> load(long windowId) throws IOException
+    {
+      SortedSet<Integer> operators = replayState.get(windowId);
+      List<Object> data = Lists.newArrayListWithCapacity(operators.size());
+      for (int operatorId : operators) {
+        data.add(load(operatorId, windowId));
+      }
+
+      return data;
+    }
+
+    @Override
+    public long[] getWindowIds(int operatorId) throws IOException
+    {
+      return storageAgent.getWindowIds(operatorId);
+    }
+
+    @Override
+    public void delete(int operatorId, long windowId) throws IOException
+    {
+      if (windowId <= largestRecoveryWindow && deletedOperators != null && !deletedOperators.isEmpty()) {
+        Iterator<Long> windowsIterator = replayState.keySet().iterator();
+        while (windowsIterator.hasNext()) {
+          long lwindow = windowsIterator.next();
+          if (lwindow > windowId) {
+            break;
+          }
+          Iterator<Integer> operatorsIterator = replayState.get(lwindow).iterator();
+          while (operatorsIterator.hasNext()) {
+            int loperator = operatorsIterator.next();
+
+            if (deletedOperators.contains(loperator)) {
+              Path operatorDir = new Path(String.valueOf(loperator));
+              fs.delete(new Path(operatorDir, Long.toHexString(lwindow)), true);
+
+              if (fs.listStatus(operatorDir).length == 0) {
+                //The operator was deleted and it has nothing to replay.
+                deletedOperators.remove(loperator);
+                fs.delete(operatorDir, true);
+              }
+              operatorsIterator.remove();
+            }
+          }
+          windowsIterator.remove();
+        }
+      }
+      storageAgent.delete(operatorId, windowId);
+    }
+
+    @Override
     public boolean isWindowOld(long windowId)
     {
       return windowId <= largestRecoveryWindow;
     }
 
     @Override
-    public void delete(int operatorId, long windowId) throws IOException
+    public void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds)
     {
-      super.delete(operatorId, windowId);
+      Preconditions.checkArgument(newManagers != null && !newManagers.isEmpty(), "there has to be one idempotent storage manager");
+      FSIdempotentStorageManager deletedOperatorsManager = null;
+
+      for (IdempotentStorageManager storageManager : newManagers) {
+
+        FSIdempotentStorageManager lmanager = (FSIdempotentStorageManager) storageManager;
+        lmanager.recoveryPath = this.recoveryPath;
+        if (lmanager.deletedOperators != null) {
+          deletedOperatorsManager = lmanager;
+        }
+      }
+
+      if (removedOperatorIds == null || removedOperatorIds.isEmpty()) {
+        //Nothing to do
+        return;
+      }
+
+      //If some operators were removed then there needs to be a manager which can clean there state when it is not needed.
+      if (deletedOperatorsManager == null) {
+        //None of the managers were handling deleted operators data.
+        deletedOperatorsManager = (FSIdempotentStorageManager) newManagers.iterator().next();
+        deletedOperatorsManager.deletedOperators = Sets.newHashSet();
+      }
+
+      deletedOperatorsManager.deletedOperators.addAll(removedOperatorIds);
     }
 
-    /**
-     * This is a helper method to handle common cases for different repartitioning methods.
-     *
-     * @param <ST>              The type of the tuples to serialize.
-     * @param idempotenceAgents The idempotence agents to repartition.
-     * @param newPartitionSize  The new partition size.
-     * @param agentIdsUnion     The union of all the idempotence agents ids.
-     * @return The repartitioned idempotence agents.
-     */
-    private static <ST> Collection<IdempotenceAgent<ST>> repartition(Collection<IdempotenceAgent<ST>> idempotenceAgents,
-                                                                     int newPartitionSize,
-                                                                     Set<Integer> agentIdsUnion)
+    @Override
+    public void teardown()
     {
-      //This is not valid
-      if (newPartitionSize <= 0) {
-        throw new IllegalArgumentException("The new partition size must be positive.");
+      try {
+        fs.close();
       }
-
-      for (IdempotenceAgent<ST> agent : idempotenceAgents) {
-        agentIdsUnion.addAll(agent.getRecoverIdempotentAgentIds());
+      catch (IOException e) {
+        throw new RuntimeException(e);
       }
-
-      //Nothing needs to be done
-      if (idempotenceAgents.size() == newPartitionSize) {
-        for (IdempotenceAgent<ST> agent : idempotenceAgents) {
-          agent.setAllAgentIds(agentIdsUnion);
-        }
-
-        return idempotenceAgents;
-      }
-
-      return null;
     }
 
-    /**
-     * This method repartitions the given idempotence agents to the given partition size. Existing idempotent agent
-     * data is evenly distributed accross partitions. This should be used when creating a partitioner for an operator.
-     *
-     * @param <ST>              The type of the tuples recorded by the idempotence agents.
-     * @param idempotenceAgents The idempotence agents to repartition.
-     * @param newPartitionSize  The new number of idempotence agents.
-     * @return A collection containing the repartitioned idempotent agents.
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static <ST> Collection<IdempotenceAgent<ST>> repartitionEven(Collection<IdempotenceAgent<ST>> idempotenceAgents,
-                                                                        int newPartitionSize)
+    public String getRecoveryPath()
     {
-      Set<Integer> agentIdsUnion = Sets.newHashSet();
-
-      Collection<IdempotenceAgent<ST>> tempNewIdempotenceAgents = repartition(idempotenceAgents,
-        newPartitionSize,
-        agentIdsUnion);
-
-      if (tempNewIdempotenceAgents != null) {
-        return tempNewIdempotenceAgents;
-      }
-
-      //More partitions than existing idempotence agents
-      if (idempotenceAgents.size() < newPartitionSize) {
-        //Template idempotence agent
-        IdempotenceAgent<ST> templateAgent = idempotenceAgents.iterator().next().clone();
-        templateAgent.clearState();
-
-        //Create new collection of idempotent agents
-        List<IdempotenceAgent<ST>> newIdempotenceAgents = Lists.newArrayList();
-        newIdempotenceAgents.addAll(idempotenceAgents);
-
-        //Add new previously non existing idempotence agents.
-        int numberOfNewAgents = newPartitionSize - idempotenceAgents.size();
-
-        for (int newAgentCounter = 0;
-             newAgentCounter < numberOfNewAgents;
-             newAgentCounter++) {
-          newIdempotenceAgents.add(templateAgent.clone());
-        }
-
-        for (IdempotenceAgent<ST> agent : newIdempotenceAgents) {
-          agent.setAllAgentIds(agentIdsUnion);
-        }
-
-        return newIdempotenceAgents;
-      }
-
-      //This is the case where the number of new partitions is smaller than the number of
-      //idempotence agents
-      IdempotenceAgent<ST>[] repartitionedAgents = new IdempotenceAgent[newPartitionSize];
-      Set<Integer>[] agentIdSets = new HashSet[newPartitionSize];
-
-      //Existing idempotence agents as a list.
-      List<IdempotenceAgent<ST>> agentsList = Lists.newArrayList();
-      agentsList.addAll(idempotenceAgents);
-
-      for (int agentCounter = 0;
-           agentCounter < agentsList.size();
-           agentCounter++) {
-        int agentIndex = agentCounter % newPartitionSize;
-        IdempotenceAgent<ST> agent = agentsList.get(agentCounter);
-
-        if (repartitionedAgents[agentIndex] == null) {
-          repartitionedAgents[agentIndex] = agent;
-
-          Set<Integer> agentIds = Sets.newHashSet();
-          agentIds.add(agent.getIdempotentAgentId());
-
-          agentIdSets[agentIndex] = agentIds;
-        }
-        else {
-          agentIdSets[agentIndex].add(agent.getIdempotentAgentId());
-        }
-      }
-
-      for (int agentCounter = 0;
-           agentCounter < newPartitionSize;
-           agentCounter++) {
-        repartitionedAgents[agentCounter].setRecoverIdempotentAgentIds(agentIdSets[agentCounter]);
-        repartitionedAgents[agentCounter].setAllAgentIds(agentIdsUnion);
-      }
-
-      return Arrays.asList(repartitionedAgents);
+      return recoveryPath;
     }
 
-    /**
-     * This method repartitions the given idempotence agents to the given partition size. Existing idempotent agent
-     * data is shared accross all partitions. This should be used when creating a partitioner for an operator.
-     *
-     * @param <ST>              The type of the tuples recorded by the idempotence agents.
-     * @param idempotenceAgents The idempotence agents to repartition.
-     * @param newPartitionSize  The new number of idempotence agents.
-     * @return A collection containing the repartitioned idempotent agents.
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static <ST> Collection<IdempotenceAgent<ST>> repartitionAll(Collection<IdempotenceAgent<ST>> idempotenceAgents,
-                                                                       int newPartitionSize)
+    public void setRecoveryPath(String recoveryPath)
     {
-      Set<Integer> agentIdsUnion = Sets.newHashSet();
-
-      Collection<IdempotenceAgent<ST>> tempNewIdempotenceAgents = repartition(idempotenceAgents,
-        newPartitionSize,
-        agentIdsUnion);
-
-      if (tempNewIdempotenceAgents != null) {
-        return tempNewIdempotenceAgents;
-      }
-
-      //More partitions than existing idempotence agents
-      if (idempotenceAgents.size() < newPartitionSize) {
-        //Template idempotence agent
-        IdempotenceAgent<ST> templateAgent = idempotenceAgents.iterator().next().clone();
-        templateAgent.clearState();
-
-        //Create new collection of idempotent agents
-        List<IdempotenceAgent<ST>> newIdempotenceAgents = Lists.newArrayList();
-        newIdempotenceAgents.addAll(idempotenceAgents);
-
-        //Add new previously non existing idempotence agents.
-        int numberOfNewAgents = newPartitionSize - idempotenceAgents.size();
-
-        for (int newAgentCounter = 0;
-             newAgentCounter < numberOfNewAgents;
-             newAgentCounter++) {
-          newIdempotenceAgents.add(templateAgent.clone());
-        }
-
-        for (IdempotenceAgent<ST> agent : newIdempotenceAgents) {
-          agent.setRecoverIdempotentAgentIds(agentIdsUnion);
-          agent.setAllAgentIds(agentIdsUnion);
-        }
-
-        return newIdempotenceAgents;
-      }
-
-      //This is the case where the number of new partitions is smaller than the number of
-      //idempotence agents
-      IdempotenceAgent<ST>[] repartitionedAgents = new IdempotenceAgent[newPartitionSize];
-
-      //Existing idempotence agents as a list.
-      List<IdempotenceAgent<ST>> agentsList = Lists.newArrayList();
-      agentsList.addAll(idempotenceAgents);
-
-      for (int agentCounter = 0;
-           agentCounter < newPartitionSize;
-           agentCounter++) {
-        IdempotenceAgent<ST> agent = agentsList.get(agentCounter);
-        agent.setRecoverIdempotentAgentIds(agentIdsUnion);
-        agent.setAllAgentIds(agentIdsUnion);
-        repartitionedAgents[agentCounter] = agent;
-      }
-
-      return Arrays.asList(repartitionedAgents);
+      this.recoveryPath = recoveryPath;
     }
   }
 }
