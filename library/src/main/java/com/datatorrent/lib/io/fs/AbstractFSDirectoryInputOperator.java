@@ -20,8 +20,7 @@ import com.datatorrent.api.Context.CountersAggregator;
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.Operator.CheckpointListener;
 import com.datatorrent.lib.counters.BasicCounters;
-import com.datatorrent.lib.io.IdempotenceAgent;
-import com.datatorrent.lib.io.NoIdempotenceAgent;
+import com.datatorrent.lib.io.IdempotentStorageManager;
 import com.esotericsoftware.kryo.Kryo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -116,7 +115,8 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   //Idempotence
   private transient List<IdempotenceRecoveryData> windowReplay = Lists.newArrayList();
   private transient IdempotenceRecoveryData currentWindowRecovery = new IdempotenceRecoveryData();
-  private IdempotenceAgent<IdempotenceRecoveryData> idempotenceAgent = new NoIdempotenceAgent<IdempotenceRecoveryData>();
+  @NotNull
+  protected IdempotentStorageManager idempotentStorageManager = new IdempotentStorageManager.NoopIdempotentStorageManage();
 
   //Counters
   private BasicCounters<MutableLong> fileCounters = new BasicCounters<MutableLong>(MutableLong.class);
@@ -247,25 +247,21 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     return currentPartitions;
   }
 
-  public void setIdempotenceAgent(IdempotenceAgent<IdempotenceRecoveryData> idempotenceAgent)
+  public void setIdempotentStorageManager(IdempotentStorageManager idempotentStorageManager)
   {
-    if(idempotenceAgent == null) {
-      throw new IllegalArgumentException("The idempotence agent cannot be null");
-    }
-
-    this.idempotenceAgent = idempotenceAgent;
+    this.idempotentStorageManager = idempotentStorageManager;
   }
 
-  public IdempotenceAgent<IdempotenceRecoveryData> getIdempotenceAgent()
+  public IdempotentStorageManager getIdempotentStorageManager()
   {
-    return idempotenceAgent;
+    return idempotentStorageManager;
   }
 
   @Override
   public void setup(OperatorContext context)
   {
     //Setup the idempotence agent
-    idempotenceAgent.setup(context);
+    idempotentStorageManager.setup(context);
 
     globalProcessedFileCount.setValue((long) processedFiles.size());
     LOG.debug("Setup processed file count: {}", globalProcessedFileCount);
@@ -282,32 +278,25 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     }
 
     //Make sure our list of directories is up to date
-    if(idempotenceAgent.isActive()) {
+    if(idempotentStorageManager.isActive()) {
       scanDirectory();
     }
 
     //Prepare counters
-    fileCounters.setCounter(FileCounters.GLOBAL_PROCESSED_FILES,
-                            globalProcessedFileCount);
-    fileCounters.setCounter(FileCounters.LOCAL_PROCESSED_FILES,
-                            localProcessedFileCount);
-    fileCounters.setCounter(FileCounters.GLOBAL_NUMBER_OF_FAILURES,
-                            globalNumberOfFailures);
-    fileCounters.setCounter(FileCounters.LOCAL_NUMBER_OF_FAILURES,
-                            localNumberOfFailures);
-    fileCounters.setCounter(FileCounters.GLOBAL_NUMBER_OF_RETRIES,
-                            globalNumberOfRetries);
-    fileCounters.setCounter(FileCounters.LOCAL_NUMBER_OF_RETRIES,
-                            localNumberOfRetries);
-    fileCounters.setCounter(FileCounters.PENDING_FILES,
-                            pendingFileCount);
+    fileCounters.setCounter(FileCounters.GLOBAL_PROCESSED_FILES, globalProcessedFileCount);
+    fileCounters.setCounter(FileCounters.LOCAL_PROCESSED_FILES, localProcessedFileCount);
+    fileCounters.setCounter(FileCounters.GLOBAL_NUMBER_OF_FAILURES, globalNumberOfFailures);
+    fileCounters.setCounter(FileCounters.LOCAL_NUMBER_OF_FAILURES, localNumberOfFailures);
+    fileCounters.setCounter(FileCounters.GLOBAL_NUMBER_OF_RETRIES, globalNumberOfRetries);
+    fileCounters.setCounter(FileCounters.LOCAL_NUMBER_OF_RETRIES, localNumberOfRetries);
+    fileCounters.setCounter(FileCounters.PENDING_FILES, pendingFileCount);
   }
 
 
   @Override
   public void beginWindow(long windowId)
   {
-    this.idempotenceAgent.beginWindow(windowId);
+    this.idempotentStorageManager.beginWindow(windowId);
 
     if(inputStream != null) {
       newRecoveryData();
@@ -317,8 +306,8 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   @Override
   public void emitTuples()
   {
-    if(idempotenceAgent.isActive() &&
-       idempotenceAgent.isRecovering()) {
+    if(idempotentStorageManager.isActive() &&
+       idempotentStorageManager.isRecovering()) {
       idempotentEmitTuples();
     }
     else {
@@ -333,9 +322,9 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   private void idempotentEmitTuples()
   {
     LOG.debug("idempotent emit tuples");
-    while(idempotenceAgent.hasNext()) {
+    while(idempotentStorageManager.hasNext()) {
       IdempotenceRecoveryData idempotenceRecoveryData =
-      idempotenceAgent.next();
+      idempotentStorageManager.next();
       LOG.debug("replaying recovery data file {} start {} end {}",
                 idempotenceRecoveryData.filePath,
                 idempotenceRecoveryData.startOffset,
@@ -541,13 +530,13 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
                 idempotencyRecoveryData.filePath,
                 idempotencyRecoveryData.startOffset,
                 idempotencyRecoveryData.endOffset);
-      idempotenceAgent.write(idempotencyRecoveryData);
+      idempotentStorageManager.write(idempotencyRecoveryData);
     }
 
-    idempotenceAgent.endWindow();
+    idempotentStorageManager.endWindow();
 
-    if(idempotenceAgent.isActive() &&
-       idempotenceAgent.isLastRecoveryWindow()) {
+    if(idempotentStorageManager.isActive() &&
+       idempotentStorageManager.isLastRecoveryWindow()) {
       LOG.debug("Cleaning up recovery state {}.", this.currentFile);
       try {
         if(inputStream != null) {
@@ -608,7 +597,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     filePath = null;
     context = null;
     configuration = null;
-    idempotenceAgent.teardown();
+    idempotentStorageManager.teardown();
   }
 
   /**
@@ -617,7 +606,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
    */
   private void newRecoveryData()
   {
-    if(!idempotenceAgent.isActive()) {
+    if(!idempotentStorageManager.isActive()) {
       return;
     }
 
@@ -783,7 +772,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     List<IdempotenceAgent<IdempotenceRecoveryData>> agents = Lists.newArrayList();
 
     for(Partition<AbstractFSDirectoryInputOperator<T>> partition: partitions) {
-      agents.add(partition.getPartitionedInstance().getIdempotenceAgent());
+      agents.add(partition.getPartitionedInstance().getIdempotentStorageManager());
     }
 
     List<IdempotenceAgent<IdempotenceRecoveryData>> newAgents = Lists.newArrayList();
@@ -794,7 +783,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
 
       int agentCounter = 0;
       for(Partition<AbstractFSDirectoryInputOperator<T>> partition: partitions) {
-        partition.getPartitionedInstance().setIdempotenceAgent(newAgents.get(agentCounter));
+        partition.getPartitionedInstance().setIdempotentStorageManager(newAgents.get(agentCounter));
         agentCounter++;
       }
 
@@ -880,7 +869,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
         }
       }
 
-      oper.setIdempotenceAgent(newAgents.get(i));
+      oper.setIdempotentStorageManager(newAgents.get(i));
       newPartitions.add(new DefaultPartition<AbstractFSDirectoryInputOperator<T>>(oper));
     }
 
@@ -910,7 +899,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   public void committed(long windowId)
   {
     LOG.debug("committed {}", windowId);
-    idempotenceAgent.committed(windowId);
+    idempotentStorageManager.committed(windowId);
   }
 
   @Override
@@ -1390,8 +1379,8 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     {
       LOG.debug("Using chronological scanner method.");
       List<FileStatus> fileStatuses = scanHelper(fs,
-                                                 filePath,
-                                                 consumedFiles);
+        filePath,
+        consumedFiles);
       List<Path> paths = Lists.newArrayList();
 
       Collections.sort(fileStatuses,

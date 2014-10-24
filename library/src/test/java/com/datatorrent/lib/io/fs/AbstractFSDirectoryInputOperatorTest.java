@@ -170,7 +170,7 @@ public class AbstractFSDirectoryInputOperatorTest
       oper.localNumberOfFailures = new MutableLong(this.localNumberOfFailures.longValue());
       oper.globalNumberOfRetries = new MutableLong(this.globalNumberOfRetries.longValue());
       oper.localNumberOfRetries = new MutableLong(this.localNumberOfRetries.longValue());
-      oper.setIdempotenceAgent(this.getIdempotenceAgent().clone());
+      oper.setIdempotentStorageManager(this.getIdempotentStorageManager().clone());
       return oper;
     }
   }
@@ -281,7 +281,7 @@ public class AbstractFSDirectoryInputOperatorTest
     FSIdempotenceAgent<IdempotenceRecoveryData> FSIA = new FSIdempotenceAgent<IdempotenceRecoveryData>();
     FSIA.setStreamCodec(new JavaSerializationStreamCodec<IdempotenceRecoveryData>());
     FSIA.setRecoveryDirectory(testMeta.dir);
-    oper.setIdempotenceAgent(FSIA);
+    oper.setIdempotentStorageManager(FSIA);
     oper.setDirectory(testMeta.dir);
     oper.getScanner().setFilePatternRegexp(".*file[\\d]");
 
@@ -308,7 +308,7 @@ public class AbstractFSDirectoryInputOperatorTest
     FSIdempotenceAgent<IdempotenceRecoveryData> FSIA = new FSIdempotenceAgent<IdempotenceRecoveryData>();
     FSIA.setStreamCodec(new JavaSerializationStreamCodec<IdempotenceRecoveryData>());
     FSIA.setRecoveryDirectory(testMeta.dir);
-    oper.setIdempotenceAgent(FSIA);
+    oper.setIdempotentStorageManager(FSIA);
     oper.setDirectory(testMeta.dir);
     oper.getScanner().setFilePatternRegexp(".*file[\\d]");
 
