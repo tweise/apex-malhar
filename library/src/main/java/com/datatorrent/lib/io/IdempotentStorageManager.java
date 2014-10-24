@@ -76,6 +76,9 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
    */
   void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds);
 
+  /**
+   * An {@link IdempotentStorageManager} that uses FS to persist state.
+   */
   public static class FSIdempotentStorageManager implements IdempotentStorageManager
   {
 
@@ -224,6 +227,8 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
 
         FSIdempotentStorageManager lmanager = (FSIdempotentStorageManager) storageManager;
         lmanager.recoveryPath = this.recoveryPath;
+        lmanager.storageAgent = this.storageAgent;
+
         if (lmanager.deletedOperators != null) {
           deletedOperatorsManager = lmanager;
         }
@@ -263,6 +268,63 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
     public void setRecoveryPath(String recoveryPath)
     {
       this.recoveryPath = recoveryPath;
+    }
+  }
+
+  /**
+   * This {@link IdempotentStorageManager} will never do recovery. This is a convenience class so that operators
+   * can use the same logic for maintaining idempotency and avoiding idempotency.
+   */
+  public static class NoopIdempotentStorageManage implements IdempotentStorageManager
+  {
+
+    @Override
+    public boolean isWindowOld(long windowId)
+    {
+      return false;
+    }
+
+    @Override
+    public List<Object> load(long windowId) throws IOException
+    {
+      return null;
+    }
+
+    @Override
+    public void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds)
+    {
+    }
+
+    @Override
+    public void setup(Context.OperatorContext context)
+    {
+    }
+
+    @Override
+    public void teardown()
+    {
+    }
+
+    @Override
+    public void save(Object object, int operatorId, long windowId) throws IOException
+    {
+    }
+
+    @Override
+    public Object load(int operatorId, long windowId) throws IOException
+    {
+      return null;
+    }
+
+    @Override
+    public void delete(int operatorId, long windowId) throws IOException
+    {
+    }
+
+    @Override
+    public long[] getWindowIds(int operatorId) throws IOException
+    {
+      return new long[0];
     }
   }
 }
