@@ -38,34 +38,29 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Input operator that reads files from a directory.
- * <br/>
- * <br/>
+ * <p/>
  * Derived class defines how to read entries from the input stream and emit to the port.
- * <br/>
- * <br/>
+ * <p/>
  * The directory scanning logic is pluggable to support custom directory layouts and naming schemes. The default
  * implementation scans a single directory.
- * <br/>
- * <br/>
+ * <p/>
  * Fault tolerant by tracking previously read files and current offset as part of checkpoint state. In case of failure
  * the operator will skip files that were already processed and fast forward to the offset of the current file.
- * <br/>
- * <br/>
+ * <p/>
  * Supports partitioning and dynamic changes to number of partitions through property {@link #partitionCount}. The
  * directory scanner is responsible to only accept the files that belong to a partition.
- * <br/>
- * <br/>
+ * <p/>
  * This class supports retrying of failed files by putting them into failed list, and retrying them after pending
  * files are processed. Retrying is disabled when maxRetryCount is set to zero.
- * <br/>
- * <br/>
+ * <p/>
  * This operator can provide the idempotent gaurantee if the idempotence property is set to true. <b>Note:</b> the
- * idempotence gaurantee will only be satisfied if the following conditions are met:<br /><br />
- *
- *    1. Files are not modified while they are in the directory being scanned. Idempotency
- * will only be gauranteed if files are only added to the directory.
- *    2. Checkpoints will never occur within an application window, and will only occur on a
- * window boundary.
+ * idempotence guarantee will only be satisfied if the following conditions are met:<br/>
+ * <ol>
+ *    <li>  Files are not modified while they are in the directory being scanned. Idempotency
+ * will only be guaranteed if files are only added to the directory.</li>
+ *    <li>  Checkpoints will never occur within an application window, and will only occur on a
+ * window boundary. </li>
+ * </ol>
  *
  * @displayName FS Directory Scan Input
  * @category Input
