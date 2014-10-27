@@ -19,10 +19,9 @@ import com.datatorrent.api.*;
 import com.datatorrent.api.Attribute.AttributeMap;
 import com.datatorrent.api.Attribute.AttributeMap.DefaultAttributeMap;
 import com.datatorrent.api.Partitioner.Partition;
-
 import com.datatorrent.lib.codec.JavaSerializationStreamCodec;
 import com.datatorrent.lib.helper.OperatorContextTestHelper;
-import com.datatorrent.lib.io.FSIdempotenceAgent;
+import com.datatorrent.lib.io.IdempotentStorageManager.FSIdempotentStorageManager;
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator.DirectoryScanner;
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator.FileState;
 import com.datatorrent.lib.testbench.CollectorTestSink;
@@ -278,9 +277,8 @@ public class AbstractFSDirectoryInputOperatorTest
     CollectorTestSink<Object> sink = (CollectorTestSink) queryResults;
     oper.output.setSink(sink);
 
-    FSIdempotenceAgent<FileState> FSIA = new FSIdempotenceAgent<FileState>();
-    FSIA.setStreamCodec(new JavaSerializationStreamCodec<FileState>());
-    FSIA.setRecoveryDirectory(testMeta.dir);
+    FSIdempotentStorageManager FSIA = new FSIdempotentStorageManager();
+    FSIA.setRecoveryPath(testMeta.dir);
     oper.setIdempotentStorageManager(FSIA);
     oper.setDirectory(testMeta.dir);
     oper.getScanner().setFilePatternRegexp(".*file[\\d]");
@@ -305,9 +303,8 @@ public class AbstractFSDirectoryInputOperatorTest
     CollectorTestSink<Object> sink = (CollectorTestSink) queryResults;
     oper.output.setSink(sink);
 
-    FSIdempotenceAgent<FileState> FSIA = new FSIdempotenceAgent<FileState>();
-    FSIA.setStreamCodec(new JavaSerializationStreamCodec<FileState>());
-    FSIA.setRecoveryDirectory(testMeta.dir);
+    FSIdempotentStorageManager FSIA = new FSIdempotentStorageManager();
+    FSIA.setRecoveryPath(testMeta.dir);
     oper.setIdempotentStorageManager(FSIA);
     oper.setDirectory(testMeta.dir);
     oper.getScanner().setFilePatternRegexp(".*file[\\d]");
