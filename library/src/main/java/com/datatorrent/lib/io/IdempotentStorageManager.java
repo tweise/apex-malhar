@@ -39,6 +39,8 @@ import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator;
 import com.datatorrent.lib.util.FSStorageAgent;
 import com.datatorrent.stram.util.FSUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An idempotent storage manager allows an operator to emit the same tuples in every replayed application window. An idempotent agent
@@ -51,7 +53,9 @@ import com.datatorrent.stram.util.FSUtil;
  * application window boundaries.
  */
 
-public interface IdempotentStorageManager extends StorageAgent, Component<Context.OperatorContext>
+public interface IdempotentStorageManager extends StorageAgent,
+                                                  Component<Context.OperatorContext>,
+                                                  Cloneable
 {
   /**
    * Gets the largest window for which there is recovery data.
@@ -76,12 +80,17 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
    */
   void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds);
 
+  boolean isActive();
+
+  void committed(int operatorId, long windowId);
+
+  IdempotentStorageManager clone();
+
   /**
    * An {@link IdempotentStorageManager} that uses FS to persist state.
    */
   public static class FSIdempotentStorageManager implements IdempotentStorageManager
   {
-
     protected FSStorageAgent storageAgent;
 
     @NotNull
@@ -269,6 +278,45 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
     {
       this.recoveryPath = recoveryPath;
     }
+
+    @Override
+    public boolean isActive()
+    {
+      return true;
+    }
+
+    @Override
+    public void committed(int operatorId, long windowId)
+    {
+      long[] windowIds;
+
+      try {
+        windowIds = getWindowIds(operatorId);
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+      for(int idCounter = 0;
+          idCounter < windowIds.length;
+          idCounter++) {
+        long tempWindowId = windowIds[idCounter];
+
+        if(tempWindowId <= windowId) {
+          try {
+            delete(operatorId, tempWindowId);
+          }
+          catch(IOException ex) {
+            throw new RuntimeException(ex);
+          }
+        }
+      }
+    }
+
+    public FSIdempotentStorageManager clone()
+    {
+      return new FSIdempotentStorageManager();
+    }
   }
 
   /**
@@ -277,7 +325,6 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
    */
   public static class NoopIdempotentStorageManage implements IdempotentStorageManager
   {
-
     @Override
     public boolean isWindowOld(long windowId)
     {
@@ -325,6 +372,22 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
     public long[] getWindowIds(int operatorId) throws IOException
     {
       return new long[0];
+    }
+
+    @Override
+    public boolean isActive()
+    {
+      return false;
+    }
+
+    @Override
+    public void committed(int operatorId, long windowId)
+    {
+    }
+
+    public NoopIdempotentStorageManage clone()
+    {
+      return new NoopIdempotentStorageManage();
     }
   }
 }

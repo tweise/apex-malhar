@@ -20,14 +20,15 @@ import com.datatorrent.api.Context.CountersAggregator;
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.Operator.CheckpointListener;
 import com.datatorrent.api.annotation.Stateless;
-
 import com.datatorrent.lib.counters.BasicCounters;
 import com.datatorrent.lib.io.IdempotentStorageManager;
 import com.esotericsoftware.kryo.Kryo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.primitives.Longs;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.validation.constraints.NotNull;
@@ -82,6 +83,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   protected int currentPartitions = 1 ;
 
   private transient OperatorContext context;
+  protected int operatorId;
   private int maxRetryCount = 5;
   protected int partitionCount = 1;
   protected int emitBatchSize = 1000;
@@ -264,6 +266,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     globalProcessedFileCount.setValue((long) processedFiles.size());
     LOG.debug("Setup processed file count: {}", globalProcessedFileCount);
     this.context = context;
+    operatorId = context.getId();
 
     try {
       filePath = new Path(directory);
@@ -310,25 +313,24 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   private void idempotentEmitTuples()
   {
     LOG.debug("idempotent emit tuples");
-    Object savedState;
+    List<Object> savedTuples;
     try {
-      savedState = idempotentStorageManager.load(currentWindow);
+      savedTuples = idempotentStorageManager.load(currentWindow);
     }
     catch (IOException e) {
       throw new RuntimeException(e);
     }
 
-    while(idempotentStorageManager.hasNext()) {
-      FileState fileState =
-      idempotentStorageManager.next();
+    for(Object savedTuple: savedTuples) {
+      FileState tempFileState = (FileState) savedTuple;
       LOG.debug("replaying recovery data file {} start {} end {}",
-                fileState.filePath,
-                fileState.startOffset,
-                fileState.endOffset);
+                tempFileState.filePath,
+                tempFileState.startOffset,
+                tempFileState.endOffset);
 
-      if(scanner.acceptFile(fileState.filePath)) {
-        replayTuples(fileState);
-        fixState(fileState);
+      if(scanner.acceptFile(tempFileState.filePath)) {
+        replayTuples(tempFileState);
+        fixState(tempFileState);
       }
     }
   }
@@ -523,13 +525,26 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
                 idempotencyRecoveryData.filePath,
                 idempotencyRecoveryData.startOffset,
                 idempotencyRecoveryData.endOffset);
-      idempotentStorageManager.write(idempotencyRecoveryData);
+
+      try {
+        idempotentStorageManager.save(idempotencyRecoveryData, context.getId(), currentWindow);
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
     }
 
-    idempotentStorageManager.endWindow();
+    long maxWindow;
+
+    try {
+      maxWindow = Longs.max(idempotentStorageManager.getWindowIds(context.getId()));
+    }
+    catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
 
     if(idempotentStorageManager.isActive() &&
-       idempotentStorageManager.isLastRecoveryWindow()) {
+       currentWindow == maxWindow) {
       LOG.debug("Cleaning up recovery state {}.", this.currentFile);
       try {
         if(inputStream != null) {
@@ -762,15 +777,16 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
 
     LOG.debug("Computed new partitions: {}", totalCount);
 
-    List<IdempotenceAgent<FileState>> agents = Lists.newArrayList();
+    List<IdempotentStorageManager> agents = Lists.newArrayList();
+    Set<Integer> operatorIds = Sets.newHashSet();
 
     for(Partition<AbstractFSDirectoryInputOperator<T>> partition: partitions) {
-      agents.add(partition.getPartitionedInstance().getIdempotentStorageManager());
+      AbstractFSDirectoryInputOperator<T> operator = partition.getPartitionedInstance();
+      agents.add(operator.getIdempotentStorageManager());
+      operatorIds.add(operator.operatorId);
     }
 
-    List<IdempotenceAgent<FileState>> newAgents = Lists.newArrayList();
-    newAgents.addAll(IdempotenceAgent.repartitionAll(agents,
-                                                     totalCount));
+    List<IdempotentStorageManager> newAgents = Lists.newArrayList();
 
     if(totalCount == partitions.size()) {
 
@@ -782,6 +798,14 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
 
       return partitions;
     }
+
+    for(int counter = 0;
+        counter < totalCount;
+        counter++) {
+      newAgents.add(agents.get(0).clone());
+    }
+
+    agents.get(0).partitioned(newAgents, operatorIds);
 
     AbstractFSDirectoryInputOperator<T> tempOperator = partitions.iterator().next().getPartitionedInstance();
 
@@ -892,7 +916,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   public void committed(long windowId)
   {
     LOG.debug("committed {}", windowId);
-    idempotentStorageManager.committed(windowId);
+    idempotentStorageManager.committed(context.getId(), windowId);
   }
 
   @Override
