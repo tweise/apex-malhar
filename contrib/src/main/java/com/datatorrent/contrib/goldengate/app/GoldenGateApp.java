@@ -29,12 +29,12 @@ public class GoldenGateApp implements StreamingApplication
   public void populateDAG(DAG dag, Configuration conf)
   {
     KafkaInput kafkaInput = dag.addOperator("GoldenGateInput", KafkaInput.class);
-    //CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
+    CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
     //CSVFileInput csvFileReader = dag.addOperator("CSVReader", CSVFileInput.class);
     //ConsoleOutputOperator console = dag.addOperator("debug", ConsoleOutputOperator.class);
     GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
 
-    //dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, csvFileOutput.input);
+    dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, csvFileOutput.input);
     dag.addStream("GoldenGateWriterStream", kafkaInput.transactionPort, jms.inputPort);
     //dag.addStream("csvOutputLines", csvFileReader.outputPort, console.input);
 
@@ -63,13 +63,13 @@ public class GoldenGateApp implements StreamingApplication
 
     ////
 
-    //KafkaSinglePortStringInputOperator fileQueryInput = dag.addOperator("FileQuery", KafkaSinglePortStringInputOperator.class);
-    //FileQueryProcessor fileQueryProcessor = dag.addOperator("FileQueryProcessor", FileQueryProcessor.class);
-    //KafkaSinglePortOutputOperator<Object, Object> fileQueryOutput = dag.addOperator("FileQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
+    KafkaSinglePortStringInputOperator fileQueryInput = dag.addOperator("FileQuery", KafkaSinglePortStringInputOperator.class);
+    FileQueryProcessor fileQueryProcessor = dag.addOperator("FileQueryProcessor", FileQueryProcessor.class);
+    KafkaSinglePortOutputOperator<Object, Object> fileQueryOutput = dag.addOperator("FileQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
 
     //fileQueryOutput.setConfigProperties(configProperties);
 
-    //dag.addStream("fileQueries", fileQueryInput.outputPort, fileQueryProcessor.queryInput);
-    //dag.addStream("fileData", fileQueryProcessor.queryOutput, fileQueryOutput.inputPort);
+    dag.addStream("fileQueries", fileQueryInput.outputPort, fileQueryProcessor.queryInput);
+    dag.addStream("fileData", fileQueryProcessor.queryOutput, fileQueryOutput.inputPort);
   }
 }
