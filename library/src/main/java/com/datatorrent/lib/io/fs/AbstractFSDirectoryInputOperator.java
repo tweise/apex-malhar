@@ -515,23 +515,11 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
       context.setCounters(fileCounters);
     }
 
-    for(FileState idempotencyRecoveryData:
-      currentWindowStates) {
-
-      if(idempotencyRecoveryData.isEmpty()) {
-        continue;
-      }
-      LOG.debug("recover data file {} start {} end {}",
-                idempotencyRecoveryData.filePath,
-                idempotencyRecoveryData.startOffset,
-                idempotencyRecoveryData.endOffset);
-
-      try {
-        idempotentStorageManager.save(idempotencyRecoveryData, context.getId(), currentWindow);
-      }
-      catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
+    try {
+      idempotentStorageManager.save(currentWindowStates, context.getId(), currentWindow);
+    }
+    catch (IOException ex) {
+      throw new RuntimeException(ex);
     }
 
     long maxWindow;
