@@ -52,16 +52,12 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
   public final transient DefaultOutputPort<FileMetadata> filesMetadataOutput = new DefaultOutputPort<FileMetadata>();
   public final transient DefaultOutputPort<BlockMetadata> blocksMetadataOutput = new DefaultOutputPort<BlockMetadata>();
 
-  @AssertTrue(message = "file splitter validations")
-  public boolean validate()
-  {
-    return blockSize == null || blockSize > 0;
-  }
-
   @Override
   public void setup(Context.OperatorContext context)
   {
     super.setup(context);
+    assert blockSize == null || blockSize > 0 : "invalid block size";
+
     operatorId = context.getId();
     if (blockSize == null) {
       blockSize = fs.getDefaultBlockSize(filePath);
@@ -80,7 +76,7 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
       try {
         FileMetadata fileMetadata = buildFileMetadata(fPath);
         filesMetadataOutput.emit(fileMetadata);
-        Iterator<BlockMetadata> iterator = getBlockMetadataIterator(fileMetadata);
+        Iterator<BlockMetadata> iterator = new BlockMetadataIterator(this, fileMetadata, blockSize);
         while (iterator.hasNext()) {
           this.blocksMetadataOutput.emit(iterator.next());
         }
@@ -93,9 +89,12 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
     }
   }
 
-  protected Iterator<BlockMetadata> getBlockMetadataIterator(FileMetadata metadata)
+  /**
+   * Can be overridden for creating block metadata of a type that extends {@link BlockMetadata}
+   */
+  protected BlockMetadata createBlockMetadata(long pos, long lengthOfFileInBlock, int blockNumber, FileMetadata fileMetadata, boolean isLast)
   {
-    return new BlockMetadataIterator(metadata, blockSize);
+    return new BlockMetadata(pos, lengthOfFileInBlock, fileMetadata.getFilePath(), fileMetadata.getBlockIds()[blockNumber - 1], isLast);
   }
 
   @Override
@@ -168,8 +167,11 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
     private long pos;
     private int blockNumber;
 
-    public BlockMetadataIterator(FileMetadata fileMetadata, long blockSize)
+    private FileSplitter splitter;
+
+    public BlockMetadataIterator(FileSplitter splitter, FileMetadata fileMetadata, long blockSize)
     {
+      this.splitter = splitter;
       this.fileMetadata = fileMetadata;
       this.blockSize = blockSize;
       this.pos = fileMetadata.getDataOffset();
@@ -191,7 +193,7 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
       }
       boolean isLast = length >= fileMetadata.getFileLength();
       long lengthOfFileInBlock = isLast ? fileMetadata.getFileLength() : length;
-      BlockMetadata blockMetadata = new BlockMetadata(pos, lengthOfFileInBlock, fileMetadata.getFilePath(), fileMetadata.getBlockIds()[blockNumber - 1], isLast);
+      BlockMetadata blockMetadata = splitter.createBlockMetadata(pos, lengthOfFileInBlock, blockNumber, fileMetadata, isLast);
       pos = lengthOfFileInBlock;
       return blockMetadata;
     }
@@ -228,6 +230,7 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
 
     /**
      * Constructs Block metadata
+     *
      * @param offset      offset of the file in the block
      * @param length      length of the file in the block
      * @param filePath    file path
@@ -331,7 +334,7 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
     private int numberOfBlocks;
     private long dataOffset;
     private long fileLength;
-    private final long discoverTime;
+    private long discoverTime;
     private long[] blockIds;
 
     protected FileMetadata()
@@ -342,7 +345,8 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
 
     /**
      * Constructs file metadata
-     * @param filePath  file path
+     *
+     * @param filePath file path
      */
     public FileMetadata(@NotNull String filePath)
     {
@@ -436,6 +440,14 @@ public class FileSplitter extends AbstractFSDirectoryInputOperator<FileSplitter.
     public long getDiscoverTime()
     {
       return discoverTime;
+    }
+
+    /**
+     * Sets the discover time.
+     */
+    public void setDiscoverTime(long discoverTime)
+    {
+      this.discoverTime = discoverTime;
     }
 
     /**
