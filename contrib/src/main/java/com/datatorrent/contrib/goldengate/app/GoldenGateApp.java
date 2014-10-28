@@ -66,6 +66,7 @@ public class GoldenGateApp implements StreamingApplication
     KafkaSinglePortStringInputOperator fileQueryInput = dag.addOperator("FileQuery", KafkaSinglePortStringInputOperator.class);
     FileQueryProcessor fileQueryProcessor = dag.addOperator("FileQueryProcessor", FileQueryProcessor.class);
     KafkaSinglePortOutputOperator<Object, Object> fileQueryOutput = dag.addOperator("FileQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
+    fileQueryOutput.setConfigProperties(configProperties);
 
     //fileQueryOutput.setConfigProperties(configProperties);
 
