@@ -897,8 +897,29 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   @Override
   public void committed(long windowId)
   {
-    LOG.debug("committed {}", windowId);
-    idempotentStorageManager.committed(context.getId(), windowId);
+      long[] windowIds;
+
+      try {
+        windowIds = idempotentStorageManager.getWindowIds(operatorId);
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+      for(int idCounter = 0;
+          idCounter < windowIds.length;
+          idCounter++) {
+        long tempWindowId = windowIds[idCounter];
+
+        if(tempWindowId <= windowId) {
+          try {
+            idempotentStorageManager.delete(operatorId, tempWindowId);
+          }
+          catch(IOException ex) {
+            throw new RuntimeException(ex);
+          }
+        }
+      }
   }
 
   @Override
