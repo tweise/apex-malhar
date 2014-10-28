@@ -14,7 +14,10 @@ import com.datatorrent.lib.io.ConsoleOutputOperator;
 import com.datatorrent.contrib.goldengate.DBQueryProcessor;
 import com.datatorrent.contrib.goldengate.FileQueryProcessor;
 import com.datatorrent.contrib.goldengate.KafkaJsonEncoder;
-import com.datatorrent.contrib.goldengate.lib.*;
+import com.datatorrent.contrib.goldengate.lib.CSVFileInput;
+import com.datatorrent.contrib.goldengate.lib.CSVFileOutput;
+import com.datatorrent.contrib.goldengate.lib.GoldenGateJMSOutputOperator;
+import com.datatorrent.contrib.goldengate.lib.KafkaInput;
 import com.datatorrent.contrib.kafka.KafkaSinglePortOutputOperator;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
 
@@ -29,14 +32,14 @@ public class GoldenGateApp implements StreamingApplication
   public void populateDAG(DAG dag, Configuration conf)
   {
     KafkaInput kafkaInput = dag.addOperator("GoldenGateInput", KafkaInput.class);
-    CSVFileOutput csvFileOutput = dag.addOperator("CSVReplicator", CSVFileOutput.class);
-    //CSVFileInput csvFileReader = dag.addOperator("CSVReader", CSVFileInput.class);
-    //ConsoleOutputOperator console = dag.addOperator("debug", ConsoleOutputOperator.class);
+    CSVFileOutput csvFileOutput = dag.addOperator("CSVWriter", CSVFileOutput.class);
+    CSVFileInput csvFileReader = dag.addOperator("CSVReader", CSVFileInput.class);
+    ConsoleOutputOperator console = dag.addOperator("Debug", ConsoleOutputOperator.class);
     GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
 
     dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, csvFileOutput.input);
     dag.addStream("GoldenGateWriterStream", kafkaInput.transactionPort, jms.inputPort);
-    //dag.addStream("csvOutputLines", csvFileReader.outputPort, console.input);
+    dag.addStream("csvLines", csvFileReader.outputPort, console.input);
 
     ////
 
