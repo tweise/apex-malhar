@@ -80,8 +80,6 @@ public interface IdempotentStorageManager extends StorageAgent,
    */
   void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds);
 
-  boolean isActive();
-
   void committed(int operatorId, long windowId);
 
   IdempotentStorageManager clone();
@@ -280,12 +278,6 @@ public interface IdempotentStorageManager extends StorageAgent,
     }
 
     @Override
-    public boolean isActive()
-    {
-      return true;
-    }
-
-    @Override
     public void committed(int operatorId, long windowId)
     {
       long[] windowIds;
@@ -372,12 +364,6 @@ public interface IdempotentStorageManager extends StorageAgent,
     public long[] getWindowIds(int operatorId) throws IOException
     {
       return new long[0];
-    }
-
-    @Override
-    public boolean isActive()
-    {
-      return false;
     }
 
     @Override

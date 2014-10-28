@@ -300,9 +300,30 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     if (idempotentStorageManager.isWindowOld(windowId)) {
       //emitTuples is called multiple tuples so we handle this here.
       idempotentEmitTuples();
-    }
 
-    if(inputStream != null) {
+      long maxWindow;
+
+      try {
+        maxWindow = Longs.max(idempotentStorageManager.getWindowIds(context.getId()));
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+      if(currentWindow == maxWindow) {
+        LOG.debug("Cleaning up recovery state {}.", this.currentFile);
+        try {
+          if(inputStream != null) {
+            LOG.debug("Closing recovery state.");
+            closeFile(this.inputStream);
+          }
+        }
+        catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    }
+    else if(inputStream != null) {
       newRecoveryData();
     }
   }
@@ -515,46 +536,11 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
       context.setCounters(fileCounters);
     }
 
-    for(FileState idempotencyRecoveryData:
-      currentWindowStates) {
-
-      if(idempotencyRecoveryData.isEmpty()) {
-        continue;
-      }
-      LOG.debug("recover data file {} start {} end {}",
-                idempotencyRecoveryData.filePath,
-                idempotencyRecoveryData.startOffset,
-                idempotencyRecoveryData.endOffset);
-
-      try {
-        idempotentStorageManager.save(idempotencyRecoveryData, context.getId(), currentWindow);
-      }
-      catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-    }
-
-    long maxWindow;
-
     try {
-      maxWindow = Longs.max(idempotentStorageManager.getWindowIds(context.getId()));
+      idempotentStorageManager.save(currentWindowStates, context.getId(), currentWindow);
     }
     catch (IOException ex) {
       throw new RuntimeException(ex);
-    }
-
-    if(idempotentStorageManager.isActive() &&
-       currentWindow == maxWindow) {
-      LOG.debug("Cleaning up recovery state {}.", this.currentFile);
-      try {
-        if(inputStream != null) {
-          LOG.debug("Closing recovery state.");
-          closeFile(this.inputStream);
-        }
-      }
-      catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
     }
 
     currentWindowStates.clear();
@@ -614,10 +600,6 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
    */
   private void newRecoveryData()
   {
-    if(!idempotentStorageManager.isActive()) {
-      return;
-    }
-
     fileState = new FileState();
     fileState.startOffset = offset;
     fileState.filePath = currentFile;
