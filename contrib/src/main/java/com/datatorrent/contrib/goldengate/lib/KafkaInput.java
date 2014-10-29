@@ -64,6 +64,7 @@ public class KafkaInput extends AbstractKafkaInputOperator<KafkaConsumer>
   {
     String tupleJSON = getMessageString(msg);
 
+    System.out.println(tupleJSON);
     // enrichment and save to mysql
     _DsTransaction _dt = null;
 
