@@ -26,6 +26,7 @@ public class CSVTransactionInput extends AbstractDFSLineTailInput
   @Override
   protected void processLine(String line)
   {
+    System.out.println(line);
     String[] columns = line.split(",");
     _TableName tableName = new _TableName();
     tableName.setFullName(this.tableName);
