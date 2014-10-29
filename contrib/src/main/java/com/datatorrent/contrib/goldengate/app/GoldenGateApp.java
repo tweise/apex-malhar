@@ -29,26 +29,26 @@ public class GoldenGateApp implements StreamingApplication
   @Override
   public void populateDAG(DAG dag, Configuration conf)
   {
-    KafkaInput kafkaInput = dag.addOperator("GoldenGateInput", KafkaInput.class);
-    CSVFileOutput csvFileOutput = dag.addOperator("CSVWriter", CSVFileOutput.class);
-    CSVTransactionInput csvFileReader = dag.addOperator("CSVTail", CSVTransactionInput.class);
+    KafkaInput kafkaInput = dag.addOperator("GoldenGateIngest", KafkaInput.class);
+    CSVFileOutput csvFileOutput = dag.addOperator("HDFSWriter", CSVFileOutput.class);
+    CSVTransactionInput csvFileReader = dag.addOperator("HDFSIncrementalReader", CSVTransactionInput.class);
     //ConsoleOutputOperator console = dag.addOperator("Debug", ConsoleOutputOperator.class);
-    GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
+    GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateDestinationTableWriter", GoldenGateJMSOutputOperator.class);
 
-    dag.addStream("CSVReplicatorStream", kafkaInput.outputPort, csvFileOutput.input);
+    dag.addStream("InsertedData", kafkaInput.outputPort, csvFileOutput.input);
     //dag.addStream("GoldenGateWriterStream", kafkaInput.transactionPort, jms.inputPort);
     //dag.addStream("csvLines", csvFileReader.outputPort, console.input);
-    dag.addStream("csvLines", csvFileReader.outputPort, jms.inputPort);
+    dag.addStream("CSVLines", csvFileReader.outputPort, jms.inputPort);
 
     ////
 
-    KafkaSinglePortStringInputOperator dbQueryInput = dag.addOperator("DBQuery", KafkaSinglePortStringInputOperator.class);
-    DBQueryProcessor dbQueryProcessor = dag.addOperator("DBQueryProcessor", DBQueryProcessor.class);
-    KafkaSinglePortOutputOperator<Object, Object> dbQueryOutput = dag.addOperator("DBQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
+    KafkaSinglePortStringInputOperator dbQueryInput = dag.addOperator("UIQuerySourceOracleTable", KafkaSinglePortStringInputOperator.class);
+    DBQueryProcessor dbQueryProcessor = dag.addOperator("OracleSourceTableRead", DBQueryProcessor.class);
+    KafkaSinglePortOutputOperator<Object, Object> dbQueryOutput = dag.addOperator("UI-Display2", new KafkaSinglePortOutputOperator<Object, Object>());
 
-    KafkaSinglePortStringInputOperator odbQueryInput = dag.addOperator("ODBQuery", KafkaSinglePortStringInputOperator.class);
-    DBQueryProcessor odbQueryProcessor = dag.addOperator("ODBQueryProcessor", DBQueryProcessor.class);
-    KafkaSinglePortOutputOperator<Object, Object> odbQueryOutput = dag.addOperator("ODBQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
+    KafkaSinglePortStringInputOperator odbQueryInput = dag.addOperator("UIQueryDestinationTable", KafkaSinglePortStringInputOperator.class);
+    DBQueryProcessor odbQueryProcessor = dag.addOperator("OracleDestinationTableRead", DBQueryProcessor.class);
+    KafkaSinglePortOutputOperator<Object, Object> odbQueryOutput = dag.addOperator("UI-Display3", new KafkaSinglePortOutputOperator<Object, Object>());
 
     Properties configProperties = new Properties();
     configProperties.setProperty("serializer.class", KafkaJsonEncoder.class.getName());
@@ -56,17 +56,17 @@ public class GoldenGateApp implements StreamingApplication
     dbQueryOutput.setConfigProperties(configProperties);
     odbQueryOutput.setConfigProperties(configProperties);
 
-    dag.addStream("dbQueries", dbQueryInput.outputPort, dbQueryProcessor.queryInput);
-    dag.addStream("dbRows", dbQueryProcessor.queryOutput, dbQueryOutput.inputPort);
+    dag.addStream("SourceTableQueries", dbQueryInput.outputPort, dbQueryProcessor.queryInput);
+    dag.addStream("SourceTableRows", dbQueryProcessor.queryOutput, dbQueryOutput.inputPort);
 
-    dag.addStream("odbQueries", odbQueryInput.outputPort, odbQueryProcessor.queryInput);
-    dag.addStream("odbRows", odbQueryProcessor.queryOutput, odbQueryOutput.inputPort);
+    dag.addStream("DestinationTableQueries", odbQueryInput.outputPort, odbQueryProcessor.queryInput);
+    dag.addStream("DestinationTableRows", odbQueryProcessor.queryOutput, odbQueryOutput.inputPort);
 
     ////
 
-    KafkaSinglePortStringInputOperator fileQueryInput = dag.addOperator("FileQuery", KafkaSinglePortStringInputOperator.class);
-    FileQueryProcessor fileQueryProcessor = dag.addOperator("FileQueryProcessor", FileQueryProcessor.class);
-    KafkaSinglePortOutputOperator<Object, Object> fileQueryOutput = dag.addOperator("FileQueryResponse", new KafkaSinglePortOutputOperator<Object, Object>());
+    KafkaSinglePortStringInputOperator fileQueryInput = dag.addOperator("UI-QueryFile", KafkaSinglePortStringInputOperator.class);
+    FileQueryProcessor fileQueryProcessor = dag.addOperator("HDFSReader", FileQueryProcessor.class);
+    KafkaSinglePortOutputOperator<Object, Object> fileQueryOutput = dag.addOperator("UI-Display1", new KafkaSinglePortOutputOperator<Object, Object>());
     fileQueryOutput.setConfigProperties(configProperties);
 
     //fileQueryOutput.setConfigProperties(configProperties);
