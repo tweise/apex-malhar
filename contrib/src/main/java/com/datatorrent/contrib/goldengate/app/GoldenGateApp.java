@@ -14,7 +14,7 @@ import com.datatorrent.lib.io.ConsoleOutputOperator;
 import com.datatorrent.contrib.goldengate.DBQueryProcessor;
 import com.datatorrent.contrib.goldengate.FileQueryProcessor;
 import com.datatorrent.contrib.goldengate.KafkaJsonEncoder;
-import com.datatorrent.contrib.goldengate.lib.CSVFileInput;
+import com.datatorrent.contrib.goldengate.lib.CSVTailInput;
 import com.datatorrent.contrib.goldengate.lib.CSVFileOutput;
 import com.datatorrent.contrib.goldengate.lib.GoldenGateJMSOutputOperator;
 import com.datatorrent.contrib.goldengate.lib.KafkaInput;
@@ -33,7 +33,7 @@ public class GoldenGateApp implements StreamingApplication
   {
     KafkaInput kafkaInput = dag.addOperator("GoldenGateInput", KafkaInput.class);
     CSVFileOutput csvFileOutput = dag.addOperator("CSVWriter", CSVFileOutput.class);
-    CSVFileInput csvFileReader = dag.addOperator("CSVReader", CSVFileInput.class);
+    CSVTailInput csvFileReader = dag.addOperator("CSVTail", CSVTailInput.class);
     ConsoleOutputOperator console = dag.addOperator("Debug", ConsoleOutputOperator.class);
     GoldenGateJMSOutputOperator jms = dag.addOperator("GoldenGateWriter", GoldenGateJMSOutputOperator.class);
 
