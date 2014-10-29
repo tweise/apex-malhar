@@ -34,7 +34,7 @@ public class CSVTransactionInput extends AbstractDFSLineTailInput
     _DsOperation operation = new _DsOperation();
     operation.setTableName(tableName);
     operation.setOperationType(DsOperation.OpType.DO_INSERT);
-    operation.setPositionSeqno(1);
+    operation.setPositionSeqno(5);
     operation.setNumCols(columns.length);
     List<_DsColumn> cols = new ArrayList<_DsColumn>();
     for (int i = 0; i < columns.length; ++i) {
