@@ -5,33 +5,44 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
-
-import com.datatorrent.lib.io.fs.AbstractHDFSInputOperator;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 import com.datatorrent.api.Context;
-import com.datatorrent.api.DefaultOutputPort;
+import com.datatorrent.api.InputOperator;
+import com.datatorrent.api.Operator;
 
 import com.datatorrent.common.util.DTThrowable;
 
 /**
  * Created by Pramod Immaneni <pramod@datatorrent.com> on 10/23/14.
  */
-public class CSVFileInput extends AbstractHDFSInputOperator
+public abstract class AbstractDFSLineTailInput implements InputOperator, Operator.ActivationListener<Context.OperatorContext>
 {
-  private static final Logger logger = LoggerFactory.getLogger(CSVFileInput.class);
+  private static final Logger logger = LoggerFactory.getLogger(AbstractDFSLineTailInput.class);
+
+  @NotNull
+  private String filePath;
+
   private transient Runnable fileReader;
   private transient Thread fileHelperTh;
   private volatile boolean fileThStop;
+  private transient FileSystem fs;
+  private transient Path path;
+  private transient FSDataInputStream input;
   private transient BufferedReader bufferedReader;
   private ArrayBlockingQueue<String> lines;
   private int lineBufferCapacity = 100;
   private int maxLineEmit = 100;
 
-  public CSVFileInput() {
+  public AbstractDFSLineTailInput() {
     fileReader = new FileReader();
     fileHelperTh = new Thread(fileReader);
   }
@@ -39,15 +50,24 @@ public class CSVFileInput extends AbstractHDFSInputOperator
   @Override
   public void setup(Context.OperatorContext context)
   {
-    super.setup(context);
+    Configuration conf = new Configuration();
+    try {
+      fs = FileSystem.get(conf);
+      path = new Path(filePath);
+    } catch (IOException e) {
+      DTThrowable.rethrow(e);
+    }
     lines = new ArrayBlockingQueue<String>(lineBufferCapacity);
   }
 
   @Override
   public void activate(Context.OperatorContext ctx)
   {
-    super.activate(ctx);
-    bufferedReader = new BufferedReader(new InputStreamReader(input));
+    try {
+      openFile();
+    } catch (IOException e) {
+      DTThrowable.rethrow(e);
+    }
     fileThStop = false;
     fileHelperTh.start();
   }
@@ -68,16 +88,17 @@ public class CSVFileInput extends AbstractHDFSInputOperator
         DTThrowable.rethrow(e);
       }
     }
-    super.deactivate();
   }
 
   @Override
   public void teardown()
   {
-    super.teardown();
+    try {
+      fs.close();
+    } catch (IOException e) {
+      DTThrowable.rethrow(e);
+    }
   }
-
-  public transient DefaultOutputPort<String> outputPort = new DefaultOutputPort<String>();
 
   private class FileReader implements Runnable {
     @Override
@@ -87,7 +108,10 @@ public class CSVFileInput extends AbstractHDFSInputOperator
         try {
           String line = bufferedReader.readLine();
           if (line != null) {
+            logger.info("line {}", line);
             lines.add(line);
+          } else {
+            openFile();
           }
         } catch (IOException e) {
           DTThrowable.rethrow(e);
@@ -96,22 +120,65 @@ public class CSVFileInput extends AbstractHDFSInputOperator
     }
   }
 
+  private void openFile() throws IOException
+  {
+    long filepos = 0;
+    if (input != null) {
+      filepos = input.getPos();
+      logger.info("file position {}", filepos);
+      bufferedReader.close();
+      // Wait a second before reopening file
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        throw new IOException(e);
+      }
+    }
+    input = fs.open(path);
+    input.seek(filepos);
+    bufferedReader = new BufferedReader(new InputStreamReader(input));
+  }
+
   @Override
-  public void emitTuples(FSDataInputStream stream)
+  public void beginWindow(long l)
+  {
+
+  }
+
+  @Override
+  public void endWindow()
+  {
+
+  }
+
+  @Override
+  public void emitTuples()
   {
     String line = null;
     int count = 0;
     while (((line = lines.poll()) != null) && (count < maxLineEmit)) {
-      outputPort.emit(line);
+      processLine(line);
       ++count;
     }
     if (count == 0) {
       try {
-        Thread.sleep(10);
+        Thread.sleep(100);
       } catch (InterruptedException e) {
         DTThrowable.rethrow(e);
       }
     }
+  }
+
+  protected abstract void processLine(String line);
+
+  public String getFilePath()
+  {
+    return filePath;
+  }
+
+  public void setFilePath(String filePath)
+  {
+    this.filePath = filePath;
   }
 
   public int getMaxLineEmit()
