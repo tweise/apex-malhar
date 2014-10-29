@@ -20,6 +20,7 @@ import com.datatorrent.contrib.kafka.KafkaConsumer;
 
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DefaultOutputPort;
+import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
 
 import com.datatorrent.common.util.DTThrowable;
 
@@ -30,6 +31,7 @@ public class KafkaInput extends AbstractKafkaInputOperator<KafkaConsumer>
   private static final Logger logger = LoggerFactory.getLogger(KafkaInput.class);
 
   public final transient DefaultOutputPort<Employee> outputPort = new DefaultOutputPort<Employee>();
+  @OutputPortFieldAnnotation(optional = true)
   public final transient DefaultOutputPort<_DsTransaction> transactionPort = new DefaultOutputPort<_DsTransaction>();
 
   private transient ObjectMapper mapper = new ObjectMapper();
@@ -87,6 +89,8 @@ public class KafkaInput extends AbstractKafkaInputOperator<KafkaConsumer>
       outputPort.emit(employee);
     }
 
-    transactionPort.emit(_dt);
+    if (transactionPort.isConnected()) {
+      transactionPort.emit(_dt);
+    }
   }
 }

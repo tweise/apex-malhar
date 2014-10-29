@@ -16,7 +16,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.datatorrent.api.Context;
-import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 import com.datatorrent.api.Operator;
 
@@ -25,9 +24,9 @@ import com.datatorrent.common.util.DTThrowable;
 /**
  * Created by Pramod Immaneni <pramod@datatorrent.com> on 10/23/14.
  */
-public class CSVTailInput implements InputOperator, Operator.ActivationListener<Context.OperatorContext>
+public abstract class AbstractDFSLineTailInput implements InputOperator, Operator.ActivationListener<Context.OperatorContext>
 {
-  private static final Logger logger = LoggerFactory.getLogger(CSVTailInput.class);
+  private static final Logger logger = LoggerFactory.getLogger(AbstractDFSLineTailInput.class);
 
   @NotNull
   private String filePath;
@@ -43,7 +42,7 @@ public class CSVTailInput implements InputOperator, Operator.ActivationListener<
   private int lineBufferCapacity = 100;
   private int maxLineEmit = 100;
 
-  public CSVTailInput() {
+  public AbstractDFSLineTailInput() {
     fileReader = new FileReader();
     fileHelperTh = new Thread(fileReader);
   }
@@ -100,8 +99,6 @@ public class CSVTailInput implements InputOperator, Operator.ActivationListener<
       DTThrowable.rethrow(e);
     }
   }
-
-  public transient DefaultOutputPort<String> outputPort = new DefaultOutputPort<String>();
 
   private class FileReader implements Runnable {
     @Override
@@ -160,7 +157,7 @@ public class CSVTailInput implements InputOperator, Operator.ActivationListener<
     String line = null;
     int count = 0;
     while (((line = lines.poll()) != null) && (count < maxLineEmit)) {
-      outputPort.emit(line);
+      processLine(line);
       ++count;
     }
     if (count == 0) {
@@ -171,6 +168,8 @@ public class CSVTailInput implements InputOperator, Operator.ActivationListener<
       }
     }
   }
+
+  protected abstract void processLine(String line);
 
   public String getFilePath()
   {
