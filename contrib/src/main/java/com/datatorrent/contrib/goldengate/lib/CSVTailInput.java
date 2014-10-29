@@ -111,6 +111,7 @@ public class CSVTailInput implements InputOperator, Operator.ActivationListener<
         try {
           String line = bufferedReader.readLine();
           if (line != null) {
+            logger.info("line {}", line);
             lines.add(line);
           } else {
             openFile();
@@ -127,6 +128,7 @@ public class CSVTailInput implements InputOperator, Operator.ActivationListener<
     long filepos = 0;
     if (input != null) {
       filepos = input.getPos();
+      logger.info("file position {}", filepos);
       bufferedReader.close();
       // Wait a second before reopening file
       try {
