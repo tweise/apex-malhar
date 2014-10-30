@@ -80,8 +80,6 @@ public interface IdempotentStorageManager extends StorageAgent,
    */
   void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds);
 
-  void committed(int operatorId, long windowId);
-
   IdempotentStorageManager clone();
 
   /**
@@ -277,34 +275,6 @@ public interface IdempotentStorageManager extends StorageAgent,
       this.recoveryPath = recoveryPath;
     }
 
-    @Override
-    public void committed(int operatorId, long windowId)
-    {
-      long[] windowIds;
-
-      try {
-        windowIds = getWindowIds(operatorId);
-      }
-      catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-
-      for(int idCounter = 0;
-          idCounter < windowIds.length;
-          idCounter++) {
-        long tempWindowId = windowIds[idCounter];
-
-        if(tempWindowId <= windowId) {
-          try {
-            delete(operatorId, tempWindowId);
-          }
-          catch(IOException ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      }
-    }
-
     public FSIdempotentStorageManager clone()
     {
       return new FSIdempotentStorageManager();
@@ -364,11 +334,6 @@ public interface IdempotentStorageManager extends StorageAgent,
     public long[] getWindowIds(int operatorId) throws IOException
     {
       return new long[0];
-    }
-
-    @Override
-    public void committed(int operatorId, long windowId)
-    {
     }
 
     public NoopIdempotentStorageManage clone()
