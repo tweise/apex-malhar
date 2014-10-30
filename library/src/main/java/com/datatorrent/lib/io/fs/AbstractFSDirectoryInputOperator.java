@@ -784,7 +784,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
     for(int counter = 0;
         counter < totalCount;
         counter++) {
-      newAgents.add(agents.get(0).clone());
+      newAgents.add(agents.get(0).newInstance());
     }
 
     agents.get(0).partitioned(newAgents, operatorIds);

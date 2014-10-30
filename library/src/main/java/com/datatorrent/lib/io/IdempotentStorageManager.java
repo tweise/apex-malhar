@@ -39,8 +39,6 @@ import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator;
 import com.datatorrent.lib.util.FSStorageAgent;
 import com.datatorrent.stram.util.FSUtil;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An idempotent storage manager allows an operator to emit the same tuples in every replayed application window. An idempotent agent
@@ -53,9 +51,7 @@ import java.util.logging.Logger;
  * application window boundaries.
  */
 
-public interface IdempotentStorageManager extends StorageAgent,
-                                                  Component<Context.OperatorContext>,
-                                                  Cloneable
+public interface IdempotentStorageManager extends StorageAgent, Component<Context.OperatorContext>
 {
   /**
    * Gets the largest window for which there is recovery data.
@@ -80,7 +76,7 @@ public interface IdempotentStorageManager extends StorageAgent,
    */
   void partitioned(Collection<IdempotentStorageManager> newManagers, Set<Integer> removedOperatorIds);
 
-  IdempotentStorageManager clone();
+  IdempotentStorageManager newInstance();
 
   /**
    * An {@link IdempotentStorageManager} that uses FS to persist state.
@@ -275,7 +271,8 @@ public interface IdempotentStorageManager extends StorageAgent,
       this.recoveryPath = recoveryPath;
     }
 
-    public FSIdempotentStorageManager clone()
+    @Override
+    public FSIdempotentStorageManager newInstance()
     {
       return new FSIdempotentStorageManager();
     }
@@ -336,7 +333,8 @@ public interface IdempotentStorageManager extends StorageAgent,
       return new long[0];
     }
 
-    public NoopIdempotentStorageManage clone()
+    @Override
+    public NoopIdempotentStorageManage newInstance()
     {
       return new NoopIdempotentStorageManage();
     }
