@@ -56,7 +56,7 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
   /**
    * Gets the largest window for which there is recovery data.
    */
-  boolean isWindowOld(long windowId);
+  long getLargestRecoveryWindow();
 
   /**
    * When an operator can partition itself dynamically then there is no guarantee that an input state which was being handled
@@ -180,9 +180,16 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
       return storageAgent.getWindowIds(operatorId);
     }
 
+    /**
+     * This deletes all the recovery files of window ids <= windowId.
+     * @param operatorId    operator id.
+     * @param windowId      the largest window id for which the states will be deleted.
+     * @throws IOException
+     */
     @Override
     public void delete(int operatorId, long windowId) throws IOException
     {
+      //deleting the replay state
       if (windowId <= largestRecoveryWindow && deletedOperators != null && !deletedOperators.isEmpty()) {
         Iterator<Long> windowsIterator = replayState.keySet().iterator();
         while (windowsIterator.hasNext()) {
@@ -195,9 +202,9 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
             int loperator = operatorsIterator.next();
 
             if (deletedOperators.contains(loperator)) {
-              Path operatorDir = new Path(String.valueOf(loperator));
-              fs.delete(new Path(operatorDir, Long.toHexString(lwindow)), true);
+              storageAgent.delete(loperator, lwindow);
 
+              Path operatorDir = new Path(String.valueOf(loperator));
               if (fs.listStatus(operatorDir).length == 0) {
                 //The operator was deleted and it has nothing to replay.
                 deletedOperators.remove(loperator);
@@ -205,17 +212,28 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
               }
               operatorsIterator.remove();
             }
+            else if (loperator == operatorId) {
+              storageAgent.delete(loperator, lwindow);
+            }
           }
-          windowsIterator.remove();
+          if (!operatorsIterator.hasNext()) {
+            windowsIterator.remove();
+          }
         }
       }
-      storageAgent.delete(operatorId, windowId);
+      long[] windowsAfterReplay = storageAgent.getWindowIds(operatorId);
+      Arrays.sort(windowsAfterReplay);
+      for (long lwindow : windowsAfterReplay) {
+        if (lwindow <= windowId) {
+          storageAgent.delete(operatorId, lwindow);
+        }
+      }
     }
 
     @Override
-    public boolean isWindowOld(long windowId)
+    public long getLargestRecoveryWindow()
     {
-      return windowId <= largestRecoveryWindow;
+      return largestRecoveryWindow;
     }
 
     @Override
@@ -285,9 +303,9 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
   public static class NoopIdempotentStorageManage implements IdempotentStorageManager
   {
     @Override
-    public boolean isWindowOld(long windowId)
+    public long getLargestRecoveryWindow()
     {
-      return false;
+      return Stateless.WINDOW_ID;
     }
 
     @Override

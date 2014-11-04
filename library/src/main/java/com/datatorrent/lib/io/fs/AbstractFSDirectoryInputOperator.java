@@ -25,10 +25,8 @@ import com.datatorrent.lib.io.IdempotentStorageManager;
 import com.esotericsoftware.kryo.Kryo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.primitives.Longs;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.validation.constraints.NotNull;
@@ -277,11 +275,6 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
       throw new RuntimeException(ex);
     }
 
-//    //Make sure our list of directories is up to date
-//    if(idempotentStorageManager.isActive()) {
-//      scanDirectory();
-//    }
-
     //Prepare counters
     fileCounters.setCounter(FileCounters.GLOBAL_PROCESSED_FILES, globalProcessedFileCount);
     fileCounters.setCounter(FileCounters.LOCAL_PROCESSED_FILES, localProcessedFileCount);
@@ -297,31 +290,9 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   public void beginWindow(long windowId)
   {
     currentWindow = windowId;
-    if (idempotentStorageManager.isWindowOld(windowId)) {
-      //emitTuples is called multiple tuples so we handle this here.
+    if (windowId <= idempotentStorageManager.getLargestRecoveryWindow()) {
+      //emitTuples is called multiple timees so we handle this here.
       idempotentEmitTuples();
-
-      long maxWindow;
-
-      try {
-        maxWindow = Longs.max(idempotentStorageManager.getWindowIds(context.getId()));
-      }
-      catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-
-      if(currentWindow == maxWindow) {
-        LOG.debug("Cleaning up recovery state {}.", this.currentFile);
-        try {
-          if(inputStream != null) {
-            LOG.debug("Closing recovery state.");
-            closeFile(this.inputStream);
-          }
-        }
-        catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
     }
     else if(inputStream != null) {
       newRecoveryData();
@@ -344,14 +315,28 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
 
     for(Object savedTuple: savedTuples) {
       FileState tempFileState = (FileState) savedTuple;
-      LOG.debug("replaying recovery data file {} start {} end {}",
-                tempFileState.filePath,
-                tempFileState.startOffset,
-                tempFileState.endOffset);
+      LOG.debug("replaying recovery data file {} start {} end {}", tempFileState.filePath,
+                tempFileState.startOffset, tempFileState.endOffset);
 
       if(scanner.acceptFile(tempFileState.filePath)) {
         replayTuples(tempFileState);
         fixState(tempFileState);
+      }
+    }
+
+    long maxWindow = idempotentStorageManager.getLargestRecoveryWindow();
+
+
+    if(currentWindow == maxWindow) {
+      LOG.debug("Cleaning up recovery state {}.", this.currentFile);
+      try {
+        if(inputStream != null) {
+          LOG.debug("Closing recovery state.");
+          closeFile(this.inputStream);
+        }
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
       }
     }
   }
@@ -388,19 +373,13 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
 
     try {
       if(justOpened) {
-        LOG.debug("Reading until start offset file {}, start {}",
-                  fileState.filePath,
-                  fileState.startOffset);
-        for(long tupleCounter = 0;
-                 tupleCounter < fileState.startOffset;
-                 tupleCounter++) {
+        LOG.debug("Reading until start offset file {}, start {}", fileState.filePath, fileState.startOffset);
+        for(long tupleCounter = 0; tupleCounter < fileState.startOffset; tupleCounter++) {
           readEntity();
         }
       }
 
-      for(long tupleCounter = fileState.startOffset;
-          tupleCounter < fileState.endOffset;
-          tupleCounter++) {
+      for(long tupleCounter = fileState.startOffset; tupleCounter < fileState.endOffset;tupleCounter++) {
         T entity = readEntity();
         if(entity == null) {
           fileState.eof = true;
@@ -442,7 +421,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   @Override
   public void emitTuples()
   {
-    if (idempotentStorageManager.isWindowOld(currentWindow)) {
+    if (currentWindow <= idempotentStorageManager.getLargestRecoveryWindow()) {
       //If this is a recovered window then we do not emit-tuples from source.
       return;
     }
@@ -897,29 +876,12 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   @Override
   public void committed(long windowId)
   {
-      long[] windowIds;
-
-      try {
-        windowIds = idempotentStorageManager.getWindowIds(operatorId);
-      }
-      catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-
-      for(int idCounter = 0;
-          idCounter < windowIds.length;
-          idCounter++) {
-        long tempWindowId = windowIds[idCounter];
-
-        if(tempWindowId <= windowId) {
-          try {
-            idempotentStorageManager.delete(operatorId, tempWindowId);
-          }
-          catch(IOException ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      }
+    try {
+      idempotentStorageManager.delete(operatorId, windowId);
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
