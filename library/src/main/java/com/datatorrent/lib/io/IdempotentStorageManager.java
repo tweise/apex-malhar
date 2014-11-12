@@ -26,7 +26,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.TreeMultimap;
 
@@ -38,7 +38,6 @@ import com.datatorrent.api.annotation.Stateless;
 
 import com.datatorrent.lib.io.fs.AbstractFSDirectoryInputOperator;
 import com.datatorrent.lib.util.FSStorageAgent;
-import com.datatorrent.stram.util.FSUtil;
 
 /**
  * An idempotent storage manager allows an operator to emit the same tuples in every replayed application window. An idempotent agent
@@ -65,8 +64,21 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
    * instance that handles file X after repartitioning as no. of instances may have changed and file X is re-hashed to another instance. <br/>
    * The new instance wouldn't know from what point to read the File X unless it reads the idempotent storage of all the operators for the window
    * being replayed and fix it's state.
+   *
+   * @param windowId window id.
+   * @return mapping of operator id to the corresponding state
+   * @throws IOException
    */
-  List<Object> load(long windowId) throws IOException;
+  Map<Integer, Object> load(long windowId) throws IOException;
+
+  /**
+   * Delete the artifacts of the operator for windows <= windowId.
+   *
+   * @param operatorId
+   * @param windowId
+   * @throws IOException
+   */
+  public void delete(int operatorId, long windowId) throws IOException;
 
   /**
    * This informs the idempotent storage manager that operator is partitioned so that it can set properties and distribute state.
@@ -126,21 +138,20 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
       }
       try {
         fs = FileSystem.newInstance(appPath.toUri(), configuration);
-        if (FSUtil.mkdirs(fs, appPath)) {
-          fs.setWorkingDirectory(appPath);
-        }
 
-        FileStatus[] fileStatuses = fs.listStatus(appPath);
+        if (fs.exists(appPath)) {
+          FileStatus[] fileStatuses = fs.listStatus(appPath);
 
-        for (FileStatus operatorDirStatus : fileStatuses) {
-          int operatorId = Integer.parseInt(operatorDirStatus.getPath().getName());
+          for (FileStatus operatorDirStatus : fileStatuses) {
+            int operatorId = Integer.parseInt(operatorDirStatus.getPath().getName());
 
-          for (FileStatus status : fs.listStatus(operatorDirStatus.getPath())) {
-            String fileName = status.getPath().getName();
-            long windowId = Long.parseLong(fileName, 16);
-            replayState.put(windowId, operatorId);
-            if (windowId > largestRecoveryWindow) {
-              largestRecoveryWindow = windowId;
+            for (FileStatus status : fs.listStatus(operatorDirStatus.getPath())) {
+              String fileName = status.getPath().getName();
+              long windowId = Long.parseLong(fileName, 16);
+              replayState.put(windowId, operatorId);
+              if (windowId > largestRecoveryWindow) {
+                largestRecoveryWindow = windowId;
+              }
             }
           }
         }
@@ -163,14 +174,14 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
     }
 
     @Override
-    public List<Object> load(long windowId) throws IOException
+    public Map<Integer, Object> load(long windowId) throws IOException
     {
-      SortedSet<Integer> operators = replayState.get(windowId);
-      List<Object> data = Lists.newArrayListWithCapacity(operators.size());
-      for (int operatorId : operators) {
-        data.add(load(operatorId, windowId));
+      Map<Integer, Object> data = Maps.newHashMap();
+      FileStatus[] fileStatuses = fs.listStatus(appPath);
+      for (FileStatus operatorDirStatus : fileStatuses) {
+        int operatorId = Integer.parseInt(operatorDirStatus.getPath().getName());
+        data.put(operatorId, load(operatorId, windowId));
       }
-
       return data;
     }
 
@@ -182,8 +193,9 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
 
     /**
      * This deletes all the recovery files of window ids <= windowId.
-     * @param operatorId    operator id.
-     * @param windowId      the largest window id for which the states will be deleted.
+     *
+     * @param operatorId operator id.
+     * @param windowId   the largest window id for which the states will be deleted.
      * @throws IOException
      */
     @Override
@@ -197,35 +209,32 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
           if (lwindow > windowId) {
             break;
           }
-          Iterator<Integer> operatorsIterator = replayState.get(lwindow).iterator();
-          while (operatorsIterator.hasNext()) {
-            int loperator = operatorsIterator.next();
+          for (Integer loperator : replayState.removeAll(lwindow)) {
 
             if (deletedOperators.contains(loperator)) {
               storageAgent.delete(loperator, lwindow);
 
-              Path operatorDir = new Path(String.valueOf(loperator));
-              if (fs.listStatus(operatorDir).length == 0) {
+              Path loperatorPath = new Path(appPath, Integer.toString(loperator));
+              if (fs.listStatus(loperatorPath).length == 0) {
                 //The operator was deleted and it has nothing to replay.
                 deletedOperators.remove(loperator);
-                fs.delete(operatorDir, true);
+                fs.delete(loperatorPath, true);
               }
-              operatorsIterator.remove();
             }
             else if (loperator == operatorId) {
               storageAgent.delete(loperator, lwindow);
             }
           }
-          if (!operatorsIterator.hasNext()) {
-            windowsIterator.remove();
-          }
         }
       }
-      long[] windowsAfterReplay = storageAgent.getWindowIds(operatorId);
-      Arrays.sort(windowsAfterReplay);
-      for (long lwindow : windowsAfterReplay) {
-        if (lwindow <= windowId) {
-          storageAgent.delete(operatorId, lwindow);
+
+      if (fs.listStatus(new Path(appPath, Integer.toString(operatorId))).length > 0) {
+        long[] windowsAfterReplay = storageAgent.getWindowIds(operatorId);
+        Arrays.sort(windowsAfterReplay);
+        for (long lwindow : windowsAfterReplay) {
+          if (lwindow <= windowId) {
+            storageAgent.delete(operatorId, lwindow);
+          }
         }
       }
     }
@@ -300,7 +309,7 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
    * This {@link IdempotentStorageManager} will never do recovery. This is a convenience class so that operators
    * can use the same logic for maintaining idempotency and avoiding idempotency.
    */
-  public static class NoopIdempotentStorageManage implements IdempotentStorageManager
+  public static class NoopIdempotentStorageManager implements IdempotentStorageManager
   {
     @Override
     public long getLargestRecoveryWindow()
@@ -309,7 +318,7 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
     }
 
     @Override
-    public List<Object> load(long windowId) throws IOException
+    public Map<Integer, Object> load(long windowId) throws IOException
     {
       return null;
     }
@@ -352,9 +361,9 @@ public interface IdempotentStorageManager extends StorageAgent, Component<Contex
     }
 
     @Override
-    public NoopIdempotentStorageManage newInstance()
+    public NoopIdempotentStorageManager newInstance()
     {
-      return new NoopIdempotentStorageManage();
+      return new NoopIdempotentStorageManager();
     }
   }
 }

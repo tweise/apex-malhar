@@ -114,7 +114,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   private transient FileState fileState = new FileState();
   private transient long currentWindow = Stateless.WINDOW_ID;
   @NotNull
-  protected IdempotentStorageManager idempotentStorageManager = new IdempotentStorageManager.NoopIdempotentStorageManage();
+  protected IdempotentStorageManager idempotentStorageManager = new IdempotentStorageManager.NoopIdempotentStorageManager();
 
   //Counters
   private BasicCounters<MutableLong> fileCounters = new BasicCounters<MutableLong>(MutableLong.class);
@@ -305,7 +305,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
   private void idempotentEmitTuples()
   {
     LOG.debug("idempotent emit tuples");
-    List<Object> savedTuples;
+    Map<Integer, Object>  savedTuples;
     try {
       savedTuples = idempotentStorageManager.load(currentWindow);
     }
@@ -313,7 +313,7 @@ public abstract class AbstractFSDirectoryInputOperator<T> implements InputOperat
       throw new RuntimeException(e);
     }
 
-    for(Object savedTuple: savedTuples) {
+    for(Object savedTuple: savedTuples.values()) {
       FileState tempFileState = (FileState) savedTuple;
       LOG.debug("replaying recovery data file {} start {} end {}", tempFileState.filePath,
                 tempFileState.startOffset, tempFileState.endOffset);
