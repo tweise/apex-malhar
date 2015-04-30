@@ -160,7 +160,7 @@ public class AdsDimensionsDemo implements StreamingApplication
     String dimensionalSchema = SchemaUtils.jarResourceFileToString(DIMENSIONAL_SCHEMA);
     String basePath = Preconditions.checkNotNull(conf.get(PROP_STORE_PATH),
                                                  "a base path should be specified in the properties.xml");
-    TFileImpl hdsFile = new TFileImpl.DTFileImpl();
+    TFileImpl hdsFile = new TFileImpl.DefaultTFileImpl();
     System.out.println(dag.getAttributes().get(DAG.APPLICATION_ID));
     basePath += Path.SEPARATOR + System.currentTimeMillis();
     hdsFile.setBasePath(basePath);
