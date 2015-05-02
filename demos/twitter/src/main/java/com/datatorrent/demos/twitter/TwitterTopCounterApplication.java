@@ -185,7 +185,8 @@ public class TwitterTopCounterApplication implements StreamingApplication
     tabularServer.setConverter(mapConverter);
 
     topCounts.setTopCount(10);
-    topCounts.setSlidingWindowWidth(600, 1);
+    topCounts.setSlidingWindowWidth(600);
+    topCounts.setDagWindowWidth(1);
 
     // Feed the statuses from feed into the input of the url extractor.
     dag.addStream("TweetStream", twitterFeed.status, urlExtractor.input).setLocality(Locality.CONTAINER_LOCAL);

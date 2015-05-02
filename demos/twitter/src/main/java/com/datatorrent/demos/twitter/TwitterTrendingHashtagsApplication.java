@@ -187,7 +187,8 @@ public class TwitterTrendingHashtagsApplication implements StreamingApplication
     tabularServer.setConverter(mapConverter);
 
     topCounts.setTopCount(10);
-    topCounts.setSlidingWindowWidth(600, 1);
+    topCounts.setSlidingWindowWidth(600);
+    topCounts.setDagWindowWidth(1);
 
     // Feed the statuses from feed into the input of the Hashtag extractor.
     dag.addStream("TweetStream", twitterFeed.status, HashtagExtractor.input).setLocality(Locality.CONTAINER_LOCAL);
@@ -195,6 +196,7 @@ public class TwitterTrendingHashtagsApplication implements StreamingApplication
     dag.addStream("TwittedHashtags", HashtagExtractor.hashtags, uniqueCounter.data).setLocality(locality);
     // Count unique Hashtags
     dag.addStream("UniqueHashtagCounts", uniqueCounter.count, topCounts.input);
+    dag.addStream("MapProvider", topCounts.output, tabularServer.input);
     // Count top 10
     dag.addStream("TopURLQuery", queryPort, tabularServer.query);
     dag.addStream("TopURLResult", tabularServer.queryResult, queryResultPort);
