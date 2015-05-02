@@ -19,9 +19,12 @@ package com.datatorrent.lib.appbuilder.convert.pojo;
 import com.datatorrent.lib.appdata.schemas.Type;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.Map;
 
 public class PojoFieldRetrieverExpression extends PojoFieldRetriever
@@ -29,6 +32,7 @@ public class PojoFieldRetrieverExpression extends PojoFieldRetriever
   private static final Logger logger = LoggerFactory.getLogger(PojoFieldRetrieverExpression.class);
 
   private Map<String, String> fieldToExpression;
+  private String fieldToExpressionString;
 
   public PojoFieldRetrieverExpression()
   {
@@ -38,6 +42,38 @@ public class PojoFieldRetrieverExpression extends PojoFieldRetriever
   public void setup()
   {
     super.setup();
+
+    JSONObject jo = null;
+
+    if((fieldToExpression == null || fieldToExpression.isEmpty()) &&
+       fieldToExpressionString != null) {
+      fieldToExpression = Maps.newHashMap();
+
+      try {
+        jo = new JSONObject(fieldToExpressionString);
+      }
+      catch(Exception e) {
+        throw new RuntimeException(e);
+      }
+
+      Iterator keyIterator = jo.keys();
+
+      while(keyIterator.hasNext()) {
+        String key = (String)keyIterator.next();
+        String expression;
+
+        try {
+          expression = jo.getString(key);
+        }
+        catch(JSONException ex) {
+          throw new RuntimeException(ex);
+        }
+
+        fieldToExpression.put(key, expression);
+      }
+    }
+
+    logger.info("fielToExpression {}", fieldToExpression);
 
     for(Map.Entry<String, Type> entry: fieldToTypeInt.entrySet()) {
       String fieldName = entry.getKey();
@@ -180,5 +216,21 @@ public class PojoFieldRetrieverExpression extends PojoFieldRetriever
       Preconditions.checkNotNull(entry.getKey());
       Preconditions.checkNotNull(entry.getValue());
     }
+  }
+
+  /**
+   * @return the fieldToExpressionString
+   */
+  public String getFieldToExpressionString()
+  {
+    return fieldToExpressionString;
+  }
+
+  /**
+   * @param fieldToExpressionString the fieldToExpressionString to set
+   */
+  public void setFieldToExpressionString(String fieldToExpressionString)
+  {
+    this.fieldToExpressionString = fieldToExpressionString;
   }
 }
