@@ -66,6 +66,7 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
     @Override
     public Unifier<AggregateEvent> getUnifier()
     {
+      AggregatorUtils.DEFAULT_AGGREGATOR_INFO.setup();
       return new DimensionsComputation.DimensionsComputationUnifier(AggregatorUtils.DEFAULT_AGGREGATOR_INFO);
     }
   };
@@ -77,6 +78,7 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
   @Override
   public void setup(OperatorContext context)
   {
+    AggregatorUtils.DEFAULT_AGGREGATOR_INFO.setup();
     aggregatorInfo = AggregatorUtils.DEFAULT_AGGREGATOR_INFO;
     logger.debug("Setup called");
     aggregatorInfo.setup();
