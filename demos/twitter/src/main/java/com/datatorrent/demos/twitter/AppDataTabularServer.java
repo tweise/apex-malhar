@@ -37,7 +37,6 @@ import com.datatorrent.lib.appdata.schemas.SchemaQuery;
 import com.datatorrent.lib.appdata.schemas.SchemaResult;
 import com.datatorrent.lib.appdata.schemas.SchemaTabular;
 import com.google.common.collect.Lists;
-import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,6 @@ public abstract class AppDataTabularServer implements Operator
   private transient QueryProcessor<Query, Void, MutableLong, Void, Result> queryProcessor;
   private transient DataDeserializerFactory queryDeserializerFactory;
   private transient DataSerializerFactory resultSerializerFactory;
-  @NotNull
   private AppDataFormatter appDataFormatter;
 
   private String tabularSchemaJSON;
