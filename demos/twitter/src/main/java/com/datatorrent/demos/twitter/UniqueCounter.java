@@ -75,12 +75,12 @@ public class UniqueCounter extends BaseUniqueKeyCounter<String>
   /**
    * The output port which emits a map from keys to the number of times they occurred within an application window.
    */
-  public final transient DefaultOutputPort<HashMap<String, Integer>> count = new DefaultOutputPort<HashMap<String, Integer>>()
+  public final transient DefaultOutputPort<Map<String, Integer>> count = new DefaultOutputPort<Map<String, Integer>>()
   {
     @Override
-    public Unifier<HashMap<String, Integer>> getUnifier()
+    public Unifier<Map<String, Integer>> getUnifier()
     {
-      return new UnifierHashMapSumKeys<String, Integer>();
+      return new UnifierHashMapSumKeys();
     }
   };
 
