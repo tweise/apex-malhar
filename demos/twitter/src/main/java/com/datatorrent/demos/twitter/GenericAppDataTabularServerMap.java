@@ -23,9 +23,9 @@ import com.datatorrent.lib.appdata.tabular.TabularMapConverter;
  * @category App Data
  * @tags appdata, tabular, map
  */
-public class AppDataTabularServerMap extends AppDataTabularServerConv<TabularMapConverter>
+public class GenericAppDataTabularServerMap extends AppDataTabularServerConv<TabularMapConverter>
 {
-  public AppDataTabularServerMap()
+  public GenericAppDataTabularServerMap()
   {
     this.converter = new TabularMapConverter();
   }

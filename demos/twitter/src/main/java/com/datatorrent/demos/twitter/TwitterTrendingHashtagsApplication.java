@@ -174,7 +174,7 @@ public class TwitterTrendingHashtagsApplication implements StreamingApplication
 
     // Get the aggregated Hashtag counts and count them over last 5 mins.
     WindowedTopCounterString topCounts = dag.addOperator("TopCounter", new WindowedTopCounterString());
-    AppDataTabularServerMap tabularServer = dag.addOperator("Tabular Server", new AppDataTabularServerMap());
+    GenericAppDataTabularServerMap tabularServer = dag.addOperator("Tabular Server", new GenericAppDataTabularServerMap());
 
     TabularMapConverter mapConverter = new TabularMapConverter();
     Map<String, String> conversionMap = Maps.newHashMap();
