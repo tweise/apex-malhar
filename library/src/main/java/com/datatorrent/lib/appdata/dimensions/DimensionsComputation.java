@@ -46,7 +46,7 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
   private int windowCount = 0;
 
   @VisibleForTesting
-  public Map<EventKey, AggregateEvent> aggregationBuffer = Maps.newHashMap();
+  public transient Map<EventKey, AggregateEvent> aggregationBuffer = Maps.newHashMap();
   private transient List<AggregateEvent> aggregateEventBuffer = Lists.newArrayList();
 
   protected AggregatorInfo aggregatorInfo;
