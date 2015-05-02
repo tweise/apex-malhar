@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,7 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
   public transient Map<EventKey, AggregateEvent> aggregationBuffer = Maps.newHashMap();
   private transient List<AggregateEvent> aggregateEventBuffer = Lists.newArrayList();
 
+  @JsonIgnore
   protected AggregatorInfo aggregatorInfo;
 
   public transient final DefaultInputPort<INPUT_EVENT> inputEvent = new DefaultInputPort<INPUT_EVENT>() {
