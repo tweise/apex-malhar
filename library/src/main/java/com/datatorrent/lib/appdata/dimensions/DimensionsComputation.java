@@ -49,7 +49,6 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
   public Map<EventKey, AggregateEvent> aggregationBuffer = Maps.newHashMap();
   private transient List<AggregateEvent> aggregateEventBuffer = Lists.newArrayList();
 
-  @NotNull
   protected AggregatorInfo aggregatorInfo;
 
   public transient final DefaultInputPort<INPUT_EVENT> inputEvent = new DefaultInputPort<INPUT_EVENT>() {
@@ -76,6 +75,7 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
   @Override
   public void setup(OperatorContext context)
   {
+    aggregatorInfo = AggregatorUtils.DEFAULT_AGGREGATOR_INFO;
     logger.debug("Setup called");
     aggregatorInfo.setup();
   }

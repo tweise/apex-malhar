@@ -90,10 +90,8 @@ public class AppDataSingleSchemaDimensionStoreHDHT extends DimensionsStoreHDHT i
   private transient QueryProcessor<DataQueryDimensional, QueryMeta, MutableLong, MutableBoolean, Result> queryProcessor;
   @SuppressWarnings("unchecked")
   private transient DataDeserializerFactory queryDeserializerFactory;
-  @NotNull
-  private AppDataFormatter appDataFormatter = new AppDataFormatter();
-  @NotNull
-  private AggregatorInfo aggregatorInfo = AggregatorUtils.DEFAULT_AGGREGATOR_INFO;
+  private AppDataFormatter appDataFormatter;
+  private AggregatorInfo aggregatorInfo;
   private transient DataSerializerFactory resultSerializerFactory;
   private static final Long QUERY_QUEUE_WINDOW_COUNT = 30L;
   private static final int QUERY_QUEUE_WINDOW_COUNT_INT = (int) ((long) QUERY_QUEUE_WINDOW_COUNT);
@@ -164,6 +162,8 @@ public class AppDataSingleSchemaDimensionStoreHDHT extends DimensionsStoreHDHT i
   public void setup(OperatorContext context)
   {
     logger.debug("Aggregator Info setup called.");
+    appDataFormatter = new AppDataFormatter();
+    aggregatorInfo = AggregatorUtils.DEFAULT_AGGREGATOR_INFO;
 
     aggregatorInfo.setup();
 
