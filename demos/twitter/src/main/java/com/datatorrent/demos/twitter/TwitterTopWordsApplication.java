@@ -80,8 +80,8 @@ public class TwitterTopWordsApplication implements StreamingApplication
     twitterFeed = dag.addOperator("TweetSampler", twitterFeed);
 
     TwitterStatusWordExtractor wordExtractor = dag.addOperator("WordExtractor", TwitterStatusWordExtractor.class);
-    UniqueCounter<String> uniqueCounter = dag.addOperator("UniqueWordCounter", new UniqueCounter<String>());
-    WindowedTopCounter<String> topCounts = dag.addOperator("TopCounter", new WindowedTopCounter<String>());
+    UniqueCounter uniqueCounter = dag.addOperator("UniqueWordCounter", new UniqueCounter());
+    WindowedTopCounterString topCounts = dag.addOperator("TopCounter", new WindowedTopCounterString());
     AppDataTabularServerMap tabularServer = dag.addOperator("Tabular Server", new AppDataTabularServerMap());
 
     TabularMapConverter mapConverter = new TabularMapConverter();

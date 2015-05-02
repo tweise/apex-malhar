@@ -171,9 +171,9 @@ public class TwitterTopCounterApplication implements StreamingApplication
     //  Setup the operator to get the URLs extracted from the twitter statuses
     TwitterStatusURLExtractor urlExtractor = dag.addOperator("URLExtractor", TwitterStatusURLExtractor.class);
     // Setup a node to count the unique urls within a window.
-    UniqueCounter<String> uniqueCounter = dag.addOperator("UniqueURLCounter", new UniqueCounter<String>());
+    UniqueCounter uniqueCounter = dag.addOperator("UniqueURLCounter", new UniqueCounter());
     // Get the aggregated url counts and count them over last 5 mins.
-    WindowedTopCounter<String> topCounts = dag.addOperator("TopCounter", new WindowedTopCounter<String>());
+    WindowedTopCounterString topCounts = dag.addOperator("TopCounter", new WindowedTopCounterString());
     AppDataTabularServerMap tabularServer = dag.addOperator("Tabular Server", new AppDataTabularServerMap());
 
     TabularMapConverter mapConverter = new TabularMapConverter();

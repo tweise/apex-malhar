@@ -21,7 +21,6 @@ import com.datatorrent.api.Operator;
 import com.datatorrent.api.StreamingApplication;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.contrib.twitter.TwitterSampleInput;
-import com.datatorrent.lib.algo.UniqueCounter;
 import com.datatorrent.lib.appdata.schemas.SchemaUtils;
 import com.datatorrent.lib.appdata.tabular.AppDataTabularServerMap;
 import com.datatorrent.lib.appdata.tabular.TabularMapConverter;
@@ -172,10 +171,10 @@ public class TwitterTrendingHashtagsApplication implements StreamingApplication
     TwitterStatusHashtagExtractor HashtagExtractor = dag.addOperator("HashtagExtractor", TwitterStatusHashtagExtractor.class);
 
     // Setup a node to count the unique Hashtags within a window.
-    UniqueCounter<String> uniqueCounter = dag.addOperator("UniqueHashtagCounter", new UniqueCounter<String>());
+    UniqueCounter uniqueCounter = dag.addOperator("UniqueHashtagCounter", new UniqueCounter());
 
     // Get the aggregated Hashtag counts and count them over last 5 mins.
-    WindowedTopCounter<String> topCounts = dag.addOperator("TopCounter", new WindowedTopCounter<String>());
+    WindowedTopCounterString topCounts = dag.addOperator("TopCounter", new WindowedTopCounterString());
     AppDataTabularServerMap tabularServer = dag.addOperator("Tabular Server", new AppDataTabularServerMap());
 
     TabularMapConverter mapConverter = new TabularMapConverter();
