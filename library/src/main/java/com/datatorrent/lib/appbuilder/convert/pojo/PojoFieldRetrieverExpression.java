@@ -79,9 +79,8 @@ public class PojoFieldRetrieverExpression extends PojoFieldRetriever
       String fieldName = entry.getKey();
       Type type = entry.getValue();
 
-      logger.debug("fieldName {} type {}", fieldName, type);
-
       String expression = fieldToExpression.get(fieldName);
+      logger.debug("fieldName {} type {} expression {}", fieldName, type, expression);
 
       switch(type)
       {
