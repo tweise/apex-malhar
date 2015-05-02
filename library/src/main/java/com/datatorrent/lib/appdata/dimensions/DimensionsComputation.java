@@ -66,7 +66,7 @@ public abstract class DimensionsComputation<INPUT_EVENT> implements Operator
     @Override
     public Unifier<AggregateEvent> getUnifier()
     {
-      return new DimensionsComputation.DimensionsComputationUnifier(getAggregatorInfo());
+      return new DimensionsComputation.DimensionsComputationUnifier(AggregatorUtils.DEFAULT_AGGREGATOR_INFO);
     }
   };
 
