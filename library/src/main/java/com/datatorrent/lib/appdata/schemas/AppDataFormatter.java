@@ -20,25 +20,40 @@ import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import javax.validation.constraints.NotNull;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class AppDataFormatter implements Serializable
 {
+  @JsonIgnore
   private String floatFormatString;
+  @JsonIgnore
   private String doubleFormatString;
 
+  @JsonIgnore
   private String byteFormatString;
+  @JsonIgnore
   private String shortFormatString;
+  @JsonIgnore
   private String intFormatString;
+  @JsonIgnore
   private String longFormatString;
 
+  @JsonIgnore
   private String discreteFormatString;
+  @JsonIgnore
   private String continuousFormatString;
 
+  @JsonIgnore
   private transient DecimalFormat floatFormat;
+  @JsonIgnore
   private transient DecimalFormat doubleFormat;
+  @JsonIgnore
   private transient DecimalFormat byteFormat;
+  @JsonIgnore
   private transient DecimalFormat shortFormat;
+  @JsonIgnore
   private transient DecimalFormat intFormat;
+  @JsonIgnore
   private transient DecimalFormat longFormat;
 
   public AppDataFormatter()

@@ -53,7 +53,7 @@ public abstract class AppDataTabularServer implements Operator
   private transient DataDeserializerFactory queryDeserializerFactory;
   private transient DataSerializerFactory resultSerializerFactory;
   @NotNull
-  private AppDataFormatter appDataFormatter = new AppDataFormatter();
+  private AppDataFormatter appDataFormatter;
 
   private String tabularSchemaJSON;
   protected transient SchemaTabular schema;
@@ -113,6 +113,7 @@ public abstract class AppDataTabularServer implements Operator
   @Override
   public void setup(OperatorContext context)
   {
+    appDataFormatter = new AppDataFormatter();
     schema = new SchemaTabular(tabularSchemaJSON);
 
     //Setup for query processing
