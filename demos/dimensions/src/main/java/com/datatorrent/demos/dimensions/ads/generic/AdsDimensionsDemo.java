@@ -24,6 +24,7 @@ import com.datatorrent.contrib.dimensions.AppDataSingleSchemaDimensionStoreHDHT;
 import com.datatorrent.contrib.hdht.tfile.TFileImpl;
 import com.datatorrent.lib.appbuilder.convert.pojo.PojoFieldRetrieverExpression;
 import com.datatorrent.lib.appdata.dimensions.DimensionsComputationSingleSchemaPOJO;
+import com.datatorrent.lib.appdata.schemas.AppDataFormatter;
 import com.datatorrent.lib.appdata.schemas.SchemaUtils;
 import com.datatorrent.lib.counters.BasicCounters;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
@@ -163,6 +164,7 @@ public class AdsDimensionsDemo implements StreamingApplication
     hdsFile.setBasePath(basePath);
     System.out.println("Setting basePath " + basePath);
     store.setFileStore(hdsFile);
+    store.setAppDataFormatter(new AppDataFormatter());
     store.getAppDataFormatter().setContinuousFormatString("#.00");
     store.setEventSchemaJSON(eventSchema);
 
