@@ -45,6 +45,9 @@ public class PojoFieldRetrieverExpression extends PojoFieldRetriever
 
     JSONObject jo = null;
 
+    logger.info("fielToExpression {}", fieldToExpression);
+    logger.info("fielToExpressionString {}", fieldToExpressionString);
+
     if((fieldToExpression == null || fieldToExpression.isEmpty()) &&
        fieldToExpressionString != null) {
       fieldToExpression = Maps.newHashMap();
