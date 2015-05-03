@@ -59,7 +59,7 @@ public class PojoFieldRetrieverExpressionTest
     PojoFieldRetrieverExpression pfre = new PojoFieldRetrieverExpression();
     pfre.setFieldToType(fieldToType);
     pfre.setFieldToExpression(fieldToExpression);
-    pfre.setFQClassName(TestObjAllTypes.class.getName());
+    pfre.setFqClassName(TestObjAllTypes.class.getName());
 
     pfre.setup();
 

@@ -61,7 +61,7 @@ public class PojoFieldRetrieverFieldListTest
     PojoFieldRetrieverFieldList pfre = new PojoFieldRetrieverFieldList();
     pfre.setFieldToType(fieldToType);
     pfre.setFieldToFieldList(fieldToFieldList);
-    pfre.setFQClassName(TestObjAllTypes.class.getName());
+    pfre.setFqClassName(TestObjAllTypes.class.getName());
 
     pfre.setup();
 
