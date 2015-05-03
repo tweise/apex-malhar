@@ -30,13 +30,11 @@ import com.datatorrent.lib.counters.BasicCounters;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import java.net.URI;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 
-import java.util.Map;
 
 /**
  * An AdsDimensionsDemo run with HDHT
@@ -142,16 +140,15 @@ public class AdsDimensionsDemo implements StreamingApplication
     //Set dimensions properties
     PojoFieldRetrieverExpression pfre = new PojoFieldRetrieverExpression();
     pfre.setFQClassName(AdInfo.class.getName());
-    Map<String, String> fieldToExpression = Maps.newHashMap();
-    fieldToExpression.put("publisher", "getPublisher()");
-    fieldToExpression.put("advertiser", "getAdvertiser()");
-    fieldToExpression.put("location", "getLocation()");
-    fieldToExpression.put("cost", "getCost()");
-    fieldToExpression.put("revenue", "getRevenue()");
-    fieldToExpression.put("impressions", "getImpressions()");
-    fieldToExpression.put("clicks", "getClicks()");
-    fieldToExpression.put("time", "getTime()");
-    pfre.setFieldToExpression(fieldToExpression);
+    String fieldToExpressionString = "{\"publisher\":\"getPublisher()\",\n"
+                                     + "\"advertiser\": \"getAdvertiser()\",\n"
+                                     + "\"location\": \"getLocation()\",\n"
+                                     + "\"cost\": \"getCost()\",\n"
+                                     + "\"revenue\":\"getRevenue()\",\n"
+                                     + "\"impressions\": \"getImpressions()\",\n"
+                                     + "\"clicks\": \"getClicks()\",\n"
+                                     + "\"time\":\"getTime()\"}";
+    pfre.setFieldToExpressionString(fieldToExpressionString);
     dimensions.getConverter().setPojoFieldRetriever(pfre);
     dimensions.setEventSchemaJSON(eventSchema);
 
