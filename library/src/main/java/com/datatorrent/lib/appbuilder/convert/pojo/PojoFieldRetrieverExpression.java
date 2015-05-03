@@ -155,6 +155,8 @@ public class PojoFieldRetrieverExpression extends PojoFieldRetriever
         }
         case LONG:
         {
+          logger.info("fq class name {} expression {}", getFQClassName(), expression);
+          
           if(fieldToGetterLong == null) {
             fieldToGetterLong = Maps.newHashMap();
           }
