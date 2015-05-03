@@ -122,7 +122,7 @@ public class DimensionsPojoConverterTest
     fieldToExpression.put(DimensionsDescriptor.DIMENSION_TIME, "getTime()");
 
     PojoFieldRetrieverExpression pfre = new PojoFieldRetrieverExpression();
-    pfre.setFQClassName(AdInfo.class.getCanonicalName());
+    pfre.setFqClassName(AdInfo.class.getCanonicalName());
     pfre.setFieldToType(SchemaUtils.convertFieldToType(allFieldToType));
     pfre.setFieldToExpression(fieldToExpression);
     pfre.setup();

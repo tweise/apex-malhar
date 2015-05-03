@@ -103,7 +103,7 @@ public class DimensionsComputationSingleSchemaPOJOTest
     dimensions.setEventSchemaJSON(eventSchema);
 
     PojoFieldRetrieverExpression pfre = new PojoFieldRetrieverExpression();
-    pfre.setFQClassName(AdInfo.class.getName());
+    pfre.setFqClassName(AdInfo.class.getName());
     Map<String, String> fieldToExpression = Maps.newHashMap();
     fieldToExpression.put("publisher", "getPublisher()");
     fieldToExpression.put("advertiser", "getAdvertiser()");

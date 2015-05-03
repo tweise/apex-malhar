@@ -43,7 +43,7 @@ public class TabularPOJOConverterTest
     fieldToExpression.put("doubleField", "doubleField");
 
     pfre.setFieldToExpression(fieldToExpression);
-    pfre.setFQClassName(SimplePOJO.class.getName());
+    pfre.setFqClassName(SimplePOJO.class.getName());
     pfre.setup();
 
     TabularPOJOConverter converter = new TabularPOJOConverter();

@@ -139,7 +139,7 @@ public class AdsDimensionsDemo implements StreamingApplication
 
     //Set dimensions properties
     PojoFieldRetrieverExpression pfre = new PojoFieldRetrieverExpression();
-    pfre.setFQClassName(AdInfo.class.getName());
+    pfre.setFqClassName(AdInfo.class.getName());
     String fieldToExpressionString = "{\"publisher\":\"getPublisher()\",\n"
                                      + "\"advertiser\": \"getAdvertiser()\",\n"
                                      + "\"location\": \"getLocation()\",\n"
