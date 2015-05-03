@@ -50,7 +50,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterBoolean.put(fieldName,
-          ConvertUtils.createExpressionGetterBoolean(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterBoolean(getFqClassName(), fieldList));
 
           break;
         }
@@ -61,7 +61,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterByte.put(fieldName,
-          ConvertUtils.createExpressionGetterByte(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterByte(getFqClassName(), fieldList));
 
           break;
         }
@@ -72,7 +72,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterChar.put(fieldName,
-          ConvertUtils.createExpressionGetterChar(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterChar(getFqClassName(), fieldList));
 
           break;
         }
@@ -83,7 +83,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterDouble.put(fieldName,
-          ConvertUtils.createExpressionGetterDouble(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterDouble(getFqClassName(), fieldList));
 
           break;
         }
@@ -94,7 +94,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterFloat.put(fieldName,
-          ConvertUtils.createExpressionGetterFloat(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterFloat(getFqClassName(), fieldList));
 
           break;
         }
@@ -105,7 +105,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterInt.put(fieldName,
-          ConvertUtils.createExpressionGetterInt(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterInt(getFqClassName(), fieldList));
 
           break;
         }
@@ -116,7 +116,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterLong.put(fieldName,
-          ConvertUtils.createExpressionGetterLong(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterLong(getFqClassName(), fieldList));
 
           break;
         }
@@ -127,7 +127,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterShort.put(fieldName,
-          ConvertUtils.createExpressionGetterShort(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterShort(getFqClassName(), fieldList));
 
           break;
         }
@@ -138,7 +138,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterString.put(fieldName,
-          ConvertUtils.createExpressionGetterString(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterString(getFqClassName(), fieldList));
 
           break;
         }
@@ -149,7 +149,7 @@ public class PojoFieldRetrieverFieldList extends PojoFieldRetriever
           }
 
           fieldToGetterObject.put(fieldName,
-          ConvertUtils.createExpressionGetterObject(getFQClassName(), fieldList));
+          ConvertUtils.createExpressionGetterObject(getFqClassName(), fieldList));
 
           break;
         }

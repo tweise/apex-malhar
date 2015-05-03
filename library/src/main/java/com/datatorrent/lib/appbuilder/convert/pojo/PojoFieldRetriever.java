@@ -85,16 +85,6 @@ public abstract class PojoFieldRetriever
     this.fieldToType = Maps.newHashMap(fieldToType);
   }
 
-  public String getFQClassName()
-  {
-    return fqClassName;
-  }
-
-  public void setFQClassName(String fqClassName)
-  {
-    this.fqClassName = Preconditions.checkNotNull(fqClassName);
-  }
-
   public Object get(String field, Object pojo)
   {
     Object result;
@@ -240,5 +230,21 @@ public abstract class PojoFieldRetriever
     Preconditions.checkArgument(fieldType == type, "The field " + field +
                                                    " is of type " + fieldType +
                                                    " no type " + type);
+  }
+
+  /**
+   * @return the fqClassName
+   */
+  public String getFqClassName()
+  {
+    return fqClassName;
+  }
+
+  /**
+   * @param fqClassName the fqClassName to set
+   */
+  public void setFqClassName(String fqClassName)
+  {
+    this.fqClassName = fqClassName;
   }
 }
