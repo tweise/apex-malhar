@@ -304,4 +304,20 @@ public class InputItemGenerator implements InputOperator
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(InputItemGenerator.class);
+
+  /**
+   * @return the maxTuplesPerWindow
+   */
+  public int getMaxTuplesPerWindow()
+  {
+    return maxTuplesPerWindow;
+  }
+
+  /**
+   * @param maxTuplesPerWindow the maxTuplesPerWindow to set
+   */
+  public void setMaxTuplesPerWindow(int maxTuplesPerWindow)
+  {
+    this.maxTuplesPerWindow = maxTuplesPerWindow;
+  }
 }
