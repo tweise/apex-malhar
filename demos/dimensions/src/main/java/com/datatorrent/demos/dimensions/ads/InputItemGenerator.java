@@ -60,6 +60,8 @@ public class InputItemGenerator implements InputOperator
   private int blastCount = 30000;
   @Min(1)
   private int numTuplesPerWindow = 1000;
+  private int maxTuplesPerWindow = 10000000;
+  private int windowTupleCount = 0;
   private transient int windowCount = 0;
   private final Random random = new Random(0);
   public final transient DefaultOutputPort<AdInfo> outputPort = new DefaultOutputPort<AdInfo>();
@@ -110,6 +112,7 @@ public class InputItemGenerator implements InputOperator
   public void beginWindow(long windowId)
   {
     windowCount = 0;
+    windowTupleCount = 0;
   }
 
   @Override
@@ -162,7 +165,11 @@ public class InputItemGenerator implements InputOperator
     }
 
     long timestamp;
-    for(int i = 0; i < blastCount && windowCount < numTuplesPerWindow; ++i, windowCount++) {
+    for(int i = 0;
+        (i < blastCount) &&
+        (windowCount < numTuplesPerWindow) &&
+        (windowTupleCount < maxTuplesPerWindow);
+        ++i, windowCount++, windowTupleCount++, windowTupleCount++) {
       int advertiserId = nextRandomId(advertiserID);
       int publisherId = nextRandomId(publisherID);
       int adUnit = nextRandomId(locationID);
