@@ -18,6 +18,7 @@ import com.datatorrent.lib.appdata.schemas.Result;
 import com.datatorrent.lib.appdata.schemas.ResultFormatter;
 import com.datatorrent.lib.appdata.schemas.SchemaQuery;
 import com.datatorrent.lib.appdata.schemas.SchemaRegistry;
+import com.datatorrent.lib.appdata.schemas.SchemaResult;
 import com.datatorrent.lib.dimensions.aggregator.AggregatorRegistry;
 import com.datatorrent.lib.dimensions.aggregator.IncrementalAggregator;
 import com.google.common.annotations.VisibleForTesting;
@@ -63,7 +64,9 @@ public abstract class AbstractAppDataDimensionStoreHDHT extends DimensionsStoreH
       }
 
       if (query instanceof SchemaQuery) {
-        processSchemaQuery((SchemaQuery) query);
+        SchemaResult schemaResult = processSchemaQuery((SchemaQuery) query);
+
+        queryResult.emit(resultSerializerFactory.serialize(schemaResult));
       }
       else if (query instanceof DataQueryDimensional) {
         processDimensionalDataQuery((DataQueryDimensional) query);
@@ -135,7 +138,7 @@ public abstract class AbstractAppDataDimensionStoreHDHT extends DimensionsStoreH
    *
    * @param schemaQuery a schema query
    */
-  protected abstract void processSchemaQuery(SchemaQuery schemaQuery);
+  protected abstract SchemaResult processSchemaQuery(SchemaQuery schemaQuery);
 
   /**
    * @return the schema registry
