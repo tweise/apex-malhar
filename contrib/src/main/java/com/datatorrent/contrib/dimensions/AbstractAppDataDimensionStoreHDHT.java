@@ -165,7 +165,7 @@ public abstract class AbstractAppDataDimensionStoreHDHT extends DimensionsStoreH
   /**
    * @return the resultFormatter
    */
-  public ResultFormatter getAppDataFormatter()
+  public ResultFormatter getResultFormatter()
   {
     return resultFormatter;
   }

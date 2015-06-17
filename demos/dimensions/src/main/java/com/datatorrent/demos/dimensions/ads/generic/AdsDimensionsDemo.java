@@ -171,7 +171,7 @@ public class AdsDimensionsDemo implements StreamingApplication
 
     dimensions.setUnifier(new DimensionsComputationUnifierImpl<InputEvent, Aggregate>());
     dag.getMeta(dimensions).getMeta(dimensions.output).getUnifierMeta().getAttributes().put(OperatorContext.MEMORY_MB, 8092);
-    
+
     //Set store properties
     String basePath = Preconditions.checkNotNull(conf.get(propStorePath),
                                                  "a base path should be specified in the properties.xml");
@@ -195,13 +195,8 @@ public class AdsDimensionsDemo implements StreamingApplication
     wsIn.setUri(uri);
     queryPort = wsIn.outputPort;
 
-    if(conf.getBoolean(PROP_EMBEDD_QUERY, false)) {
-      store.setEmbeddableQuery(wsIn);
-    }
-    else {
-      dag.addOperator("Query", wsIn);
-      dag.addStream("Query", queryPort, store.query).setLocality(Locality.CONTAINER_LOCAL);
-    }
+    dag.addOperator("Query", wsIn);
+    dag.addStream("Query", queryPort, store.query).setLocality(Locality.CONTAINER_LOCAL);
 
     PubSubWebSocketAppDataResult wsOut = dag.addOperator("QueryResult", new PubSubWebSocketAppDataResult());
     wsOut.setUri(uri);

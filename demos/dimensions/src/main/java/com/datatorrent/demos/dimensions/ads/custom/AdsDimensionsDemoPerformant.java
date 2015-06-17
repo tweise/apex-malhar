@@ -117,7 +117,7 @@ public class AdsDimensionsDemoPerformant implements StreamingApplication
     dimensions.setDimensionsCombinations(dimensionsCombinations);
     dimensions.setAggregators(dimensionsAggregators);
     dag.getMeta(dimensions).getMeta(dimensions.output).getUnifierMeta().getAttributes().put(OperatorContext.MEMORY_MB, 8092);
-    
+
     //Configuring the converter
     adsConverter.setEventSchemaJSON(eventSchema);
     adsConverter.setDimensionSpecs(dimensionSpecs);
@@ -144,13 +144,8 @@ public class AdsDimensionsDemoPerformant implements StreamingApplication
     wsIn.setUri(uri);
     queryPort = wsIn.outputPort;
 
-    if(conf.getBoolean(PROP_EMBEDD_QUERY, false)) {
-      store.setEmbeddableQuery(wsIn);
-    }
-    else {
-      dag.addOperator("Query", wsIn);
-      dag.addStream("Query", queryPort, store.query).setLocality(Locality.CONTAINER_LOCAL);
-    }
+    dag.addOperator("Query", wsIn);
+    dag.addStream("Query", queryPort, store.query).setLocality(Locality.CONTAINER_LOCAL);
 
     PubSubWebSocketAppDataResult wsOut = dag.addOperator("QueryResult", new PubSubWebSocketAppDataResult());
     wsOut.setUri(uri);
