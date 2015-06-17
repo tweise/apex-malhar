@@ -26,7 +26,7 @@ import java.util.List;
 @ApplicationAnnotation(name=AdsDimensionsDemoManualEntry.APP_NAME)
 public class AdsDimensionsDemoManualEntry extends AdsDimensionsDemo
 {
-  public static final String APP_NAME = "AdsDimensionsDemoGenericManualEntry";
+  public static final String APP_NAME = "AdsDimensionsDemoGenericManualEntryCustomer";
   public static final String EVENT_SCHEMA_LOCATION = "adsGenericEventSchemaNoEnums.json";
 
   public static final String PROP_EMBEDD_QUERY = "dt.application." + APP_NAME + ".embeddQuery";

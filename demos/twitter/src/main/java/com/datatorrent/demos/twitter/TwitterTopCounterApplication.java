@@ -143,7 +143,7 @@ public class TwitterTopCounterApplication implements StreamingApplication
 {
   public static final String TABULAR_SCHEMA = "twitterURLDataSchema.json";
   public static final String CONVERSION_SCHEMA = "twitterURLConverterSchema.json";
-  public static final String APP_NAME = "TwitterDemo";
+  public static final String APP_NAME = "TwitterDemoCustomer";
   public static final String PROP_USE_WEBSOCKETS = "dt.application." + APP_NAME + ".useWebSockets";
 
   private final Locality locality = null;

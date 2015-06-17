@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * @since 0.3.2
  */
-@ApplicationAnnotation(name="RollingTopWordsDemo")
+@ApplicationAnnotation(name="RollingTopWordsDemoCustomer")
 public class TwitterTopWordsApplication implements StreamingApplication
 {
   private static final Logger logger = LoggerFactory.getLogger(TwitterTopWordsApplication.class);

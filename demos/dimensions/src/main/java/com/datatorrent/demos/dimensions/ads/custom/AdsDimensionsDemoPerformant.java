@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 public class AdsDimensionsDemoPerformant implements StreamingApplication
 {
   public static final String EVENT_SCHEMA = "adsBenchmarkSchema.json";
-  public static final String APP_NAME = "AdsDimensionsDemoFast";
+  public static final String APP_NAME = "AdsDimensionsDemoFastCustomer";
   public static final String PROP_STORE_PATH = "dt.application." + APP_NAME + ".operator.Store.fileStore.basePathPrefix";
 
   public static final String PROP_EMBEDD_QUERY = "dt.application." + APP_NAME + ".embeddQuery";

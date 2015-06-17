@@ -123,7 +123,7 @@ import java.util.Map;
 @ApplicationAnnotation(name=AdsDimensionsDemo.APP_NAME)
 public class AdsDimensionsDemo implements StreamingApplication
 {
-  public static final String APP_NAME = "AdsDimensionsDemoGeneric";
+  public static final String APP_NAME = "AdsDimensionsDemoGenericCustomer";
   public static final String EVENT_SCHEMA = "adsGenericEventSchema.json";
 
   public static final String PROP_EMBEDD_QUERY = "dt.application." + APP_NAME + ".embeddQuery";

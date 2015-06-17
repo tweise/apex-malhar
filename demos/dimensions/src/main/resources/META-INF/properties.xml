@@ -82,20 +82,20 @@
   <!-- Settings for AdsDimensionsDemoGeneric -->
 
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.InputGenerator.numTuplesPerWindow</name>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.InputGenerator.numTuplesPerWindow</name>
     <value>1000</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.InputGenerator.maxTuplesPerWindow</name>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.InputGenerator.maxTuplesPerWindow</name>
     <value>1000</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.Store.fileStore.basePathPrefix</name>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.Store.fileStore.basePathPrefix</name>
     <value>AdsDimensionsDemo/Store</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.Query.topic</name>
-    <value>AdsQueryGenericDemo</value>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.Query.topic</name>
+    <value>AdsQueryGenericDemoCustomer</value>
   </property>
   <!-- For running in embedded mode -->
   <!--
@@ -105,47 +105,47 @@
   </property>
   -->
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.QueryResult.topic</name>
-    <value>AdsQueryGenericResultDemo</value>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.QueryResult.topic</name>
+    <value>AdsQueryGenericResultDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.QueryResult.numRetries</name>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.DimensionsComputation.port.inputEvent.attr.PARTITION_PARALLEL</name>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.DimensionsComputation.port.inputEvent.attr.PARTITION_PARALLEL</name>
     <value>true</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGeneric.operator.InputGenerator.attr.PARTITIONER</name>
+    <name>dt.application.AdsDimensionsDemoGenericCustomer.operator.InputGenerator.attr.PARTITIONER</name>
     <value>com.datatorrent.lib.partitioner.StatelessPartitioner:8</value>
   </property>
   <property>
-    <value>dt.application.AdsDimensionsDemoGeneric.operator.InputGenerator.attr.MEMORY_MB</value>
+    <value>dt.application.AdsDimensionsDemoGenericCustomer.operator.InputGenerator.attr.MEMORY_MB</value>
     <name>16384</name>
   </property>
   <property>
-    <value>dt.application.AdsDimensionsDemoGeneric.operator.DimensionsComputation.attr.MEMORY_MB</value>
+    <value>dt.application.AdsDimensionsDemoGenericCustomer.operator.DimensionsComputation.attr.MEMORY_MB</value>
     <name>16384</name>
   </property>
 
-  <!-- Settings for AdsDimensionsDemoGeneric -->
+  <!-- Settings for AdsDimensionsDemoGenericManualEntry -->
 
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.InputGenerator.numTuplesPerWindow</name>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.InputGenerator.numTuplesPerWindow</name>
     <value>1000</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.InputGenerator.maxTuplesPerWindow</name>
-    <value>500</value>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.InputGenerator.maxTuplesPerWindow</name>
+    <value>1000</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.Store.fileStore.basePathPrefix</name>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.Store.fileStore.basePathPrefix</name>
     <value>AdsDimensionsDemoGenericManualEntry/Store</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.Query.topic</name>
-    <value>AdsQueryGenericManualEntryDemo</value>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.Query.topic</name>
+    <value>AdsQueryGenericManualEntryDemoCustomer</value>
   </property>
   <!-- For running in embedded mode -->
   <!--
@@ -155,47 +155,47 @@
   </property>
   -->
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.QueryResult.topic</name>
-    <value>AdsQueryGenericResultManualEntryDemo</value>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.QueryResult.topic</name>
+    <value>AdsQueryGenericResultManualEntryDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.QueryResult.numRetries</name>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.DimensionsComputation.port.inputEvent.attr.PARTITION_PARALLEL</name>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.DimensionsComputation.port.inputEvent.attr.PARTITION_PARALLEL</name>
     <value>true</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoGenericManualEntry.operator.InputGenerator.attr.PARTITIONER</name>
+    <name>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.InputGenerator.attr.PARTITIONER</name>
     <value>com.datatorrent.lib.partitioner.StatelessPartitioner:8</value>
   </property>
   <property>
-    <value>dt.application.AdsDimensionsDemoGenericManualEntry.operator.InputGenerator.attr.MEMORY_MB</value>
+    <value>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.InputGenerator.attr.MEMORY_MB</value>
     <name>16384</name>
   </property>
   <property>
-    <value>dt.application.AdsDimensionsDemoGenericManualEntry.operator.DimensionsComputation.attr.MEMORY_MB</value>
+    <value>dt.application.AdsDimensionsDemoGenericManualEntryCustomer.operator.DimensionsComputation.attr.MEMORY_MB</value>
     <name>16384</name>
   </property>
 
   <!-- Settings for AdsDimensionsDemoPerformant -->
 
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.InputGenerator.numTuplesPerWindow</name>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.InputGenerator.numTuplesPerWindow</name>
     <value>2400000</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.InputGenerator.maxTuplesPerWindow</name>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.InputGenerator.maxTuplesPerWindow</name>
     <value>600000</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.Store.fileStore.basePathPrefix</name>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.Store.fileStore.basePathPrefix</name>
     <value>AdsDimensionsDemoPerformant/Store</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.Query.topic</name>
-    <value>AdsQueryDemo</value>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.Query.topic</name>
+    <value>AdsQueryDemoCustomer</value>
   </property>
   <!-- For running in embedded mode -->'
   <!--
@@ -205,31 +205,31 @@
   </property>
   -->
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.QueryResult.topic</name>
-    <value>AdsQueryResultDemo</value>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.QueryResult.topic</name>
+    <value>AdsQueryResultDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.QueryResult.numRetries</name>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.DimensionsComputation.port.data.attr.PARTITION_PARALLEL</name>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.DimensionsComputation.port.data.attr.PARTITION_PARALLEL</name>
     <value>true</value>
   </property>
   <property>
-    <name>dt.application.AdsDimensionsDemoFast.operator.InputGenerator.attr.PARTITIONER</name>
+    <name>dt.application.AdsDimensionsDemoFastCustomer.operator.InputGenerator.attr.PARTITIONER</name>
     <value>com.datatorrent.lib.partitioner.StatelessPartitioner:8</value>
   </property>
   <property>
-    <value>dt.application.AdsDimensionsDemoFast.operator.InputGenerator.attr.MEMORY_MB</value>
+    <value>dt.application.AdsDimensionsDemoFastCustomer.operator.InputGenerator.attr.MEMORY_MB</value>
     <name>16384</name>
   </property>
   <property>
-    <value>dt.application.AdsDimensionsDemoFast.operator.DimensionsComputation.attr.MEMORY_MB</value>
+    <value>dt.application.AdsDimensionsDemoFastCustomer.operator.DimensionsComputation.attr.MEMORY_MB</value>
     <name>16384</name>
   </property>
    <property>
-     <name>dt.application.AdsDimensionsDemoFast.port.*.attr.QUEUE_CAPACITY</name>
+     <name>dt.application.AdsDimensionsDemoFastCustomer.port.*.attr.QUEUE_CAPACITY</name>
      <value>32000</value>
   </property>
 
@@ -237,16 +237,16 @@
   <!-- Settings for SalesDemo -->
 
   <property>
-    <name>dt.application.SalesDemo.operator.Store.fileStore.basePathPrefix</name>
+    <name>dt.application.SalesDemoCustomer.operator.Store.fileStore.basePathPrefix</name>
     <value>SalesDemo/Store</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.useWebSockets</name>
+    <name>dt.application.SalesDemoCustomer.useWebSockets</name>
     <value>true</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.operator.Query.topic</name>
-    <value>SalesQueryDemo</value>
+    <name>dt.application.SalesDemoCustomer.operator.Query.topic</name>
+    <value>SalesQueryDemoCustomer</value>
   </property>
   <!-- For running in embedded mode -->
   <!--
@@ -256,27 +256,27 @@
   </property>
   -->
   <property>
-    <name>dt.application.SalesDemo.operator.Store.embeddableQuery.topic</name>
-    <value>SalesQueryDemo</value>
+    <name>dt.application.SalesDemoCustomer.operator.Store.embeddableQuery.topic</name>
+    <value>SalesQueryDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.operator.QueryResult.topic</name>
-    <value>SalesQueryResultDemo</value>
+    <name>dt.application.SalesDemoCustomer.operator.QueryResult.topic</name>
+    <value>SalesQueryResultDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.operator.QueryResult.numRetries</name>
+    <name>dt.application.SalesDemoCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.operator.DimensionsComputation.attr.PARTITIONER</name>
+    <name>dt.application.SalesDemoCustomer.operator.DimensionsComputation.attr.PARTITIONER</name>
     <value>com.datatorrent.lib.partitioner.StatelessPartitioner:8</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.operator.InputGenerator.maxTuplesPerWindow</name>
+    <name>dt.application.SalesDemoCustomer.operator.InputGenerator.maxTuplesPerWindow</name>
     <value>20000</value>
   </property>
   <property>
-    <name>dt.application.SalesDemo.operator.InputGenerator.tuplesPerWindowDeviation</name>
+    <name>dt.application.SalesDemoCustomer.operator.InputGenerator.tuplesPerWindowDeviation</name>
     <value>7000</value>
   </property>
 

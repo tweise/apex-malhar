@@ -31,7 +31,7 @@ import java.util.Map;
 @ApplicationAnnotation(name=SalesDemo.APP_NAME)
 public class SalesDemo implements StreamingApplication
 {
-  public static final String APP_NAME = "SalesDemo";
+  public static final String APP_NAME = "SalesDemoCustomer";
   public static final String PROP_USE_WEBSOCKETS = "dt.application." + APP_NAME + ".useWebSockets";
   public static final String PROP_EMBEDD_QUERY = "dt.application." + APP_NAME + ".embeddQuery";
   public static final String PROP_STORE_PATH = "dt.application." + APP_NAME + ".operator.Store.fileStore.basePathPrefix";

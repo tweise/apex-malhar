@@ -45,53 +45,53 @@
   <!-- RollingTopWordsDemo -->
 
   <property>
-    <name>dt.application.RollingTopWordsDemo.operator.TopCounter.topCount</name>
+    <name>dt.application.RollingTopWordsDemoCustomer.operator.TopCounter.topCount</name>
     <value>10</value>
   </property>
   <property>
-    <name>dt.application.RollingTopWordsDemo.stream.TweetStream.locality</name>
+    <name>dt.application.RollingTopWordsDemoCustomer.stream.TweetStream.locality</name>
     <value>CONTAINER_LOCAL</value>
   </property>
   <property>
-    <name>dt.application.RollingTopWordsDemo.operator.Query.topic</name>
-    <value>TwitterWordsQuery</value>
+    <name>dt.application.RollingTopWordsDemoCustomer.operator.Query.topic</name>
+    <value>TwitterWordsQueryCustomer</value>
   </property>
   <property>
-    <name>dt.application.RollingTopWordsDemo.operator.QueryResult.topic</name>
-    <value>TwitterWordsQueryResult</value>
+    <name>dt.application.RollingTopWordsDemoCustomer.operator.QueryResult.topic</name>
+    <value>TwitterWordsQueryResultCustomer</value>
   </property>
   <property>
-    <name>dt.application.RollingTopWordsDemo.operator.QueryResult.numRetries</name>
+    <name>dt.application.RollingTopWordsDemoCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
 
   <!-- TwitterDemo -->
 
   <property>
-    <name>dt.application.TwitterDemo.operator.Query.topic</name>
-    <value>TwitterURLQuery</value>
+    <name>dt.application.TwitterDemoCustomer.operator.Query.topic</name>
+    <value>TwitterURLQueryCustomer</value>
   </property>
   <property>
-    <name>dt.application.TwitterDemo.operator.QueryResult.topic</name>
-    <value>TwitterURLQueryResult</value>
+    <name>dt.application.TwitterDemoCustomer.operator.QueryResult.topic</name>
+    <value>TwitterURLQueryResultCustomer</value>
   </property>
   <property>
-    <name>dt.application.TwitterDemo.operator.QueryResult.numRetries</name>
+    <name>dt.application.TwitterDemoCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
 
   <!-- TwitterTrendingDemo -->
 
   <property>
-    <name>dt.application.TwitterTrendingDemo.operator.Query.topic</name>
-    <value>TwitterHashtagQueryDemo</value>
+    <name>dt.application.TwitterTrendingDemoCustomer.operator.Query.topic</name>
+    <value>TwitterHashtagQueryDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.TwitterTrendingDemo.operator.QueryResult.topic</name>
-    <value>TwitterHashtagQueryResultDemo</value>
+    <name>dt.application.TwitterTrendingDemoCustomer.operator.QueryResult.topic</name>
+    <value>TwitterHashtagQueryResultDemoCustomer</value>
   </property>
   <property>
-    <name>dt.application.TwitterTrendingDemo.operator.QueryResult.numRetries</name>
+    <name>dt.application.TwitterTrendingDemoCustomer.operator.QueryResult.numRetries</name>
     <value>2147483647</value>
   </property>
 
