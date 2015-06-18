@@ -291,6 +291,10 @@ public class DimensionsQueryExecutor implements QueryExecutor<DataQueryDimension
         prunedKey.put(aggregatorName, singleKey);
       }
 
+      if(prunedKey.isEmpty()) {
+        continue;
+      }
+
       //add the aggregations to the result list
       prunedKeys.add(prunedKey);
       prunedResults.add(prunedValue);
