@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * This class represents the result sent in response to a {@link DataQueryTablar}.
  */
-@MessageType(type=DataQueryDimensional.TYPE)
+@MessageType(type=DataResultTabular.TYPE)
 @MessageSerializerInfo(clazz=DataResultTabularSerializer.class)
 public class DataResultTabular extends Result
 {

@@ -67,6 +67,7 @@ public class DataResultTabularSerializerTest
     Assert.assertEquals("The json doesn't match.", jo1.get("b"), rjo1.get("b"));
     Assert.assertEquals("The json doesn't match.", jo2.get("a"), rjo2.get("a"));
     Assert.assertEquals("The json doesn't match.", jo2.get("b"), rjo2.get("b"));
+    Assert.assertEquals("The type doesn't match.", DataResultTabular.TYPE, jo.get(DataResultTabular.FIELD_TYPE));
   }
 
   @Test

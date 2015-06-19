@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * This class represents the result sent in response to a {@link DataQueryDimensional}
  */
-@MessageType(type=DataQueryDimensional.TYPE)
+@MessageType(type=DataResultDimensional.TYPE)
 @MessageSerializerInfo(clazz=DataResultDimensionalSerializer.class)
 public class DataResultDimensional extends Result
 {
