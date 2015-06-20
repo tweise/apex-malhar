@@ -20,16 +20,15 @@ import java.io.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Options.Rename;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-
 import com.datatorrent.api.StorageAgent;
 import com.datatorrent.api.annotation.Stateless;
-
 import com.datatorrent.common.util.DTThrowable;
 
 /**
@@ -123,8 +122,8 @@ public class FSStorageAgent implements StorageAgent, Serializable
       finally {
         if (stateSaved) {
           logger.debug("Saving {}: {}", operatorId, window);
-          fs.delete(new Path(operatorIdStr, window), true);
-          fs.rename(lPath, new Path(operatorIdStr, window));
+          FileContext fc = FileContext.getFileContext(fs.getUri());
+          fc.rename(lPath, new Path(operatorIdStr, window), Rename.OVERWRITE);
         }
       }
     }
