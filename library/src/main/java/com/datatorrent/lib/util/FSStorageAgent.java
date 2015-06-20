@@ -123,6 +123,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
         if (stateSaved) {
           logger.debug("Saving {}: {}", operatorId, window);
           FileContext fc = FileContext.getFileContext(fs.getUri());
+          fc.setWorkingDirectory(new Path(this.path));
           fc.rename(lPath, new Path(operatorIdStr, window), Rename.OVERWRITE);
         }
       }
