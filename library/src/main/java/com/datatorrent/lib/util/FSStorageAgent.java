@@ -43,6 +43,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
   protected static final String STATELESS_CHECKPOINT_WINDOW_ID = Long.toHexString(Stateless.WINDOW_ID);
   public final String path;
   protected final transient FileSystem fs;
+  protected final transient FileContext fileContext;
   protected static final transient Kryo kryo;
 
   static {
@@ -54,6 +55,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
   {
     path = null;
     fs = null;
+    fileContext = null;
   }
 
   public FSStorageAgent(String path, Configuration conf)
@@ -74,6 +76,8 @@ public class FSStorageAgent implements StorageAgent, Serializable
           throw e;
         }
       }
+      fileContext = FileContext.getFileContext(fs.getUri());
+      fileContext.setWorkingDirectory(lPath);
     }
     catch (IOException ex) {
       throw new RuntimeException(ex);
@@ -123,7 +127,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
       finally {
         if (stateSaved) {
           logger.debug("Saving {}: {}", operatorId, window);
-          fs.rename(lPath, new Path(operatorIdStr, window));
+          fileContext.rename(lPath, new Path(operatorIdStr, window), Options.Rename.OVERWRITE);
         }
       }
     }
