@@ -64,7 +64,7 @@ public class AppDataSingleSchemaDimensionStoreHDHT extends AbstractAppDataDimens
   /**
    * This operator's {@link DimensionalSchema}.
    */
-  private transient DimensionalSchema dimensionalSchema;
+  protected transient DimensionalSchema dimensionalSchema;
   /**
    * The {@link schemaID} of for data stored by this operator.
    */
@@ -77,14 +77,14 @@ public class AppDataSingleSchemaDimensionStoreHDHT extends AbstractAppDataDimens
    * This flag determines whether or not the lists of all possible values for the keys in this operators {@link DimensionalSchema}
    * are updated based on the key values seen in {@link Aggregate}s received by this operator.
    */
-  private boolean updateEnumValues = false;
+  protected boolean updateEnumValues = false;
   @SuppressWarnings({"rawtypes"})
   /**
    * This is a map that stores the seen values of all the keys in this operator's {@link DimensionalSchema}. The
    * key in this map is the name of a key. The value in this map is the set of all values this operator has seen for
    * that key.
    */
-  private Map<String, Set<Comparable>> seenEnumValues;
+  protected Map<String, Set<Comparable>> seenEnumValues;
 
   private Long minTimestamp = null;
   private Long maxTimestamp = null;
@@ -106,7 +106,7 @@ public class AppDataSingleSchemaDimensionStoreHDHT extends AbstractAppDataDimens
 
       if(maxTimestamp == null || timestamp > maxTimestamp) {
         maxTimestamp = timestamp;
-        dimensionalSchema.setTo(minTimestamp);
+        dimensionalSchema.setTo(maxTimestamp);
       }
     }
 

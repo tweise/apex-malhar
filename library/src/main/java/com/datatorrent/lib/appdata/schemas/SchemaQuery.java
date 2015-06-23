@@ -20,6 +20,8 @@ import com.datatorrent.lib.appdata.query.serde.MessageType;
 import com.datatorrent.lib.appdata.query.serde.MessageValidatorInfo;
 import com.datatorrent.lib.appdata.query.serde.SchemaQueryDeserializer;
 import com.datatorrent.lib.appdata.query.serde.SimpleDataValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -77,4 +79,22 @@ public class SchemaQuery extends Query
     this.schemaKeys = schemaKeys;
     this.contextKeys = contextKeys;
   }
+
+  /**
+   * @return the contextKeys
+   */
+  public Map<String, String> getContextKeys()
+  {
+    return contextKeys;
+  }
+
+  /**
+   * @param contextKeys the contextKeys to set
+   */
+  public void setContextKeys(Map<String, String> contextKeys)
+  {
+    this.contextKeys = contextKeys;
+  }
+
+  private static final Logger LOG = LoggerFactory.getLogger(SchemaQuery.class);
 }

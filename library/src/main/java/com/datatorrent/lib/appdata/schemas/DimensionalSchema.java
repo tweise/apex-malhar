@@ -617,7 +617,7 @@ public class DimensionalSchema implements Schema
                                "Either both from and to should be set or both should be not set.");
 
       if(from != null) {
-        Preconditions.checkState(to > from, "to must be greater than from.");
+        Preconditions.checkState(to >= from, "to {} must be greater than or equal to from {}.", to, from);
       }
 
       if(from == null) {

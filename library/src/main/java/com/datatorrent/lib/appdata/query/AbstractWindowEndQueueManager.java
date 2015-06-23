@@ -51,9 +51,6 @@ public abstract class AbstractWindowEndQueueManager<QUERY_TYPE, META_QUERY, QUEU
    * A pointer to the current node in the {@link QueueList}.
    */
   private QueueListNode<QueryBundle<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT>> currentNode;
-  /**
-   * Oh s**t forgot what this does.
-   */
   private boolean readCurrent = false;
 
   private final Semaphore semaphore = new Semaphore(0);
@@ -110,7 +107,7 @@ public abstract class AbstractWindowEndQueueManager<QUERY_TYPE, META_QUERY, QUEU
   }
 
   @Override
-  public QueryBundle<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT> dequeueBlock()
+  public synchronized QueryBundle<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT> dequeueBlock()
   {
     return dequeueHelper(true);
   }
@@ -280,7 +277,7 @@ public abstract class AbstractWindowEndQueueManager<QUERY_TYPE, META_QUERY, QUEU
   }
 
   @Override
-  public void beginWindow(long windowId)
+  public synchronized void beginWindow(long windowId)
   {
     currentNode = queryQueue.getHead();
     readCurrent = false;

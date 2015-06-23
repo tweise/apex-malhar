@@ -1884,5 +1884,85 @@ public class GPOUtils
     }
   }
 
+  public static Map<String, Object> getDestringedData(FieldsDescriptor fd,
+                                                      Map<String, String> stringMap)
+  {
+    Map<String, Object> fieldToData = Maps.newHashMap();
+    Map<String, Type> fieldToType = fd.getFieldToType();
+
+    for(Map.Entry<String, String> entry: stringMap.entrySet()) {
+      Object objValue;
+      String valueString = entry.getValue();
+      Type valueType = fieldToType.get(entry.getKey());
+
+      switch(valueType) {
+        case BOOLEAN:
+        {
+          objValue = Boolean.valueOf(valueString);
+          break;
+        }
+        case BYTE:
+        {
+          objValue = Byte.valueOf(valueString);
+          break;
+        }
+        case SHORT:
+        {
+          objValue = Short.valueOf(valueString);
+          break;
+        }
+        case INTEGER:
+        {
+          objValue = Integer.valueOf(valueString);
+          break;
+        }
+        case LONG:
+        {
+          objValue = Long.valueOf(valueString);
+          break;
+        }
+        case FLOAT:
+        {
+          objValue = Float.valueOf(valueString);
+          break;
+        }
+        case DOUBLE:
+        {
+          objValue = Double.valueOf(valueString);
+          break;
+        }
+        case STRING:
+        {
+          objValue = valueString;
+          break;
+        }
+        case OBJECT:
+          throw new UnsupportedOperationException("The given type " + entry.getValue() + " is unsupported.");
+        default:
+          throw new UnsupportedOperationException("The given type " + entry.getValue() + " is unsupported.");
+      }
+
+      fieldToData.put(entry.getKey(), objValue);
+    }
+
+    return fieldToData;
+  }
+
+  public static Map<String, Object> convertToMapIntersection(GPOMutable gpo, Fields fields)
+  {
+    Map<String, Object> values = Maps.newHashMap();
+
+    for(String field: fields.getFields()) {
+      if(!gpo.getFieldDescriptor().getFields().getFields().contains(field)) {
+        continue;
+      }
+
+      Object valueObj = gpo.getField(field);
+      values.put(field, valueObj);
+    }
+
+    return values;
+  }
+
   private static final Logger LOG = LoggerFactory.getLogger(GPOUtils.class);
 }

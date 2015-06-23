@@ -69,6 +69,6 @@ public class AggregatorLast implements IncrementalAggregator
   @Override
   public void aggregate(Aggregate dest, Aggregate src)
   {
-    //Do nothing
+    DimensionsEvent.copy(dest, src);
   }
 }

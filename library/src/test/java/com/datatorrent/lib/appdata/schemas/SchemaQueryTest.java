@@ -35,8 +35,6 @@ public class SchemaQueryTest
                                       "\"type\":\"" + SchemaQuery.TYPE + "\"" +
                                     "}";
 
-
-
     @SuppressWarnings("unchecked")
     MessageDeserializerFactory qb = new MessageDeserializerFactory(SchemaQuery.class);
 
@@ -58,9 +56,10 @@ public class SchemaQueryTest
     final String schemaQueryJSON = "{" +
                                       "\"id\":\"" + id + "\"," +
                                       "\"type\":\"" + SchemaQuery.TYPE + "\"," +
+                                      "\"context\":{" +
                                       "\"schemaKeys\":" +
                                       "{\"publisher\":\"google\",\"advertiser\":\"microsoft\",\"location\":\"CA\"}" +
-                                   "}";
+                                   "}}";
 
     @SuppressWarnings("unchecked")
     MessageDeserializerFactory qb = new MessageDeserializerFactory(SchemaQuery.class);
@@ -70,5 +69,38 @@ public class SchemaQueryTest
     Assert.assertEquals("Id's must match", id, schemaQuery.getId());
     Assert.assertEquals("Types must match", SchemaQuery.TYPE, schemaQuery.getType());
     Assert.assertEquals("Schema keys must match", expectedSchemaKeys, schemaQuery.getSchemaKeys());
+  }
+
+  @Test
+  public void jsonToSchemaWithKeysAndSchemaKeys() throws Exception
+  {
+    final Map<String, String> expectedSchemaKeys = Maps.newHashMap();
+    expectedSchemaKeys.put("publisher", "google");
+    expectedSchemaKeys.put("advertiser", "microsoft");
+    expectedSchemaKeys.put("location", "CA");
+
+    final Map<String, String> expectedKeys = Maps.newHashMap();
+    expectedKeys.put("publisher", "google");
+    expectedKeys.put("advertiser", "microsoft");
+
+    final String id = "12345";
+    final String schemaQueryJSON = "{" +
+                                      "\"id\":\"" + id + "\"," +
+                                      "\"type\":\"" + SchemaQuery.TYPE + "\"," +
+                                      "\"context\":{" +
+                                      "\"schemaKeys\":" +
+                                      "{\"publisher\":\"google\",\"advertiser\":\"microsoft\",\"location\":\"CA\"}," +
+                                      "\"keys\":{\"publisher\":\"google\",\"advertiser\":\"microsoft\"}" +
+                                   "}}";
+
+    @SuppressWarnings("unchecked")
+    MessageDeserializerFactory qb = new MessageDeserializerFactory(SchemaQuery.class);
+
+    SchemaQuery schemaQuery = (SchemaQuery) qb.deserialize(schemaQueryJSON);
+
+    Assert.assertEquals("Id's must match", id, schemaQuery.getId());
+    Assert.assertEquals("Types must match", SchemaQuery.TYPE, schemaQuery.getType());
+    Assert.assertEquals("Schema keys must match", expectedSchemaKeys, schemaQuery.getSchemaKeys());
+    Assert.assertEquals("Expected keys must match", expectedKeys, schemaQuery.getContextKeys());
   }
 }
