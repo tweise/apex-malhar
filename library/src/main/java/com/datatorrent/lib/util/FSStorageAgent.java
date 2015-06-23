@@ -16,19 +16,25 @@
 package com.datatorrent.lib.util;
 
 import java.io.*;
+import java.net.URI;
+import java.util.EnumSet;
+import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Options.Rename;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.google.common.collect.Lists;
+
 import com.datatorrent.api.StorageAgent;
 import com.datatorrent.api.annotation.Stateless;
+
 import com.datatorrent.common.util.DTThrowable;
 
 /**
@@ -41,7 +47,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
   public static final String TMP_FILE = "._COPYING_";
   protected static final String STATELESS_CHECKPOINT_WINDOW_ID = Long.toHexString(Stateless.WINDOW_ID);
   public final String path;
-  protected final transient FileSystem fs;
+  protected final transient FileContext fileContext;
   protected static final transient Kryo kryo;
 
   static {
@@ -52,7 +58,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
   private FSStorageAgent()
   {
     path = null;
-    fs = null;
+    fileContext = null;
   }
 
   public FSStorageAgent(String path, Configuration conf)
@@ -61,33 +67,25 @@ public class FSStorageAgent implements StorageAgent, Serializable
     try {
       logger.debug("Initialize storage agent with {}.", path);
       Path lPath = new Path(path);
-      fs = FileSystem.newInstance(lPath.toUri(), conf == null ? new Configuration() : conf);
+      URI pathUri = lPath.toUri();
+
+      if (pathUri.getScheme() != null) {
+        fileContext = FileContext.getFileContext(pathUri, conf == null ? new Configuration() : conf);
+      }
+      else {
+        fileContext = FileContext.getFileContext(conf == null ? new Configuration() : conf);
+      }
       try {
-        if (fs.mkdirs(lPath)) {
-          fs.setWorkingDirectory(lPath);
-        }
+        fileContext.getFileStatus(lPath);
       }
-      catch (IOException e) {
-        // some file system (MapR) throw exception if folder exists
-        if (!fs.exists(lPath)) {
-          throw e;
-        }
+      catch (FileNotFoundException fae) {
+        fileContext.mkdir(lPath, FsPermission.getDefault(), true);
       }
+      fileContext.setWorkingDirectory(lPath);
     }
     catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-  }
-
-  @Override
-  @SuppressWarnings("FinalizeDeclaration")
-  protected void finalize() throws Throwable
-  {
-    if (fs != null) {
-      logger.debug("Finalize storage agent with {}.", path);
-      fs.close();
-    }
-    super.finalize();
   }
 
   @SuppressWarnings("ThrowFromFinallyBlock")
@@ -100,7 +98,8 @@ public class FSStorageAgent implements StorageAgent, Serializable
     boolean stateSaved = false;
     FSDataOutputStream stream = null;
     try {
-      stream = fs.create(lPath);
+      stream = fileContext.create(lPath, EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE),
+        Options.CreateOpts.CreateParent.createParent());
       store(stream, object);
       stateSaved = true;
     }
@@ -115,16 +114,14 @@ public class FSStorageAgent implements StorageAgent, Serializable
           stream.close();
         }
       }
-      catch (IOException ie){
-         stateSaved = false;
-         throw new RuntimeException(ie);
+      catch (IOException ie) {
+        stateSaved = false;
+        throw new RuntimeException(ie);
       }
       finally {
         if (stateSaved) {
           logger.debug("Saving {}: {}", operatorId, window);
-          FileContext fc = FileContext.getFileContext(fs.getUri());
-          fc.setWorkingDirectory(new Path(this.path));
-          fc.rename(lPath, new Path(operatorIdStr, window), Rename.OVERWRITE);
+          fileContext.rename(lPath, new Path(operatorIdStr, window), Options.Rename.OVERWRITE);
         }
       }
     }
@@ -136,7 +133,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
     Path lPath = new Path(String.valueOf(operatorId), Long.toHexString(windowId));
     logger.debug("Loading: {}", lPath);
 
-    FSDataInputStream stream = fs.open(lPath);
+    FSDataInputStream stream = fileContext.open(lPath);
     try {
       return retrieve(stream);
     }
@@ -151,7 +148,7 @@ public class FSStorageAgent implements StorageAgent, Serializable
     Path lPath = new Path(String.valueOf(operatorId), Long.toHexString(windowId));
     logger.debug("Deleting: {}", lPath);
 
-    fs.delete(lPath, false);
+    fileContext.delete(lPath, false);
   }
 
   @Override
@@ -159,26 +156,21 @@ public class FSStorageAgent implements StorageAgent, Serializable
   {
     Path lPath = new Path(String.valueOf(operatorId));
 
-    FileStatus[] files = fs.listStatus(lPath);
-    if (files == null || files.length == 0) {
+    RemoteIterator<FileStatus> fileStatusRemoteIterator = fileContext.listStatus(lPath);
+    if (!fileStatusRemoteIterator.hasNext()) {
       throw new IOException("Storage Agent has not saved anything yet!");
     }
-
-    long windowIds[] = new long[files.length];
-    for (int i = files.length; i-- > 0; ) {
-      String name = files[i].getPath().getName();
+    List<Long> windowIds = Lists.newArrayList();
+    do {
+      FileStatus fileStatus = fileStatusRemoteIterator.next();
+      String name = fileStatus.getPath().getName();
       if (name.equals(TMP_FILE)) {
         continue;
       }
-      windowIds[i] = STATELESS_CHECKPOINT_WINDOW_ID.equals(name) ? Stateless.WINDOW_ID : Long.parseLong(name, 16);
+      windowIds.add(STATELESS_CHECKPOINT_WINDOW_ID.equals(name) ? Stateless.WINDOW_ID : Long.parseLong(name, 16));
     }
-    return windowIds;
-  }
-
-  @Override
-  public String toString()
-  {
-    return fs.toString();
+    while (fileStatusRemoteIterator.hasNext());
+    return ArrayUtils.toPrimitive(windowIds.toArray(new Long[windowIds.size()]));
   }
 
   public static void store(OutputStream stream, Object operator)
