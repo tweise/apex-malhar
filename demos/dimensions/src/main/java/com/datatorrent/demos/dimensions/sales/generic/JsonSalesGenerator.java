@@ -65,7 +65,6 @@ public class JsonSalesGenerator implements InputOperator
   private static final Logger logger = LoggerFactory.getLogger(JsonSalesGenerator.class);
 
   public static final String KEY_PRODUCT = "product";
-  public static final String KEY_CUSTOMER = "customer";
   public static final String KEY_CHANNEL = "channel";
   public static final String KEY_REGION = "region";
 
@@ -165,7 +164,6 @@ public class JsonSalesGenerator implements InputOperator
                                                               AggregatorRegistry.DEFAULT_AGGREGATOR_REGISTRY));
 
     maxProductId = schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_PRODUCT).size();
-    maxCustomerId = schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_CUSTOMER).size();
     maxChannelId = schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_CHANNEL).size();
     maxRegionId = schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_REGION).size();
 
@@ -239,14 +237,12 @@ public class JsonSalesGenerator implements InputOperator
     int regionId = regionalGenerator.next();
     int productId = randomId(maxProductId) - 1;
     int channelId = channelGenerator.next();
-    int customerId = randomCustomerByRegion(regionId + 1) - 1;
 
     SalesEvent salesEvent = new SalesEvent();
     salesEvent.time = System.currentTimeMillis();
     salesEvent.product = (String) schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_PRODUCT).get(productId);
     salesEvent.channel = (String) schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_CHANNEL).get(channelId);
     salesEvent.region = (String) schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_REGION).get(regionId);
-    salesEvent.customer = (String) schema.getDimensionalConfigurationSchema().getKeysToEnumValuesList().get(KEY_CUSTOMER).get(customerId);
     salesEvent.amount = randomAmount(minAmount, maxAmount);
     salesEvent.tax = calculateTax(salesEvent.amount, regionId);
     salesEvent.discount = calculateDiscount(salesEvent.amount, channelId, regionId);
