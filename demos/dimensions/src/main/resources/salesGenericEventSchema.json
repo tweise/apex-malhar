@@ -1,7 +1,6 @@
 {
   "keys":[{"name":"channel","type":"string","enumValues":["Mobile","Online","Store"]},
           {"name":"region","type":"string","enumValues":["Atlanta","Boston","Chicago","Cleveland","Dallas","Minneapolis","New York","Philadelphia","San Francisco","St. Louis"]},
-          {"name":"customer","type":"string","enumValues":["safeway","toys r us","am pm","kmart","macy's","frys","amazon", "Tim", "Pramod", "Ashwin", "Prerna", "Chetan", "Gaurav", "Andy", "Sasha", "David", "Timmy", "Bob", "Billy", "Ted", "Alex", "Rob Schneider", "Adam Sandler", "Jack Black", "Mathew Perry", "Rachael", "Ross", "Monic", "Pheobe"]},
           {"name":"product","type":"string","enumValues":["Laptops","Printers","Routers","Smart Phones","Tablets"]}],
  "timeBuckets":["1m", "1h", "1d"],
  "values":
