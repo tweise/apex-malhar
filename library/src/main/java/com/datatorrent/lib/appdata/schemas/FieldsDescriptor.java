@@ -15,6 +15,7 @@
  */
 package com.datatorrent.lib.appdata.schemas;
 
+import com.datatorrent.lib.appdata.gpo.serde.Serde;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -82,6 +83,8 @@ public class FieldsDescriptor implements Serializable
    */
   private Object2IntLinkedOpenHashMap<Type> typeToSize;
 
+  private List<Serde> serdes;
+
   /**
    * This constructor is used for serialization.
    */
@@ -102,7 +105,38 @@ public class FieldsDescriptor implements Serializable
   }
 
   /**
+   * This creates a {@link FieldsDescriptor} with the given field to type map.
+   * @param fieldToType A mapping from field names to the type of the field.
+   * @param fieldToSerdeObject A mapping from field names to the corresponding serde object.
+   */
+  public FieldsDescriptor(Map<String, Type> fieldToType,
+                          Map<String, Serde> fieldToSerdeObject)
+  {
+    setFieldToType(fieldToType);
+    compressedTypes = Sets.newHashSet();
+
+    initialize();
+
+    List<String> fieldNames = typeToFields.get(Type.OBJECT);
+    serdes = Lists.newArrayList();
+
+    //Insert serdes into corresponding order
+    for(String fieldName: fieldNames) {
+      Serde serdeObject = fieldToSerdeObject.get(fieldName);
+      if(serdeObject == null) {
+        throw new IllegalArgumentException("The field " +
+                                           fieldName +
+                                           " doesn't have a serde object.");
+      }
+
+      serdes.add(serdeObject);
+    }
+  }
+
+  /**
    * This creates a field descriptor with the given field to type map.
+   * <br/><br/>
+   * <b>Note:</b> Compressed types are currently ignored and will be implemented in the future.
    * @param fieldToType A mapping from field names to the type of the field.
    * @param compressedTypes The types, which will have compressed values.
    */

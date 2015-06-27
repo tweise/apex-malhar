@@ -18,9 +18,9 @@ package com.datatorrent.lib.dimensions.aggregator;
 
 import com.datatorrent.lib.appdata.gpo.GPOUtils.IndexSubset;
 import com.datatorrent.lib.appdata.schemas.Type;
+import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchema.DimensionsConversionContext;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
-import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchema.DimensionsConversionContext;
 
 /**
  * <p>
@@ -52,5 +52,4 @@ public interface IncrementalAggregator extends com.datatorrent.lib.statistics.Di
   public void setDimensionsConversionContext(DimensionsConversionContext context);
   public void setIndexSubsetKeys(IndexSubset indexSubsetKeys);
   public void setIndexSubsetAggregates(IndexSubset indexSubsetAggregates);
-
 }

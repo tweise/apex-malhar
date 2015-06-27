@@ -47,6 +47,7 @@ public class GPOMutable implements Serializable
   private double[] fieldsDouble;
 
   private String[] fieldsString;
+  private Object[] fieldsObject;
 
   private transient FieldsDescriptor fieldDescriptor;
 
