@@ -22,6 +22,7 @@ import com.datatorrent.lib.appdata.gpo.GPOByteArrayList;
 import com.datatorrent.lib.appdata.gpo.GPOMutable;
 import com.datatorrent.lib.appdata.gpo.GPOUtils;
 import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
+import com.datatorrent.lib.appdata.schemas.Type;
 import com.datatorrent.lib.codec.KryoSerializableStreamCodec;
 import com.datatorrent.lib.dimensions.DimensionsDescriptor;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
@@ -118,6 +119,8 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
   @VisibleForTesting
   protected transient final Map<Long, Long> futureBuckets = Maps.newHashMap();
 
+  private transient final GPOByteArrayList byteArrayList = new GPOByteArrayList();
+
   /**
    * Constructor to create operator.
    */
@@ -207,7 +210,7 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
     byte[] schemaIDBytes = Ints.toByteArray(eventKey.getSchemaID());
     byte[] dimensionDescriptorIDBytes = Ints.toByteArray(eventKey.getDimensionDescriptorID());
     byte[] aggregatorIDBytes = Ints.toByteArray(eventKey.getAggregatorID());
-    byte[] gpoBytes = GPOUtils.serialize(eventKey.getKey(), DimensionsDescriptor.TIME_FIELDS);
+    byte[] gpoBytes = GPOUtils.serialize(eventKey.getKey(), byteArrayList);
 
     bal.add(timeBytes);
     bal.add(schemaIDBytes);
@@ -225,7 +228,7 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
    */
   public byte[] getValueBytesGAE(Aggregate event)
   {
-    return GPOUtils.serialize(event.getAggregates());
+    return GPOUtils.serialize(event.getAggregates(), byteArrayList);
   }
 
   /**
@@ -237,8 +240,7 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
    */
   public Aggregate fromKeyValueGAE(Slice key, byte[] aggregate)
   {
-    MutableInt offset = new MutableInt(0);
-    long timestamp = GPOUtils.deserializeLong(key.buffer, offset);
+    MutableInt offset = new MutableInt(Type.LONG.getByteSize());
     int schemaID = GPOUtils.deserializeInt(key.buffer,
                                            offset);
     int dimensionDescriptorID = GPOUtils.deserializeInt(key.buffer,
@@ -249,12 +251,8 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
     FieldsDescriptor keysDescriptor = getKeyDescriptor(schemaID, dimensionDescriptorID);
     FieldsDescriptor aggDescriptor = getValueDescriptor(schemaID, dimensionDescriptorID, aggregatorID);
 
-    GPOMutable keys = GPOUtils.deserialize(keysDescriptor, DimensionsDescriptor.TIME_FIELDS, key.buffer, offset.intValue());
+    GPOMutable keys = GPOUtils.deserialize(keysDescriptor, key.buffer, offset.intValue());
     GPOMutable aggs = GPOUtils.deserialize(aggDescriptor, aggregate, 0);
-
-    if(keysDescriptor.getFields().getFields().contains(DimensionsDescriptor.DIMENSION_TIME)) {
-      keys.setField(DimensionsDescriptor.DIMENSION_TIME, timestamp);
-    }
 
     Aggregate gae = new Aggregate(keys,
                                   aggs,
@@ -390,9 +388,6 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
   @Override
   protected void processEvent(Aggregate gae)
   {
-    GPOMutable keys = gae.getKeys();
-    GPOMutable aggregates = gae.getAggregates();
-
     int schemaID = gae.getSchemaID();
     int ddID = gae.getDimensionDescriptorID();
     int aggregatorID = gae.getAggregatorID();
@@ -412,10 +407,16 @@ public abstract class DimensionsStoreHDHT extends AbstractSinglePortHDHTWriter<A
     FieldsDescriptor keyFieldsDescriptor = getKeyDescriptor(schemaID, ddID);
     FieldsDescriptor valueFieldsDescriptor = getValueDescriptor(schemaID, ddID, aggregatorID);
 
-    keys.setFieldDescriptor(keyFieldsDescriptor);
-    aggregates.setFieldDescriptor(valueFieldsDescriptor);
+    gae.getKeys().setFieldDescriptor(keyFieldsDescriptor);
+    gae.getAggregates().setFieldDescriptor(valueFieldsDescriptor);
+
+    GPOMutable metaData = gae.getMetaData();
 
     IncrementalAggregator aggregator = getAggregator(gae.getAggregatorID());
+
+    if(metaData != null) {
+      metaData.setFieldDescriptor(aggregator.getMetaDataDescriptor());
+    }
 
     Aggregate aggregate = cache.get(gae.getEventKey());
 

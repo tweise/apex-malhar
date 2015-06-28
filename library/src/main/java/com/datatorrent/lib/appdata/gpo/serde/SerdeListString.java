@@ -18,7 +18,10 @@ package com.datatorrent.lib.appdata.gpo.serde;
 
 import com.datatorrent.lib.appdata.gpo.GPOByteArrayList;
 import com.datatorrent.lib.appdata.gpo.GPOUtils;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -32,9 +35,18 @@ public class SerdeListString implements Serde
   }
 
   @Override
-  public void deserializeObject(byte[] object, MutableInt offset)
+  public Object deserializeObject(byte[] object, MutableInt offset)
   {
+    int length = GPOUtils.deserializeInt(object, offset);
+    int startIndex = offset.intValue();
 
+    List<String> strings = Lists.newArrayList();
+    while(startIndex + length > offset.intValue()) {
+      String value = GPOUtils.deserializeString(object, offset);
+      strings.add(value);
+    }
+
+    return strings;
   }
 
   @Override
@@ -53,8 +65,12 @@ public class SerdeListString implements Serde
 
     byte[] byteArray = bytes.toByteArray();
     bytes.clear();
-    bytes.add(GPOUtils.byteArray.length);
-
+    bytes.add(GPOUtils.serializeInt(byteArray.length));
+    bytes.add(byteArray);
+    byteArray = bytes.toByteArray();
+    bytes.clear();
     return byteArray;
   }
+
+  private static final Logger LOG = LoggerFactory.getLogger(SerdeListString.class);
 }

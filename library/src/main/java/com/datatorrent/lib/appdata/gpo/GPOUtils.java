@@ -16,6 +16,7 @@
 
 package com.datatorrent.lib.appdata.gpo;
 
+import com.datatorrent.lib.appdata.gpo.serde.Serde;
 import com.datatorrent.lib.appdata.schemas.Fields;
 import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
 import com.datatorrent.lib.appdata.schemas.ResultFormatter;
@@ -185,7 +186,7 @@ public class GPOUtils
         throw new IllegalArgumentException("The key " + field + " does not have a valid bool value.", ex);
       }
 
-      gpo.setField(field, val);
+      gpo.setFieldGeneric(field, val);
     }
     else if(type == Type.BYTE) {
       int val;
@@ -329,7 +330,7 @@ public class GPOUtils
                                            ex);
       }
 
-      gpo.setField(field, val);
+      gpo.setFieldGeneric(field, val);
     }
     else if(type == Type.FLOAT) {
       Float val;
@@ -344,7 +345,7 @@ public class GPOUtils
                                            ex);
       }
 
-      gpo.setField(field, val);
+      gpo.setFieldGeneric(field, val);
     }
   }
 
@@ -421,9 +422,11 @@ public class GPOUtils
   /**
    * Serializes the given {@link GPOMutable} object to an array of bytes.
    * @param gpo The {@link GPOMutable} object to serialize.
-   * @return The serialize {@link GPOMutable} object.
+   * @param byteArrayList A byte array list to pack serialized data into. Note that
+   * it is assumed that the byteArrayList is empty when passed to this method.
+   * @return The serialized {@link GPOMutable} object.
    */
-  public static byte[] serialize(GPOMutable gpo)
+  public static byte[] serialize(GPOMutable gpo, GPOByteArrayList byteArrayList)
   {
     int slength = serializedLength(gpo);
     byte[] sbytes = new byte[slength];
@@ -528,7 +531,23 @@ public class GPOUtils
       }
     }
 
-    return sbytes;
+    if(sbytes.length > 0) {
+      byteArrayList.add(sbytes);
+    }
+
+    Object[] fieldsObject = gpo.getFieldsObject();
+    Serde[] serdes = gpo.getFieldDescriptor().getSerdes();
+    if(fieldsObject != null) {
+      for(int index = 0;
+          index < fieldsObject.length;
+          index++) {
+        byteArrayList.add(serdes[index].serializeObject(fieldsObject[index]));
+      }
+    }
+
+    byte[] bytes = byteArrayList.toByteArray();
+    byteArrayList.clear();
+    return bytes;
   }
 
   /**
@@ -653,6 +672,16 @@ public class GPOUtils
           index < fieldsString.length;
           index++) {
         fieldsString[index] = deserializeString(serializedGPO, offsetM);
+      }
+    }
+
+    Object[] fieldsObject = gpo.getFieldsObject();
+    Serde[] serdes = fd.getSerdes();
+    if(fieldsObject != null) {
+      for(int index = 0;
+          index < fieldsObject.length;
+          index++) {
+        fieldsObject[index] = serdes[index].deserializeObject(serializedGPO, offsetM);
       }
     }
 

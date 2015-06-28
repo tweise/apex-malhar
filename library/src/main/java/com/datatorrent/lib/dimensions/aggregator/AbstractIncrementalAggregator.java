@@ -38,7 +38,7 @@ import com.datatorrent.lib.appdata.schemas.TimeBucket;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.EventKey;
 import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
-import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchema.DimensionsConversionContext;
+import com.datatorrent.lib.dimensions.AbstractDimensionsComputationFlexibleSingleSchema.DimensionsConversionContext;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

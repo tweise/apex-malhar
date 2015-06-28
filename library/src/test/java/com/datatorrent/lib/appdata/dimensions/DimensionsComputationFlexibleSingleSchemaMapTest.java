@@ -25,7 +25,7 @@ import com.datatorrent.lib.dimensions.DimensionsDescriptor;
 import com.datatorrent.lib.dimensions.DimensionsEvent;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.EventKey;
-import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchema;
+import com.datatorrent.lib.dimensions.AbstractDimensionsComputationFlexibleSingleSchema;
 import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchemaMap;
 import com.datatorrent.lib.dimensions.aggregator.AggregatorIncrementalType;
 import com.datatorrent.lib.dimensions.aggregator.AggregatorRegistry;
@@ -55,7 +55,7 @@ public class DimensionsComputationFlexibleSingleSchemaMapTest
     Map<String, Object> ai1 = createAdInfoEvent1();
     Map<String, Object> ai2 = createAdInfoEvent2();
 
-    int schemaID = DimensionsComputationFlexibleSingleSchema.DEFAULT_SCHEMA_ID;
+    int schemaID = AbstractDimensionsComputationFlexibleSingleSchema.DEFAULT_SCHEMA_ID;
     int dimensionsDescriptorID = 0;
     int aggregatorID = AggregatorRegistry.DEFAULT_AGGREGATOR_REGISTRY.
                        getIncrementalAggregatorNameToID().

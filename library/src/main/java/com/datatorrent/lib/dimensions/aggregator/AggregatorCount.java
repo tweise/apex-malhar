@@ -17,13 +17,12 @@ package com.datatorrent.lib.dimensions.aggregator;
 
 import com.datatorrent.lib.appdata.gpo.GPOMutable;
 import com.datatorrent.lib.appdata.gpo.GPOUtils;
+import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
 import com.datatorrent.lib.appdata.schemas.Type;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.EventKey;
 import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
 import com.google.common.collect.Maps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Map;
@@ -114,5 +113,9 @@ public class AggregatorCount extends AbstractIncrementalAggregator
     return TYPE_CONVERSION_MAP.get(inputType);
   }
 
-  private static final Logger LOG = LoggerFactory.getLogger(AggregatorCount.class);
+  @Override
+  public FieldsDescriptor getMetaDataDescriptor()
+  {
+    return null;
+  }
 }

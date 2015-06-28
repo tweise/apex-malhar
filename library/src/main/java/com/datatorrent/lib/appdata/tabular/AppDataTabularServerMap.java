@@ -56,7 +56,7 @@ public class AppDataTabularServerMap extends AbstractAppDataTabularServer<Map<St
         index < fields.size();
         index++) {
       String field = fields.get(index);
-      values.setField(field, inputEvent.get(getMapField(field)));
+      values.setFieldGeneric(field, inputEvent.get(getMapField(field)));
     }
 
     return values;

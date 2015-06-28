@@ -144,17 +144,6 @@ public abstract class QRBase extends Message
     this.id = id;
   }
 
-  /**
-   * This method is used in some query queues, to determine if a duplicate query has been issued. This implementation may
-   * be different from the object equals method.
-   * @param query The query to compare against.
-   * @return True if the queries should be considered equivalent for queuing purposes. False otherwise.
-   */
-  public boolean queueEquals(Query query)
-  {
-    return false;
-  }
-
   @Override
   public String toString()
   {

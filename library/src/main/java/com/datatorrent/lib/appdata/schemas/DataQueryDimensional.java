@@ -355,7 +355,7 @@ public class DataQueryDimensional extends Query
         continue;
       }
 
-      gpo.setField(field, keys.getField(field));
+      gpo.setFieldGeneric(field, keys.getField(field));
     }
 
     return gpo;
@@ -479,46 +479,6 @@ public class DataQueryDimensional extends Query
     hash = 59 * hash + (this.dimensionsDescriptor != null ? this.dimensionsDescriptor.hashCode() : 0);
     hash = 59 * hash + (this.fieldsAggregatable != null ? this.fieldsAggregatable.hashCode() : 0);
     return hash;
-  }
-
-  @Override
-  public boolean queueEquals(Query query)
-  {
-    if(query == null) {
-      return false;
-    }
-    if(getClass() != query.getClass()) {
-      return false;
-    }
-    final DataQueryDimensional other = (DataQueryDimensional) query;
-    if(this.from != other.from) {
-      return false;
-    }
-    if(this.to != other.from) {
-      return false;
-    }
-    if(this.timeBucket != other.timeBucket) {
-      return false;
-    }
-    if(this.keys != other.keys && (this.keys == null || !this.keys.equals(other.keys))) {
-      return false;
-    }
-    if(this.incompleteResultOK != other.incompleteResultOK) {
-      return false;
-    }
-    if(this.hasTime != other.hasTime) {
-      return false;
-    }
-    if(this.fromTo != other.fromTo) {
-      return false;
-    }
-    if(this.dimensionsDescriptor != other.dimensionsDescriptor && (this.dimensionsDescriptor == null || !this.dimensionsDescriptor.equals(other.dimensionsDescriptor))) {
-      return false;
-    }
-    if(this.fieldsAggregatable != other.fieldsAggregatable && (this.fieldsAggregatable == null || !this.fieldsAggregatable.equals(other.fieldsAggregatable))) {
-      return false;
-    }
-    return true;
   }
 
   @Override

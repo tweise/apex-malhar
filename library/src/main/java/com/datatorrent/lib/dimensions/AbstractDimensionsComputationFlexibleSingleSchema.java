@@ -57,7 +57,7 @@ import java.util.List;
  * </ol>
  * @param <EVENT> The type of the input events on which to perform dimensions computation.
  */
-public abstract class DimensionsComputationFlexibleSingleSchema<EVENT> implements Operator
+public abstract class AbstractDimensionsComputationFlexibleSingleSchema<EVENT> implements Operator
 {
   /**
    * The default schema ID.
@@ -120,7 +120,7 @@ public abstract class DimensionsComputationFlexibleSingleSchema<EVENT> implement
     }
   };
 
-  public DimensionsComputationFlexibleSingleSchema()
+  public AbstractDimensionsComputationFlexibleSingleSchema()
   {
   }
 

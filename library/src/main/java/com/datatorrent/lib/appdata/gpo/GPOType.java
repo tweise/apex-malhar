@@ -122,7 +122,7 @@ abstract class GPOType
           throw new IllegalArgumentException("The key " + field + " does not have a valid bool value.", ex);
         }
 
-        gpo.setField(field, val);
+        gpo.setFieldGeneric(field, val);
     }
 
     @Override
@@ -598,7 +598,7 @@ abstract class GPOType
                                            ex);
       }
 
-      gpo.setField(field, val);
+      gpo.setFieldGeneric(field, val);
     }
 
     @Override
@@ -656,7 +656,7 @@ abstract class GPOType
                                            ex);
       }
 
-      gpo.setField(field, val);
+      gpo.setFieldGeneric(field, val);
     }
 
     @Override

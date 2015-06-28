@@ -27,7 +27,7 @@ import com.datatorrent.lib.appdata.schemas.TimeBucket;
 import com.datatorrent.lib.dimensions.DimensionsDescriptor;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.EventKey;
-import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchema;
+import com.datatorrent.lib.dimensions.AbstractDimensionsComputationFlexibleSingleSchema;
 import com.datatorrent.lib.dimensions.aggregator.AggregatorIncrementalType;
 import com.datatorrent.lib.io.fs.AbstractFileOutputOperatorTest.FSTestWatcher;
 import com.datatorrent.lib.util.TestUtils;
@@ -553,7 +553,7 @@ public class AppDataSingleSchemaDimensionStoreHDHTTest
                                      long impressions,
                                      double cost)
   {
-    int schemaID = DimensionsComputationFlexibleSingleSchema.DEFAULT_SCHEMA_ID;
+    int schemaID = AbstractDimensionsComputationFlexibleSingleSchema.DEFAULT_SCHEMA_ID;
     int dimensionDescriptorID = 0;
     int aggregatorID = eventSchema.getAggregatorRegistry().getIncrementalAggregatorNameToID().get(AggregatorIncrementalType.SUM.name());
 

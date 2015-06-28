@@ -133,6 +133,13 @@ public class GPOMutable implements Serializable
         System.arraycopy(oldFieldsString, 0, fieldsString, 0, fieldsString.length);
       }
     }
+
+    {
+      Object[] oldFieldsObject = gpo.getFieldsObject();
+      if(oldFieldsObject != null) {
+        System.arraycopy(oldFieldsObject, 0, fieldsObject, 0, fieldsObject.length);
+      }
+    }
   }
 
   /**
@@ -148,7 +155,7 @@ public class GPOMutable implements Serializable
     initialize();
 
     for(String field: this.getFieldDescriptor().getFields().getFields()) {
-      this.setField(field, gpo.getField(field));
+      this.setFieldGeneric(field, gpo.getField(field));
     }
   }
 
@@ -207,6 +214,10 @@ public class GPOMutable implements Serializable
         }
         case DOUBLE: {
           fieldsDouble = new double[size];
+          break;
+        }
+        case OBJECT: {
+          fieldsObject = new Object[size];
           break;
         }
         default:
@@ -297,6 +308,15 @@ public class GPOMutable implements Serializable
   }
 
   /**
+   * Gets the array holding object fields.
+   * @return The array holding object fields.
+   */
+  public Object[] getFieldsObject()
+  {
+    return fieldsObject;
+  }
+
+  /**
    * Sets the {@link FieldsDescriptor} on this {@link GPOMutable}.
    * @param fieldDescriptor The {@link FieldsDescriptor} to set on this {@link GPOMutable}.
    */
@@ -319,7 +339,7 @@ public class GPOMutable implements Serializable
    * @param field The name of the field to set.
    * @param val The value to set the field to.
    */
-  public final void setField(String field, Object val)
+  public final void setFieldGeneric(String field, Object val)
   {
     Type type = fieldDescriptor.getType(field);
 
@@ -364,6 +384,10 @@ public class GPOMutable implements Serializable
       }
       case DOUBLE: {
         fieldsDouble[index] = (Double) val;
+        break;
+      }
+      case OBJECT: {
+        fieldsObject[index] = val;
         break;
       }
       default:
@@ -436,6 +460,28 @@ public class GPOMutable implements Serializable
    * @return The value.
    */
   public boolean getFieldBool(String field)
+  {
+    throwInvalidField(field, Type.BOOLEAN);
+    return fieldsBoolean[fieldDescriptor.getTypeToFieldToIndex().get(Type.BOOLEAN).get(field)];
+  }
+
+  /**
+   * Sets the given field to the given object value.
+   * @param field The field.
+   * @param val The value.
+   */
+  public void setFieldObject(String field, Object val)
+  {
+    throwInvalidField(field, Type.OBJECT);
+    fieldsObject[fieldDescriptor.getTypeToFieldToIndex().get(Type.OBJECT).get(field)] = val;
+  }
+
+  /**
+   * Gets the object value of the given field.
+   * @param field The field.
+   * @return The value.
+   */
+  public Object getFieldObject(String field)
   {
     throwInvalidField(field, Type.BOOLEAN);
     return fieldsBoolean[fieldDescriptor.getTypeToFieldToIndex().get(Type.BOOLEAN).get(field)];

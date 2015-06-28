@@ -83,7 +83,7 @@ public class FieldsDescriptor implements Serializable
    */
   private Object2IntLinkedOpenHashMap<Type> typeToSize;
 
-  private List<Serde> serdes;
+  private Serde[] serdes;
 
   /**
    * This constructor is used for serialization.
@@ -118,18 +118,28 @@ public class FieldsDescriptor implements Serializable
     initialize();
 
     List<String> fieldNames = typeToFields.get(Type.OBJECT);
-    serdes = Lists.newArrayList();
 
-    //Insert serdes into corresponding order
-    for(String fieldName: fieldNames) {
-      Serde serdeObject = fieldToSerdeObject.get(fieldName);
-      if(serdeObject == null) {
-        throw new IllegalArgumentException("The field " +
-                                           fieldName +
-                                           " doesn't have a serde object.");
+    if(fieldNames == null) {
+      throw new IllegalArgumentException("There are no fields of type " + Type.OBJECT +
+                                         " in this fieldsdescriptor");
+    }
+    else {
+      serdes = new Serde[fieldNames.size()];
+
+      //Insert serdes in corresponding order
+      for(int index = 0;
+          index < fieldNames.size();
+          index++) {
+        String fieldName = fieldNames.get(index);
+        Serde serdeObject = fieldToSerdeObject.get(fieldName);
+        if(serdeObject == null) {
+          throw new IllegalArgumentException("The field "
+                                             + fieldName
+                                             + " doesn't have a serde object.");
+        }
+
+        serdes[index] = serdeObject;
       }
-
-      serdes.add(serdeObject);
     }
   }
 
@@ -375,6 +385,11 @@ public class FieldsDescriptor implements Serializable
   public Object2IntLinkedOpenHashMap<Type> getTypeToSize()
   {
     return typeToSize;
+  }
+
+  public Serde[] getSerdes()
+  {
+    return serdes;
   }
 
   @Override

@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  * <p>
- * This operator performs dimensions computation on a POJO. See {@link DimensionsComputationFlexibleSingleSchema}
+ * This operator performs dimensions computation on a POJO. See {@link AbstractDimensionsComputationFlexibleSingleSchema}
  * for description of how the dimensions computation is performed.
  * </p>
  * <p>
@@ -50,7 +50,7 @@ import java.util.Map;
  * @category Statistics
  * @tags event, dimension, aggregation, computation, pojo
  */
-public class DimensionsComputationFlexibleSingleSchemaPOJO extends DimensionsComputationFlexibleSingleSchema<Object>
+public class DimensionsComputationFlexibleSingleSchemaPOJO extends AbstractDimensionsComputationFlexibleSingleSchema<Object>
 {
   /**
    * The array of getters to use to extract keys from input POJOs.

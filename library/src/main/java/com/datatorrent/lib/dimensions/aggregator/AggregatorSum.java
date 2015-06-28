@@ -16,6 +16,7 @@
 package com.datatorrent.lib.dimensions.aggregator;
 
 import com.datatorrent.lib.appdata.gpo.GPOMutable;
+import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
 import com.datatorrent.lib.appdata.schemas.Type;
 import com.datatorrent.lib.dimensions.DimensionsEvent;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
@@ -174,5 +175,11 @@ public class AggregatorSum extends AbstractIncrementalAggregator
   public Type getOutputType(Type inputType)
   {
     return AggregatorUtils.IDENTITY_NUMBER_TYPE_MAP.get(inputType);
+  }
+  
+  @Override
+  public FieldsDescriptor getMetaDataDescriptor()
+  {
+    return null;
   }
 }

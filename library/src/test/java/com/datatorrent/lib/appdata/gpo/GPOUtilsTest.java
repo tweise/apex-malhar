@@ -79,15 +79,15 @@ public class GPOUtilsTest
 
     GPOMutable gpo = new GPOMutable(fd);
 
-    gpo.setField(tboolean, tbooleanv);
-    gpo.setField(tchar, tcharv);
+    gpo.setFieldGeneric(tboolean, tbooleanv);
+    gpo.setFieldGeneric(tchar, tcharv);
     gpo.setField(tstring, tstringv);
-    gpo.setField(tfloat, tfloatv);
-    gpo.setField(tdouble, tdoublev);
-    gpo.setField(tbyte, tbytev);
-    gpo.setField(tshort, tshortv);
-    gpo.setField(tinteger, tintegerv);
-    gpo.setField(tlong, tlongv);
+    gpo.setFieldGeneric(tfloat, tfloatv);
+    gpo.setFieldGeneric(tdouble, tdoublev);
+    gpo.setFieldGeneric(tbyte, tbytev);
+    gpo.setFieldGeneric(tshort, tshortv);
+    gpo.setFieldGeneric(tinteger, tintegerv);
+    gpo.setFieldGeneric(tlong, tlongv);
 
     int serializeLength = GPOUtils.serializedLength(gpo);
 
@@ -144,17 +144,18 @@ public class GPOUtilsTest
 
     GPOMutable gpo = new GPOMutable(fd);
 
-    gpo.setField(tboolean, tbooleanv);
-    gpo.setField(tchar, tcharv);
+    gpo.setFieldGeneric(tboolean, tbooleanv);
+    gpo.setFieldGeneric(tchar, tcharv);
     gpo.setField(tstring, tstringv);
-    gpo.setField(tfloat, tfloatv);
-    gpo.setField(tdouble, tdoublev);
-    gpo.setField(tbyte, tbytev);
-    gpo.setField(tshort, tshortv);
-    gpo.setField(tinteger, tintegerv);
-    gpo.setField(tlong, tlongv);
+    gpo.setFieldGeneric(tfloat, tfloatv);
+    gpo.setFieldGeneric(tdouble, tdoublev);
+    gpo.setFieldGeneric(tbyte, tbytev);
+    gpo.setFieldGeneric(tshort, tshortv);
+    gpo.setFieldGeneric(tinteger, tintegerv);
+    gpo.setFieldGeneric(tlong, tlongv);
 
-    byte[] gpoByte = GPOUtils.serialize(gpo);
+    GPOByteArrayList byteArrayList = new GPOByteArrayList();
+    byte[] gpoByte = GPOUtils.serialize(gpo, byteArrayList);
     logger.debug("GPO num bytes: {}", gpoByte.length);
     GPOMutable dgpo = GPOUtils.deserialize(fd, gpoByte, 0);
 

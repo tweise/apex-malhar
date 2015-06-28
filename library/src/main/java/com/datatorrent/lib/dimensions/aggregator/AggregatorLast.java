@@ -16,6 +16,7 @@
 
 package com.datatorrent.lib.dimensions.aggregator;
 
+import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
 import com.datatorrent.lib.appdata.schemas.Type;
 import com.datatorrent.lib.dimensions.DimensionsEvent;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
@@ -56,5 +57,11 @@ public class AggregatorLast extends AbstractIncrementalAggregator
   public void aggregate(Aggregate dest, Aggregate src)
   {
     DimensionsEvent.copy(dest, src);
+  }
+  
+  @Override
+  public FieldsDescriptor getMetaDataDescriptor()
+  {
+    return null;
   }
 }

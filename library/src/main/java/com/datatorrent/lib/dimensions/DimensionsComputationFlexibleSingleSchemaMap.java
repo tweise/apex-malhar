@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * <p>
- * This operator performs dimensions computation on a map. See {@link DimensionsComputationFlexibleSingleSchema}
+ * This operator performs dimensions computation on a map. See {@link AbstractDimensionsComputationFlexibleSingleSchema}
  * for description of how the dimensions computation is performed.
  * </p>
  * <p>
@@ -39,7 +39,7 @@ import java.util.Map;
  * @category Statistics
  * @tags event, dimension, aggregation, computation, map
  */
-public class DimensionsComputationFlexibleSingleSchemaMap extends DimensionsComputationFlexibleSingleSchema<Map<String, Object>>
+public class DimensionsComputationFlexibleSingleSchemaMap extends AbstractDimensionsComputationFlexibleSingleSchema<Map<String, Object>>
 {
   @NotNull
   private Map<String, String> keyNameAliases = Maps.newHashMap();
@@ -74,7 +74,7 @@ public class DimensionsComputationFlexibleSingleSchemaMap extends DimensionsComp
         index < fd.getFieldList().size();
         index++) {
       String field = fd.getFieldList().get(index);
-      gpoMutable.setField(field, event.get(getMapAlias(aliasMap,
+      gpoMutable.setFieldGeneric(field, event.get(getMapAlias(aliasMap,
                                                      field)));
     }
   }

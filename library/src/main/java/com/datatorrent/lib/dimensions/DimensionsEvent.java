@@ -115,7 +115,7 @@ public class DimensionsEvent implements Serializable
    * be the same as the given {@link EventKey}.
    * @param eventKey The {@link EventKey} to set on this event.
    */
-  protected void setEventKey(EventKey eventKey)
+  protected final void setEventKey(EventKey eventKey)
   {
     this.eventKey = new EventKey(eventKey);
   }
@@ -124,7 +124,7 @@ public class DimensionsEvent implements Serializable
    * This is a helper method which sets the aggregates for this event.
    * @param aggregates The aggregates for this event.
    */
-  protected void setAggregates(GPOMutable aggregates)
+  protected final void setAggregates(GPOMutable aggregates)
   {
     Preconditions.checkNotNull(aggregates);
     this.aggregates = aggregates;
@@ -607,7 +607,7 @@ public class DimensionsEvent implements Serializable
     {
       this.typeInputEvent = typeInputEvent;
     }
-    
+
     @Override
     public int hashCode()
     {
@@ -640,6 +640,7 @@ public class DimensionsEvent implements Serializable
      * This is the aggregatorIndex assigned to this event.
      */
     protected int aggregatorIndex;
+    private GPOMutable metaData;
 
     private Aggregate()
     {
@@ -658,6 +659,16 @@ public class DimensionsEvent implements Serializable
       this.typeInputEvent = false;
       setEventKey(eventKey);
       setAggregates(aggregates);
+    }
+
+    public Aggregate(EventKey eventKey,
+                     GPOMutable aggregates,
+                     GPOMutable metaData)
+    {
+      super(eventKey,
+            aggregates);
+
+      setMetaData(metaData);
     }
 
     /**
@@ -686,6 +697,24 @@ public class DimensionsEvent implements Serializable
       setAggregates(aggregates);
     }
 
+    public Aggregate(GPOMutable keys,
+                     GPOMutable aggregates,
+                     GPOMutable metaData,
+                     int bucketID,
+                     int schemaID,
+                     int dimensionDescriptorID,
+                     int aggregatorIndex)
+    {
+      this(keys,
+           aggregates,
+           bucketID,
+           schemaID,
+           dimensionDescriptorID,
+           aggregatorIndex);
+
+      setMetaData(metaData);
+    }
+
     /**
      * This creates an event with the given data. Note, this constructor assumes that the bucketID will be 0.
      *
@@ -707,6 +736,33 @@ public class DimensionsEvent implements Serializable
                                    aggregatorIndex,
                                    keys);
       setAggregates(aggregates);
+    }
+
+    public Aggregate(GPOMutable keys,
+                     GPOMutable aggregates,
+                     GPOMutable metaData,
+                     int schemaID,
+                     int dimensionDescriptorID,
+                     int aggregatorIndex)
+    {
+      this(keys,
+           aggregates,
+           schemaID,
+           dimensionDescriptorID,
+           aggregatorIndex);
+
+      setMetaData(metaData);
+    }
+
+    private void setMetaData(GPOMutable metaData)
+    {
+      Preconditions.checkNotNull(metaData);
+      this.metaData = metaData;
+    }
+
+    public GPOMutable getMetaData()
+    {
+      return metaData;
     }
 
     public void setAggregatorIndex(int aggregatorIndex)
