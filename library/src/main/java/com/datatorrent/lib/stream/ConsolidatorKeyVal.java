@@ -39,9 +39,9 @@ import com.datatorrent.lib.util.KeyValPair;
  * <b>Ports : </b><br>
  * <b>Input(s) : </b> 5 max input ports, 3 are optional. <br>
  * <br>
+ *
  * @displayName Consolidator Key Value
  * @category Stream Manipulators
- * @tags arraylist, key value
  * @since 0.3.3
  */
 @OperatorAnnotation(partitionable = false)

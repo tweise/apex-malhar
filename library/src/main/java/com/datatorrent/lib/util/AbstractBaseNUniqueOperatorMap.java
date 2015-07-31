@@ -24,6 +24,7 @@ import java.util.Map;
  * which orders tuples per key and emits the top N unique tuples per key at the end of the window.&nbsp;
  * Subclasses should implement the methods which control the ordering and emission of tuples.
  * <p></p>
+ *
  * @displayName Abstract Base N Unique Map
  * @category Algorithmic
  * @tags rank

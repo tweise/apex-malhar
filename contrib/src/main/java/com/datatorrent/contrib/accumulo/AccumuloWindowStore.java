@@ -47,7 +47,6 @@ import com.datatorrent.lib.db.TransactionableStore;
  *
  * @displayName Accumulo Window Store
  * @category Output
- * @tags accumulo, key value
  * @since 1.0.4
  */
 public class AccumuloWindowStore extends AccumuloStore implements TransactionableStore {

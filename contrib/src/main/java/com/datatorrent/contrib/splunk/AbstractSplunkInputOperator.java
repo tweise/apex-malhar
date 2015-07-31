@@ -38,10 +38,10 @@ import com.datatorrent.lib.db.AbstractStoreInputOperator;
  * <p>
  * This is an abstract class. Sub-classes need to implement {@link #queryToRetrieveData()} and {@link #getTuple(String)}.
  * </p>
+ *
  * @displayName Abstract Splunk Input
  * @category Input
  * @tags splunk
- *
  * @since 1.0.4
  */
 public abstract class AbstractSplunkInputOperator<T> extends AbstractStoreInputOperator<T, SplunkStore> {

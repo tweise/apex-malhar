@@ -27,6 +27,7 @@ import com.datatorrent.api.Context.OperatorContext;
  * This operator consumes maps whose keys are strings and values are integers.&nbsp;
  * In each application window the values for each key are summed and each string/sum pair is emitted at the end of each window.
  * <p></p>
+ *
  * @displayName Key Val Sum
  * @category Test Bench
  * @tags count

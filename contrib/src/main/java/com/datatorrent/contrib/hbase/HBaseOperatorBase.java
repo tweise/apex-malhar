@@ -28,9 +28,9 @@ import org.apache.hadoop.hbase.client.HTable;
  * the configuration to be used by the HBase operators.<br>
  *
  * <br>
+ *
  * @displayName HBase Operator Base
  * @category Output
- * @tags hbase, base, properties
  * @since 0.3.2
  */
 public class HBaseOperatorBase

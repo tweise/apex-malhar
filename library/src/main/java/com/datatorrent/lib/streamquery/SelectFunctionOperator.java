@@ -38,6 +38,7 @@ import com.datatorrent.lib.streamquery.function.FunctionIndex;
  * <br>
  * <b> Properties : </b> <br>
  * <b> functions : </b> Sql function for rows. <br>
+ *
  * @displayName Select Function
  * @category Stream Manipulators
  * @tags sql top, sql limit, sql select operator

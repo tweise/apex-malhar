@@ -21,8 +21,9 @@ import javax.validation.constraints.NotNull;
 
 /**
  * A base class for select condition for selecting or filtering the rows.&nbsp; Subclasses should provide the
-   implementation to filter valid rows and valid joins.
+ *   implementation to filter valid rows and valid joins.
  * <p>
+ *
  * @displayName Condition
  * @category Stream Manipulators
  * @tags sql condition, filter

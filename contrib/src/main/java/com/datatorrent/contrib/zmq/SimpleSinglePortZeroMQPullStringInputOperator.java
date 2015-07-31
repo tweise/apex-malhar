@@ -20,6 +20,7 @@ package com.datatorrent.contrib.zmq;
  * This simple operator will automatically receive data from a pusher,
  * and convert byte messages into strings which are then emitted as tuples.
  * <p></p>
+ *
  * @displayName Simple Single Port ZeroMQ Pull String Input
  * @category Messaging
  * @tags output operator, string

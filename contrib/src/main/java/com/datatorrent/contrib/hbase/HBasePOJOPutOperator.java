@@ -28,9 +28,11 @@ import com.datatorrent.lib.util.PojoUtils.Getter;
 import com.datatorrent.lib.util.TableInfo;
 
 /**
+ * <p>HBasePOJOPutOperator class.</p>
+ *
  * @displayName HBase Output Operator
  * @category Output
- * @tags database, nosql, pojo, hbase
+ * @since 3.0.0
  */
 @Evolving
 public class HBasePOJOPutOperator extends AbstractHBasePutOutputOperator<Object>

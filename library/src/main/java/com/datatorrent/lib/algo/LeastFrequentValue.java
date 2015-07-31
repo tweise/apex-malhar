@@ -48,8 +48,6 @@ import com.datatorrent.lib.util.AbstractBaseFrequentKey;
  *
  * @displayName Emit Least Frequent Value
  * @category Rules and Alerts
- * @tags filter, count
- *
  * @since 0.3.3
  */
 

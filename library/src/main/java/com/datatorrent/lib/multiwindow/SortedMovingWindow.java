@@ -47,7 +47,6 @@ import com.google.common.base.Function;
  *
  * @displayName Sorted Moving Window
  * @category Stats and Aggregations
- * @tags sort, list, function, sliding window
  * @since 0.9.2
  */
 public class SortedMovingWindow<T, K> extends AbstractSlidingWindow<T, List<T>>

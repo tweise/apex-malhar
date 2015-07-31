@@ -35,7 +35,7 @@ import com.datatorrent.api.annotation.ApplicationAnnotation;
  * waiting times and eruption duration values.
  * For every application window, it generates only one 'elapsed time' input for which the
  * prediction would be made.
- * Model in R is in file ruptionModel.R located at 
+ * Model in R is in file ruptionModel.R located at
  * demos/r/src/main/resources/com/datatorrent/demos/oldfaithful/ directory
  *
  * @since 2.1.0

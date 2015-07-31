@@ -20,9 +20,9 @@ import java.util.Map;
 /**
  * Implementation of {@link AbstractCouchDBOutputOperator} that saves a Map in the couch database. <br/>
  * <p>
+ *
  * @displayName Map Based CouchDb Output Operator
  * @category Output
- * @tags couchDb, database, nosql
  * @since 0.3.5
  */
 public class MapBasedCouchDbOutputOperator extends AbstractCouchDBOutputOperator<Map<Object, Object>>

@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
  * <b>Benchmarks</b>: Blast as many tuples as possible in inline mode<br>
  * Benchmarked at over 17 million tuples/second in local/in-line mode<br>
  * </p>
+ *
  * @displayName Throughput Counter
  * @category Test Bench
  * @tags count

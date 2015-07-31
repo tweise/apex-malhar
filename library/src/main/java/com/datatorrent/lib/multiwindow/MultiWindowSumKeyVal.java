@@ -42,6 +42,7 @@ import javax.validation.constraints.Min;
  * <b>windowSize i.e. N</b>: Number of streaming windows that define application
  * window.<br>
  * <br>
+ *
  * @displayName Multi Window Sum Key Value
  * @category Stats and Aggregations
  * @tags key value, sum, numeric

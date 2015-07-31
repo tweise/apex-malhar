@@ -44,9 +44,9 @@ import com.datatorrent.api.StreamCodec;
  * <br>
  * <b>Benchmark</b>: Not done as this is an abstract operator<br>
  * </p>
+ *
  * @displayName Abstract Base N Map
  * @category Algorithmic
- * @tags rank, key value
  * @since 0.3.2
  */
 abstract public class AbstractBaseNOperatorMap<K,V> extends BaseKeyValueOperator<K,V>

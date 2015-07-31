@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  * A generic output operator which updates the database without using transactions
  * and batches writes to increase performance. This operator satisfies the exactly once constraint
  * when performing updates, but may not satisfy it when doing inserts.
+ *
  * @param <T> The type of tuples to be processed.
  * @param <S> The type of store to be used.
- *
  * @since 1.0.5
  */
 public abstract class AbstractJdbcNonTransactionableBatchOutputOperator<T, S extends JdbcNonTransactionalStore> extends AbstractJdbcNonTransactionableOutputOperator<T, S>

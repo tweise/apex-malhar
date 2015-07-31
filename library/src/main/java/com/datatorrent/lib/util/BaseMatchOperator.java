@@ -39,9 +39,9 @@ import javax.validation.constraints.Pattern;
  * Run time checks<br>
  * none<br>
  * </p>
+ *
  * @displayName Base Match
  * @category Algorithmic
- * @tags compare, filter, key value, abstract
  * @since 0.3.2
  */
 public class BaseMatchOperator<K, V> extends BaseKeyValueOperator<K, V>

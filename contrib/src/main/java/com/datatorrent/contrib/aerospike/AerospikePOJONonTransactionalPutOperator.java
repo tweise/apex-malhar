@@ -38,7 +38,6 @@ import com.datatorrent.lib.util.PojoUtils.Getter;
  *
  * @displayName Aerospike Non-Transactional Put Operator
  * @category Output
- * @tags database, nosql, pojo, aerospike
  * @since 2.1.0
  */
 @Evolving

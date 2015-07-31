@@ -27,9 +27,9 @@ import com.datatorrent.api.Context.OperatorContext;
 /**
  * This operator consumes tuples.&nbsp;If the tuples satisfy a specified Java Script filtering function, then they are emitted.
  * <p></p>
+ *
  * @displayName Java Script Filter
  * @category Rules and Alerts
- * @tags filter, javascript
  * @since 0.3.4
  */
 public class JavaScriptFilterOperator extends FilterOperator

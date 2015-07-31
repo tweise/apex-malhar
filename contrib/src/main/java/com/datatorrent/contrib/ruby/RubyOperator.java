@@ -34,7 +34,6 @@ import com.datatorrent.lib.script.ScriptOperator;
  *
  * @displayName Ruby Operator
  * @category Scripting
- * @tags script, map, string
  * @since 1.0.4
  */
 public class RubyOperator extends ScriptOperator {

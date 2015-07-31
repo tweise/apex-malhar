@@ -1,3 +1,4 @@
+
 /**
  * Copyright (C) 2015 DataTorrent, Inc.
  *
@@ -12,13 +13,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @since 3.0.0
  */
 package com.datatorrent.lib.util;
 
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
-
 public class TableInfo< T extends FieldInfo >
 {
   //the row or id expression

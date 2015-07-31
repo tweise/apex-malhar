@@ -52,7 +52,6 @@ import com.datatorrent.api.annotation.OperatorAnnotation;
  * @category Algorithmic
  * @tags rank
  * </p>
- *
  * @since 0.3.3
  */
 @OperatorAnnotation(partitionable = true)

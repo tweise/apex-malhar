@@ -27,7 +27,7 @@ import java.util.Map;
  * Operator compares based on the property "key", "value", and "compare".
  * <p>
  * The comparison is done by getting double value from the Number.
- * Passed tuples are emitted on the output port "compare".&nbsp; 
+ * Passed tuples are emitted on the output port "compare".&nbsp;
  * Failed tuples are emitted on port "except".
  * Both output ports are optional, but at least one has to be connected.
  * This module is a pass through<br>
@@ -72,9 +72,9 @@ import java.util.Map;
  * </table>
  * <br>
  * <br>
+ *
  * @displayName Compare Except Map
  * @category Math
- * @tags comparison, key value, number, hash map
  * @since 0.3.2
  */
 @Stateless

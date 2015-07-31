@@ -1,3 +1,4 @@
+
 /**
  * Copyright (C) 2015 DataTorrent, Inc.
  *
@@ -12,13 +13,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @since 3.0.0
  */
 package com.datatorrent.contrib.hbase;
 
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.datatorrent.lib.util.FieldInfo;
-
 public class HBaseFieldInfo extends FieldInfo
 {
 	private String familyName;

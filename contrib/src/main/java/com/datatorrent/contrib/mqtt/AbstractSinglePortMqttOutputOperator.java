@@ -37,6 +37,7 @@ import com.datatorrent.api.DefaultInputPort;
  * <br>
  * <b>Benchmarks</b>:TBD
  * </p>
+ *
  * @displayName Abstract Single Port MQTT Output
  * @category Messaging
  * @tags output operator

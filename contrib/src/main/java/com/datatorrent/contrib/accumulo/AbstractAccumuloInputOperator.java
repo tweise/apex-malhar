@@ -30,6 +30,7 @@ import com.datatorrent.lib.db.AbstractStoreInputOperator;
  * <p>
  * This is an abstract class. Sub-classes need to implement {@link #getScanner()} and {@link #getTuple(Entry)}.
  * </p>
+ *
  * @displayName Abstract Accumulo Input
  * @category Input
  * @tags key value, accumulo

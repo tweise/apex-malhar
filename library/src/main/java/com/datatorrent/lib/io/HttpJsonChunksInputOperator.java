@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
  * If second rawOutput is connected then content is streamed to this port as it is.
  * <br>
  * </p>
+ *
  * @displayName HTTP JSON Chunks Input
  * @category Input
  * @tags http
- *
  * @since 0.9.4
  */
 public class HttpJsonChunksInputOperator extends AbstractHttpInputOperator<Map<String, String>>

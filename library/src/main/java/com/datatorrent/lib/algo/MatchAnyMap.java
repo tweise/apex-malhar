@@ -60,8 +60,6 @@ import com.datatorrent.lib.util.UnifierBooleanOr;
  *
  * @displayName Emit Boolean For Match (Number)
  * @category Rules and Alerts
- * @tags filter, key value
- *
  * @since 0.3.2
  */
 

@@ -57,8 +57,6 @@ import com.datatorrent.lib.util.BaseMatchOperator;
  *
  * @displayName Emit First Match (Number)
  * @category Rules and Alerts
- * @tags filter, key value, numeric
- *
  * @since 0.3.2
  */
 

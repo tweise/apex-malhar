@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Interface to define sql select statement indexes for column names,aggregate.
  * <p>
+ *
  * @displayName Index
  * @category Stream Manipulators
  * @tags index

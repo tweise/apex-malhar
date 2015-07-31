@@ -59,8 +59,6 @@ import com.datatorrent.lib.util.UnifierHashMap;
  *
  * @displayName Emit Matching Keval Pairs (Number)
  * @category Rules and Alerts
- * @tags filter, key value, numeric
- *
  * @since 0.3.2
  */
 @Stateless

@@ -56,6 +56,8 @@ import com.datatorrent.lib.appdata.schemas.ResultFormatter;
  * }
  * </code>
  * </pre>
+ *
+ * @since 3.0.0
  */
 public class MessageSerializerFactory
 {

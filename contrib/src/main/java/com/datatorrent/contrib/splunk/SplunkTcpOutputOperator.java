@@ -26,6 +26,7 @@ import java.net.Socket;
 /**
  * The output operator for Splunk, which writes to a TCP port on which splunk server is configured.
  * <p></p>
+ *
  * @displayName Splunk TCP Output
  * @category Output
  * @tags splunk

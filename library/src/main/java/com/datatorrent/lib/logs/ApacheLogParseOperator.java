@@ -48,10 +48,9 @@ import com.datatorrent.api.annotation.Stateless;
  * <br>
  * <b>Properties</b>: none<br>
  * </p>
+ *
  * @displayName Apache Log Parse
  * @category Tuple Converters
- * @tags apache, parse
- *
  * @since 0.3.3
  */
 @Stateless

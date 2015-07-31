@@ -24,7 +24,6 @@ import javax.validation.constraints.NotNull;
  *
  * @displayName Round Double Index
  * @category Stream Manipulators
- * @tags alias, maths
  * @since 0.3.4
  */
 public class RoundDoubleIndex  extends ColumnIndex

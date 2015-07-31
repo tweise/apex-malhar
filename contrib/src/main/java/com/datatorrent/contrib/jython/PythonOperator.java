@@ -27,10 +27,9 @@ import java.util.Map;
 /**
  * An operator that executes a python script and passes the input as bindings.
  * <p></p>
+ *
  * @displayName Python
  * @category Scripting
- * @tags python, script
- *
  * @since 0.3.3
  */
 public class PythonOperator extends ScriptOperator

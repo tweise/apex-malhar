@@ -37,10 +37,9 @@ import org.slf4j.LoggerFactory;
  * Reads via WebSocket from given URL as input stream.&nbsp;
  * Incoming data is interpreted as JSONObject and converted to {@link java.util.Map}.
  * <p></p>
+ *
  * @displayName JSON Map Input
  * @category Input
- * @tags http, websocket
- *
  * @since 0.3.2
  */
 public class WebSocketInputOperator<T> extends SimpleSinglePortInputOperator<T> implements Runnable

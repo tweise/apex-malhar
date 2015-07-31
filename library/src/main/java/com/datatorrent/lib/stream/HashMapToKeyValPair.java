@@ -41,9 +41,9 @@ import java.util.Map;
  * <b>keyval</b>: emits Entry&lt;K,V&gt;<br>
  * <b>val</b>: emits V<br>
  * <br>
+ *
  * @displayName Hash Map To Key Value Pair
  * @category Tuple Converters
- * @tags hashmap, key value
  * @since 0.3.3
  */
 @Stateless

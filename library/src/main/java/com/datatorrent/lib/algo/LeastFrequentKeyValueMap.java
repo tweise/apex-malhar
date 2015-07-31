@@ -68,8 +68,6 @@ import com.datatorrent.lib.util.AbstractBaseFrequentKeyValueMap;
  *
  * @displayName Emit Least Frequent Keyval Pair
  * @category Rules and Alerts
- * @tags filter, key value, count
- *
  * @since 0.3.2
  */
 public class LeastFrequentKeyValueMap<K, V> extends AbstractBaseFrequentKeyValueMap<K, V>

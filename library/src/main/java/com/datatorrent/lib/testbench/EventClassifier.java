@@ -57,6 +57,7 @@ import java.util.Random;
  * <br>
  * <b>Benchmarks</b>: This node has been benchmarked at over 5 million tuples/second in local/inline mode<br>
  * <p>
+ *
  * @displayName Event Classifier
  * @category Test Bench
  * @tags hashmap,classification

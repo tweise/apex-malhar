@@ -29,7 +29,7 @@ import com.datatorrent.netlet.util.DTThrowable;
  * @displayName Rabbit MQ output operator
  * @category Messaging
  * @tags input operator, string
- *
+ * @since 3.0.0
  */
 public class RabbitMQOutputOperator extends AbstractSinglePortRabbitMQOutputOperator<byte[]>
 {

@@ -28,9 +28,9 @@ import org.apache.commons.lang.mutable.MutableInt;
  * If the operator emits a map, it contains the tuples mapped to their corresponding counts.&nbsp;
  * Subclasses should implement the methods used to emit lists and maps.
  * <p></p>
+ *
  * @displayName Abstract Base Sort
  * @category Algorithmic
- * @tags rank, count
  * @since 0.3.2
  */
 //

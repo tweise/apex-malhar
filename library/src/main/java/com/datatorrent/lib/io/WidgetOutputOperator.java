@@ -49,10 +49,9 @@ import com.datatorrent.common.util.PubSubWebSocketClient;
  *  By default it outputs data to WebSocket channel specified by DT gateway.<br>
  *  If DT gateway is not specified, it will use output data to console.
  * </p>
+ *
  * @displayName DT Widget Output
  * @category Output
- * @tags dt, output operator
- *
  * @since 0.9.3
  */
 public class WidgetOutputOperator extends BaseOperator

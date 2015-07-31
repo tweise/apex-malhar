@@ -36,9 +36,9 @@ import com.datatorrent.lib.util.PojoUtils.Getter;
  * {@link com.datatorrent.contrib.aerospike.AbstractAerospikeTransactionalPutOperator} which can
  * take a POJO.
  * </p>
+ *
  * @displayName Aerospike Transactional Put Operator
  * @category Output
- * @tags data, nosql, pojo, aerospike
  * @since 2.1.0
  */
 @Evolving

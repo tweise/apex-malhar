@@ -45,8 +45,6 @@ import com.datatorrent.lib.util.AbstractBaseNUniqueOperatorMap;
  *
  * @displayName Bottom N Unique Map
  * @category Stats and Aggregations
- * @tags filter, rank, unique, key value
- *
  * @since 0.3.3
  */
 public class BottomNUniqueMap<K, V> extends AbstractBaseNUniqueOperatorMap<K, V>

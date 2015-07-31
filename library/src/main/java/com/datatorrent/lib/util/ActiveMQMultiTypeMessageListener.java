@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>ActiveMQMultiTypeMessageListener class.</p>
+ *
  * @since 2.1.0
  */
 public class ActiveMQMultiTypeMessageListener extends ActiveMQMessageListener

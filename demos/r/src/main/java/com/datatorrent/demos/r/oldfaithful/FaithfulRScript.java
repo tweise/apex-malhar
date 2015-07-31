@@ -29,6 +29,8 @@ import com.datatorrent.api.DefaultInputPort;
 import com.datatorrent.api.annotation.InputPortFieldAnnotation;
 
 /**
+ * <p>FaithfulRScript class.</p>
+ *
  * @since 2.1.0
  */
 public class FaithfulRScript extends RScript

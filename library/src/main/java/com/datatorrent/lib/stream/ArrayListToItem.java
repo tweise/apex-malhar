@@ -33,7 +33,6 @@ import java.util.ArrayList;
  *
  * @displayName Array List To Item
  * @category Stream Manipulators
- * @tags arraylist, clone
  * @since 0.3.3
  */
 @Stateless

@@ -55,7 +55,6 @@ import com.datatorrent.lib.db.Connectable;
  * @displayName Abstract Solr Output
  * @category Search Engine
  * @tags output operator
- *
  * @since 2.0.0
  */
 public abstract class AbstractSolrOutputOperator<T, S extends Connectable> extends AbstractStoreOutputOperator<T, S>

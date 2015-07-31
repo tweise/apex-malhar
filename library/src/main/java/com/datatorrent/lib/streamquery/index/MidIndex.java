@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * <p>An implementation of Column Index that implements filter method based on mid index. </p>
  * <p>
+ *
  * @displayName Mid Index
  * @category Stream Manipulators
  * @tags index

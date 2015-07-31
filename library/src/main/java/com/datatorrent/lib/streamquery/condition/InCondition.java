@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
  * <b>Properties : </b> <br>
  * <b> column : </b> Column name for which value is checked in values set. <br>
  * <b> inValues : </b> Set of values in which column value is checked. <br>
+ *
  * @displayName In Condition
  * @category Stream Manipulators
  * @tags sql condition

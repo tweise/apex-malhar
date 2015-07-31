@@ -38,6 +38,7 @@ import com.datatorrent.lib.util.KeyValPair;
  * <b>Properties</b>:<br>
  * <b>windowSize</b>: Number of windows to keep state on<br>
  * <br>
+ *
  * @displayName Simple Moving Average
  * @category Stats and Aggregations
  * @tags key value, numeric, average

@@ -34,6 +34,7 @@ import java.util.HashMap;
  * <b>keyval</b>: expects KeyValPair&lt;K,V&gt;<br>
  * <b>map</b>: emits HashMap&lt;K,V&gt;<br>
  * <br>
+ *
  * @displayName Key Value Pair To HashMap
  * @category Tuple Converters
  * @tags key value

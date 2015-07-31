@@ -56,8 +56,6 @@ import com.datatorrent.lib.util.BaseMatchOperator;
  *
  * @displayName Emit Last Match (Number)
  * @category Rules and Alerts
- * @tags filter, key value, numeric
- *
  * @since 0.3.2
  */
 @OperatorAnnotation(partitionable = false)

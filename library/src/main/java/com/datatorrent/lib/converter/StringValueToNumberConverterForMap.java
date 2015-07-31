@@ -30,7 +30,7 @@ import com.datatorrent.api.DefaultOutputPort;
  * @displayName String to Number value converter for Map
  * @category Tuple Converters
  * @tags string
- *
+ * @since 3.0.0
  */
 public class StringValueToNumberConverterForMap<K> extends BaseOperator {
 

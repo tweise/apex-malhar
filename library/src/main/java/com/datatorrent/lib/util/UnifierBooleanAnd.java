@@ -25,9 +25,9 @@ import com.datatorrent.api.Operator.Unifier;
  * <p>
  * The processing is done with sticky key partitioning, i.e. each one key belongs only to one partition.
  * </p>
+ *
  * @displayName Unifier Boolean And
  * @category Algorithmic
- * @tags unifier, and
  * @since 0.3.2
  */
 public class UnifierBooleanAnd implements Unifier<Boolean>

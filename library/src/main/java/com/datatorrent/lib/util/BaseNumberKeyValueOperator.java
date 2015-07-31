@@ -26,9 +26,9 @@ import javax.validation.constraints.NotNull;
  * <br>
  * <b>Benchmarks</b>: Not done as emit is done by sub-classes<br>
  * </p>
+ *
  * @displayName Base Number Key Value
  * @category Algorithmic
- * @tags numeric, key value
  * @since 0.3.2
  */
 public class BaseNumberKeyValueOperator<K,V extends Number> extends BaseFilteredKeyValueOperator<K,V>

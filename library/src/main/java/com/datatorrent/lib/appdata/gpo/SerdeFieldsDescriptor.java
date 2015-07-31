@@ -24,6 +24,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
 import com.datatorrent.lib.appdata.schemas.Type;
 
+/**
+ * <p>SerdeFieldsDescriptor class.</p>
+ *
+ * @since 3.0.0
+ */
 public class SerdeFieldsDescriptor implements Serde
 {
   public static final SerdeFieldsDescriptor INSTANCE = new SerdeFieldsDescriptor();

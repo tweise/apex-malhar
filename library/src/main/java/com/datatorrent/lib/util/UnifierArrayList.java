@@ -41,6 +41,7 @@ import com.datatorrent.api.Operator.Unifier;
  * <p>
  * The processing is done with sticky key partitioning, i.e. each one key belongs only to one partition.
  * </p>
+ *
  * @displayName Unifier Array List
  * @category Algorithmic
  * @tags unifier

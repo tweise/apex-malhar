@@ -19,6 +19,7 @@ import com.datatorrent.common.util.Pair;
 
 /**
  * KinesisStringOutputOperator
+ *
  * @category Output
  * @tags kinesis
  * @since 2.0.0

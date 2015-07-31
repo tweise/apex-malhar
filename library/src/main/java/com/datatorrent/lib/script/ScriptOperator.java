@@ -26,10 +26,11 @@ import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 /**
- * A base implementation of a BaseOperator for language script operator.&nbsp; Subclasses should provide the 
-   implementation of getting the bindings and process method. 
+ * A base implementation of a BaseOperator for language script operator.&nbsp; Subclasses should provide the
+ *   implementation of getting the bindings and process method.
  * Interface for language script operator.
  * <p>
+ *
  * @displayName Script
  * @category Scripting
  * @tags script operator, map, string

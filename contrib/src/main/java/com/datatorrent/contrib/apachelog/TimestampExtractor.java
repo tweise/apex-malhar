@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 /**
  * An implementation of InformationExtractor that extracts the time stamp in milliseconds from epoch from an arbitrary date string.
  * <p>
+ *
  * @displayName Timestamp Extractor
  * @category Output
- * @tags timestamp, date, extraction
  * @since 0.9.4
  */
 public class TimestampExtractor implements InformationExtractor

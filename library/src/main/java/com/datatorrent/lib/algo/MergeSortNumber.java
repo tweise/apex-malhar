@@ -39,10 +39,9 @@ import java.util.ArrayList;
  * 1. compare : K type value compare criteria for sort.
  * 2. getUnifierInstance : Get unifier operator instance for output port, (must return self instance).
  * </p>
+ *
  * @displayName Merge Sorted Lists (Number)
  * @category Stream Manipulators
- * @tags rank, numeric
- *
  * @since 0.3.3
  */
 @OperatorAnnotation(partitionable = true)

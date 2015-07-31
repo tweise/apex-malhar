@@ -52,7 +52,6 @@ public class ElasticSearchConnectable implements Connectable
   protected transient TransportClient client;
 
   /**
-   * @return the hostname
    */
   public String getHostName()
   {
@@ -69,6 +68,7 @@ public class ElasticSearchConnectable implements Connectable
   }
 
   /**
+ /**
    * @return the port
    */
   public int getPort()
@@ -78,6 +78,7 @@ public class ElasticSearchConnectable implements Connectable
 
   /**
    * @param port
+   * @param port
    *          the port to set
    */
   public void setPort(int port)
@@ -86,8 +87,29 @@ public class ElasticSearchConnectable implements Connectable
   }
 
   /*
+  public void setPort(int port)
+  {
+    this.port = port;
+  }
+
+  /*
    * (non-Javadoc)
    * 
+   * @see com.datatorrent.lib.db.Connectable#connect()
+   */
+  @Override
+  public void connect() throws IOException
+  {
+    client = new TransportClient();
+    client.addTransportAddress(new InetSocketTransportAddress(hostName, port));
+  public void setPort(int port)
+  {
+    this.port = port;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
    * @see com.datatorrent.lib.db.Connectable#connect()
    */
   @Override

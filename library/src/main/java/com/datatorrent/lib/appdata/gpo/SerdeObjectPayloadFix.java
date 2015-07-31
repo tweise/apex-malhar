@@ -15,6 +15,11 @@
  */
 package com.datatorrent.lib.appdata.gpo;
 
+/**
+ * <p>SerdeObjectPayloadFix interface.</p>
+ *
+ * @since 3.0.0
+ */
 public interface SerdeObjectPayloadFix
 {
   public void fix(Object[] objects);

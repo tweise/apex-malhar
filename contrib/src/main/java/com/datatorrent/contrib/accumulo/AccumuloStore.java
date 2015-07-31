@@ -36,6 +36,7 @@ import com.datatorrent.lib.db.Connectable;
 /**
  * A {@link Connectable} for accumulo that implements Connectable interface.
  * <p>
+ *
  * @displayName Accumulo Store
  * @category Output
  * @tags key value, accumulo

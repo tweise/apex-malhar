@@ -64,6 +64,7 @@ import javax.validation.constraints.NotNull;
  * String: Benchmarked at over 13 million tuples/second in local/in-line mode<br>
  * Integer: Benchmarked at over 7 million tuples/second in local/in-line mode<br>
  * </p>
+ *
  * @displayName Seed Event Classifier
  * @category Test Bench
  * @tags generate

@@ -20,12 +20,14 @@ import com.datatorrent.api.Context.OperatorContext;
 
 /**
  * This is an interface for a manager which manages the queueing of AppData queries.
+ *
  * @param <QUERY_TYPE> The type of the queries being queued.
  * @param <META_QUERY> The type of any meta data to be queued with the query.
  * @param <QUEUE_CONTEXT> The type of any additional contextual information that could impact the way in
  * which a query is queued that is known when the query is queued. This queue context information could
  * be updated by the queue manager throughout the lifetime of the query to control things like how long
  * the query has been queued for.
+ * @since 3.0.0
  */
 public interface QueueManager<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT> extends Component<OperatorContext>
 {

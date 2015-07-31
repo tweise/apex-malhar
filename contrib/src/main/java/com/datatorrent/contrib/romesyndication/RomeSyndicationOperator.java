@@ -46,7 +46,6 @@ import com.datatorrent.lib.io.SimpleSinglePortInputOperator;
  * @displayName Rome Syndication
  * @category Web
  * @tags input operator
- *
  * @since 0.3.2
  */
 public class RomeSyndicationOperator extends SimpleSinglePortInputOperator<RomeFeedEntry> implements Runnable

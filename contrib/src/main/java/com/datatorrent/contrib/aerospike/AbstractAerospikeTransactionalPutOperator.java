@@ -35,9 +35,9 @@ import com.datatorrent.lib.db.AbstractBatchTransactionableStoreOutputOperator;
  * This is needed for the recovery. The operator writes a tuple at least once in the database, which is why
  * only when all the updates are executed, the transaction is committed in the end window call.
  * </p>
+ *
  * @displayName Abstract Aerospike Transactional Put
  * @category Output
- * @tags put, transactional
  * @param <T>type of tuple
  * @since 1.0.4
  */

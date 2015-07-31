@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * This is an abstract class. Sub-classes need to implement {@link #queryToRetrieveData()} and {@link #getTuple(Record)}.
  * </p>
+ *
  * @displayName Abstract Aerospike Get
  * @category Input
  * @tags get

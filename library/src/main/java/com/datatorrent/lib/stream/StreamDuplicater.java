@@ -32,6 +32,7 @@ import com.datatorrent.lib.util.BaseKeyOperator;
  * <b>out1</b>: emits &lt;K&gt;<br>
  * <b>out2</b>: emits &lt;K&gt;<br>
  * <br>
+ *
  * @displayName Stream duplicator
  * @category Stream Manipulators
  * @tags duplicate

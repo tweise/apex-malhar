@@ -27,6 +27,7 @@ import com.datatorrent.api.Context.OperatorContext;
 /**
  * <p>A base implementation of an operator which does count occurrence.</p>
  * <p>
+ *
  * @displayName Count Occurrence
  * @category Test Bench
  * @tags count

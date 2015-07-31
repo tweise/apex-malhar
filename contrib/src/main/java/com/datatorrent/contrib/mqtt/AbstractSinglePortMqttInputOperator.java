@@ -37,6 +37,7 @@ import org.fusesource.mqtt.client.Message;
  * <br>
  * <b>Benchmarks</b>:TBD
  * </p>
+ *
  * @displayName Abstract Single Port MQTT Input
  * @category Messaging
  * @tags input operator

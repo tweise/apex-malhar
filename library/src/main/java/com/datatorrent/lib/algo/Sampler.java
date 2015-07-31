@@ -58,7 +58,6 @@ import com.datatorrent.lib.util.BaseKeyOperator;
  * @displayName Sampler
  * @category Stats and Aggregations
  * @tags filter
- *
  * @since 0.3.2
  */
 @Stateless

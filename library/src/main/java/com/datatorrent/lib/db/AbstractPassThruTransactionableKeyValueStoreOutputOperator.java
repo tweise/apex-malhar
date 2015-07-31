@@ -23,10 +23,10 @@ package com.datatorrent.lib.db;
  * "Pass-through" means it does not wait for end window to write to the store. It will begin transaction at begin window and write to the store as the tuples
  * come and commit the transaction at end window.
  * </p>
+ *
  * @displayName Abstract Pass Through Transactionable Key Value Store Output
  * @category Outupt
  * @tags key value, transactional
- *
  * @param <T> The tuple type
  * @param <S> The store type
  * @since 0.9.3

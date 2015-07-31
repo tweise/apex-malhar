@@ -49,7 +49,6 @@ import org.supercsv.io.*;
  *        - End of line character - default should be ‘\r\n’
  *
  * @param <T> This is the output tuple type.
- *
  * @since 2.1.0
  */
 public abstract class AbstractCsvParser<T> extends BaseOperator

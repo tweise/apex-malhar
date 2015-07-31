@@ -111,9 +111,9 @@ public class RScript extends ScriptOperator
   @NotNull
   private String functionName;
 
-  /**
-   * Path of the R script file
-   */
+/**
+ * Path of the R script file
+ */
   @NotNull
   protected String scriptFilePath;
 
@@ -182,6 +182,7 @@ public class RScript extends ScriptOperator
   }
 
   /**
+ /**
    * Get name of the function to be invoked in R script
    * @return functionName
    */
@@ -192,6 +193,7 @@ public class RScript extends ScriptOperator
 
   /**
    * Set function to be invoked in R script
+   * Set function to be invoked in R script
    * @param functionName
    */
   public void setFunctionName(String functionName)
@@ -200,6 +202,7 @@ public class RScript extends ScriptOperator
   }
 
   /**
+   * Get path of R script file
    * Get path of R script file
    * @return scriptFilePath
    */
@@ -211,7 +214,58 @@ public class RScript extends ScriptOperator
   /**
    * Set path of R script file
    * @param scriptFilePath
+   * Set path of R script file
+   * @param scriptFilePath
    */
+  public void setScriptFilePath(String scriptFilePath)
+  {
+    this.scriptFilePath = scriptFilePath;
+  }
+
+  // Output port on which an int type of value is returned.
+  public final transient DefaultOutputPort<Integer> intOutput = new DefaultOutputPort<Integer>();
+
+  public void setScriptFilePath(String scriptFilePath)
+  {
+    this.scriptFilePath = scriptFilePath;
+  }
+
+  // Output port on which an int type of value is returned.
+  public final transient DefaultOutputPort<Integer> intOutput = new DefaultOutputPort<Integer>();
+  // Output port on which an double type of value is returned.
+  public final transient DefaultOutputPort<Double> doubleOutput = new DefaultOutputPort<Double>();
+
+  // Output port on which an string type of value is returned.
+  public final transient DefaultOutputPort<String> strOutput = new DefaultOutputPort<String>();
+
+  // Output port on which a boolean type of value is returned.
+  public final transient DefaultOutputPort<Boolean> boolOutput = new DefaultOutputPort<Boolean>();
+
+  public void setScriptFilePath(String scriptFilePath)
+  {
+    this.scriptFilePath = scriptFilePath;
+  }
+
+  // Output port on which an int type of value is returned.
+  public final transient DefaultOutputPort<Integer> intOutput = new DefaultOutputPort<Integer>();
+
+  // Output port on which an double type of value is returned.
+  public final transient DefaultOutputPort<Double> doubleOutput = new DefaultOutputPort<Double>();
+
+  // Output port on which an string type of value is returned.
+  public final transient DefaultOutputPort<String> strOutput = new DefaultOutputPort<String>();
+
+  // Output port on which a boolean type of value is returned.
+  public final transient DefaultOutputPort<Boolean> boolOutput = new DefaultOutputPort<Boolean>();
+  // Output port on which an array of type int is returned.
+  public final transient DefaultOutputPort<Integer[]> intArrayOutput = new DefaultOutputPort<Integer[]>();
+
+  // Output port on which an array of type double is returned.
+  public final transient DefaultOutputPort<Double[]> doubleArrayOutput = new DefaultOutputPort<Double[]>();
+
+  // Output port on which an array of type str is returned.
+  public final transient DefaultOutputPort<String[]> strArrayOutput = new DefaultOutputPort<String[]>();
+
   public void setScriptFilePath(String scriptFilePath)
   {
     this.scriptFilePath = scriptFilePath;
@@ -237,13 +291,71 @@ public class RScript extends ScriptOperator
 
   // Output port on which an array of type str is returned.
   public final transient DefaultOutputPort<String[]> strArrayOutput = new DefaultOutputPort<String[]>();
-
   // Output port on which an array of type boolean is returned.
   public final transient DefaultOutputPort<Boolean[]> boolArrayOutput = new DefaultOutputPort<Boolean[]>();
 
   /**
    * Process the tuples
    */
+  @Override
+  public void process(Map<String, Object> tuple)
+  {
+  @Override
+  public void process(Map<String, Object> tuple)
+  {
+    processTuple(tuple);
+  }
+
+  /*
+   * Initialize the R engine, set the name of the script file to be executed. If the script file to be executed on each
+   * node is to be copied by this operator, do so.
+   */
+  @Override
+  public void setup(Context.OperatorContext context)
+  @Override
+  public void process(Map<String, Object> tuple)
+  {
+    processTuple(tuple);
+  }
+
+  /*
+   * Initialize the R engine, set the name of the script file to be executed. If the script file to be executed on each
+   * node is to be copied by this operator, do so.
+   */
+  @Override
+  public void setup(Context.OperatorContext context)
+  {
+    super.setup(context);
+    try {
+      connectable = new REngineConnectable();
+      connectable.connect();
+      REXP result = connectable.getRengine().parseAndEval(super.script);
+    } catch (Exception e) {
+      log.error("Exception: ", e);
+      DTThrowable.rethrow(e);
+    }
+  }
+
+  /*
+   * Stop the R engine and delete the script file if it was copied by this operator during the initial setup.
+   */
+  @Override
+  public void teardown()
+  {
+    try {
+      connectable.disconnect();
+    } catch (IOException ioe) {
+      log.error("Exception: ", ioe);
+      DTThrowable.rethrow(ioe);
+    }
+  }
+
+  /*
+   * This function reads the script file - the R script file here, which is to be executed and loads it into the memory.
+   */
+  private String readFileAsString()
+  {
+    StringBuffer fileData = new StringBuffer(1000);
   @Override
   public void process(Map<String, Object> tuple)
   {
@@ -316,6 +428,51 @@ public class RScript extends ScriptOperator
    * emitted on an outputport depending on its type. It is assumed that the downstream operator knows the type of data
    * being emitted by this operator and will be receiving input tuples from the right output port of this operator.
    */
+
+  public void processTuple(Map<String, Object> tuple)
+  {
+
+    try {
+      for (Map.Entry<String, Object> entry : tuple.entrySet()) {
+        String key = entry.getKey();
+        Object value = entry.getValue();
+
+        switch (argTypeMap.get(key)) {
+        case REXP_INT:
+          int[] iArr = new int[1];
+          iArr[0] = (Integer) value;
+          connectable.getRengine().assign(key, new REXPInteger(iArr));
+          break;
+        case REXP_DOUBLE:
+          double[] dArr = new double[1];
+          dArr[0] = (Double) value;
+          connectable.getRengine().assign(key, new REXPDouble(dArr));
+          break;
+        case REXP_STR:
+          String[] sArr = new String[1];
+          sArr[0] = (String) value;
+          connectable.getRengine().assign(key, new REXPString(sArr));
+          break;
+        case REXP_BOOL:
+          Boolean[] bArr = new Boolean[1];
+          bArr[0] = (Boolean) value;
+          connectable.getRengine().assign(key, new REXPLogical(bArr[0]));
+          break;
+        case REXP_ARRAY_INT:
+          connectable.getRengine().assign(key, new REXPInteger((int[]) value));
+          break;
+        case REXP_ARRAY_DOUBLE:
+          connectable.getRengine().assign(key, new REXPDouble((double[]) value));
+          break;
+        case REXP_ARRAY_STR:
+          connectable.getRengine().assign(key, new REXPString((String[]) value));
+          break;
+        case REXP_ARRAY_BOOL:
+          connectable.getRengine().assign(key, new REXPLogical((boolean[]) value));
+          break;
+        default:
+          throw new IllegalArgumentException("Unsupported data type ... ");
+        }
 
   public void processTuple(Map<String, Object> tuple)
   {

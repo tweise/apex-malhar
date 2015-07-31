@@ -51,7 +51,9 @@ import com.datatorrent.common.experimental.AppData;
  * in the form of a list of objects. The last list of data sent to the operator is what the operator will serve.
  * Additionally the list of input objects then need to be converted into {@link GPOMutable} objects
  * via an implementation of the {@link #convert} convert method.
+ *
  * @param <INPUT_EVENT> The type of the input events that the operator accepts.
+ * @since 3.0.0
  */
 public abstract class AbstractAppDataSnapshotServer<INPUT_EVENT> implements Operator
 {

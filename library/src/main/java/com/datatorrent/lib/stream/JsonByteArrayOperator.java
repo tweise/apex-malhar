@@ -42,9 +42,9 @@ import com.datatorrent.netlet.util.DTThrowable;
  * &nbsp&nbsp The key will be dot concatenated nested key names <br>
  * &nbsp&nbsp eg: key: "agentinfo.os.name", value: "Ubuntu" <br>
  * <br>
+ *
  * @displayName JSON Byte Array
  * @category Tuple Converters
- * @tags json, byte array
  * @since 0.9.4
  */
 @Stateless

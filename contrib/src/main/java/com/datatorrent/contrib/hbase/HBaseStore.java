@@ -29,9 +29,9 @@ import com.datatorrent.lib.db.Connectable;
 /**
  * A {@link Connectable} that uses HBase to connect to stores and implements Connectable interface.
  * <p>
+ *
  * @displayName HBase Store
  * @category Output
- * @tags store, hbase
  * @since 1.0.2
  */
 public class HBaseStore implements Connectable {

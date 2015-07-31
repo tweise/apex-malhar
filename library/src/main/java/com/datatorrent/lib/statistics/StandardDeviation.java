@@ -36,9 +36,9 @@ import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
  * <b>StateFull : Yes</b>, value are aggregated over application window. <br>
  * <b>Partitions : No</b>, no will yield wrong results. <br>
  * <br>
+ *
  * @displayName Standard Deviation
  * @category Stats and Aggregations
- * @tags numeric, math, calculation, sum, count
  * @since 0.3.4
  */
 @OperatorAnnotation(partitionable = false)

@@ -29,10 +29,9 @@ import com.datatorrent.api.Operator;
  * This unifier ingests tuples that are Maps from Strings to DimensionObjects and sums the corresponding DimensionObjects.&nbsp;
  * A Map from Strings to aggregated DimensionObjects is emitted by the unifier.
  * <p></p>
+ *
  * @displayName Dimension Aggregation Unifier
  * @category Stats and Aggregations
- * @tags aggregation, unifier, dimensions
- *
  * @since 0.9.0
  */
 public class DimensionAggregationUnifier implements Operator

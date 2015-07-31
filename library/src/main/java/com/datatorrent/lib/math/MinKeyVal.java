@@ -38,9 +38,9 @@ import com.datatorrent.api.StreamCodec;
  * <b>inverse</b>: if set to true the key in the filter will block tuple<br>
  * <b>filterBy</b>: List of keys to filter on<br>
  * <br>
+ *
  * @displayName Minimum Key Value
  * @category Math
- * @tags minimum, numeric, key value
  * @since 0.3.2
  */
 public class MinKeyVal<K, V extends Number> extends BaseNumberKeyValueOperator<K, V>

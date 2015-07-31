@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
  * Mainly to be used for debugging. Users should be careful to not have this node listen to a high throughput stream<br>
  * <br>
  * </p>
+ *
  * @displayName Console Output
  * @category Output
  * @tags output operator
- *
  * @since 0.3.2
  */
 @Stateless

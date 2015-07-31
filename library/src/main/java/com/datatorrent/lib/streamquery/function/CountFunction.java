@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
  *   <b> Properties : </b> <br>
  *   <b> column : </b> column name for values count.   <br>
  *   <b> alias  : </b> Alias name for aggregate output. <br>
+ *
  * @displayName Count Function
  * @category Stream Manipulators
  * @tags sql count

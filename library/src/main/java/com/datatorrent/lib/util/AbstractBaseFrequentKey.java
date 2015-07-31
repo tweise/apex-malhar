@@ -32,7 +32,6 @@ import org.apache.commons.lang.mutable.MutableInt;
  *
  * @displayName Emit Winning Value(s)
  * @category Algorithmic
- * @tags count, compare
  * @since 0.3.2
  */
 public abstract class AbstractBaseFrequentKey<K> extends BaseKeyOperator<K>

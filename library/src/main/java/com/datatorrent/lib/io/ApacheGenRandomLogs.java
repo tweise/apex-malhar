@@ -49,8 +49,6 @@ import com.datatorrent.api.Context.OperatorContext;
  *
  * @displayName Generate Random Apache Logs
  * @category Input
- * @tags log, input operator, generate
- *
  * @since 0.3.2
  */
 public class ApacheGenRandomLogs extends BaseOperator implements InputOperator

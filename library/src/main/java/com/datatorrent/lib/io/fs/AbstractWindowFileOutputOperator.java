@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory;
  *
  * @displayName FS Window Writer
  * @category Output
- * @tags fs, file, output operator
- *
  * @since 1.0.2
  */
 public abstract class AbstractWindowFileOutputOperator<INPUT> extends AbstractFileOutputOperator<INPUT>

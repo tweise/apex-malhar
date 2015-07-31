@@ -29,6 +29,8 @@ import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 
 /**
+ * <p>MessageReceiver class.</p>
+ *
  * @since 2.1.0
  */
 public class MessageReceiver implements InputOperator, NetworkManager.ChannelListener<DatagramChannel>

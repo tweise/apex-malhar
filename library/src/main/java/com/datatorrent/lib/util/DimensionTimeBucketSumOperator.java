@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
  * The emitted map's keys are a combination of the time and dimension fields,
  * and the emitted map's values are another map from value fields to and accumulated value.
  * <p></p>
+ *
  * @displayName Dimension Time Bucket Sum
  * @category Stats and Aggregations
- * @tags count, key value, numeric
  * @since 0.3.2
  */
 public class DimensionTimeBucketSumOperator extends AbstractDimensionTimeBucketOperator

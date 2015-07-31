@@ -26,10 +26,9 @@ import com.datatorrent.api.Operator.Unifier;
 /**
  * This unifier is used by the LeastFrequentKey operator in order to merge the output of the "list" output port.
  * <p></p>
+ *
  * @displayName Emit Least Frequent Value
  * @category Algorithmic
- * @tags filter, count
- *
  * @since 0.3.3
  */
 public class LeastFrequentKeyArrayUnifier<K> implements Unifier<ArrayList<HashMap<K, Integer>>>

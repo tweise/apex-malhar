@@ -37,10 +37,9 @@ import java.util.regex.Pattern;
  * Please refer to docs for {@link com.datatorrent.lib.logs.ApacheLogParseOperator} documentation.
  * More output ports in this operator.
  * </p>
+ *
  * @displayName Apache Virtual Log Parse
  * @category Tuple Converters
- * @tags apache, parse
- *
  * @since 0.3.2
  */
 @Stateless

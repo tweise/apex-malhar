@@ -44,8 +44,6 @@ import org.apache.hadoop.fs.Path;
  * is an atomic operation in Hive.
  *
  * @category Output
- * @tags database, sql, hive
- *
  * @since 2.1.0
  */
 @OperatorAnnotation(checkpointableWithinAppWindow = false)

@@ -43,10 +43,10 @@ import com.datatorrent.api.DefaultOutputPort;
  * </table><br>
  * <br>
  * </p>
+ *
  * @displayName Abstract Single Port RabbitMQ Input
  * @category Messaging
  * @tags input operator
- *
  * @since 0.3.2
  */
 public abstract class AbstractSinglePortRabbitMQInputOperator<T> extends AbstractRabbitMQInputOperator

@@ -34,7 +34,7 @@ import java.sql.Date;
  *
  * @displayName: FS To Hive Operator
  * @category Output
- * @tags fs, hive, database
+ * @since 3.0.0
  */
 public class FSPojoToHiveOperator extends AbstractFSRollingOutputOperator<Object>
 {

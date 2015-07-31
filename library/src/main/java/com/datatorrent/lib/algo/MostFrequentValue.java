@@ -52,10 +52,9 @@ import com.datatorrent.lib.util.UnifierHashMapFrequent;
  * <b>Specific run time checks</b>: None<br>
  * <br>
  * </p>
+ *
  * @displayName Emit Most Frequent Value
  * @category Rules and Alerts
- * @tags filter, count
- *
  * @since 0.3.2
  */
 

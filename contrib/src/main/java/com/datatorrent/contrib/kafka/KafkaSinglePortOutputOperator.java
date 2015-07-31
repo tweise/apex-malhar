@@ -43,7 +43,6 @@ import kafka.producer.KeyedMessage;
  * @displayName Kafka Single Port Output
  * @category Messaging
  * @tags output operator
- *
  * @since 0.3.2
  */
 public class KafkaSinglePortOutputOperator<K, V> extends AbstractKafkaOutputOperator<K, V>

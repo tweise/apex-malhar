@@ -16,6 +16,7 @@
 package com.datatorrent.contrib.couchbase;
 
 /**
+ * <p>CouchBaseSerializer interface.</p>
  *
  * @since 2.0.0
  */

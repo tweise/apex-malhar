@@ -31,10 +31,9 @@ import com.datatorrent.netlet.util.DTThrowable;
  * which parses incoming tuples using the Java XML DOM parser.&nbsp;
  * Subclasses must implement the methods which are use to process the parsed XML.
  * <p></p>
+ *
  * @displayName Abstract XML DOM
  * @category XML
- * @tags abstract, xml, dom
- *
  * @since 1.0.2
  */
 public abstract class AbstractXmlDOMOperator<T> extends BaseOperator

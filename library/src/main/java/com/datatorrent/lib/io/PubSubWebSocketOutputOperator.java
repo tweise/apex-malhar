@@ -25,10 +25,10 @@ import com.datatorrent.common.util.PubSubWebSocketClient;
 /**
  * This operator writes maps as JSON objects to the given URL.
  * <p></p>
+ *
  * @displayName Pub Sub Web Socket Output
  * @category Output
  * @tags http
- *
  * @param <T>
  * @since 0.3.2
  */

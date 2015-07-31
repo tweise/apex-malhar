@@ -34,10 +34,9 @@ import com.datatorrent.lib.db.AbstractStoreInputOperator;
  * <p>
  * This is an abstract class. Sub-classes need to implement {@link #queryToRetrieveData()} and {@link #getTuple(ResultSet)}.
  * </p>
+ *
  * @displayName Abstract JDBC Input
  * @category Input
- * @tags database, sql
- *
  * @param <T> The tuple type
  * @since 0.9.4
  */

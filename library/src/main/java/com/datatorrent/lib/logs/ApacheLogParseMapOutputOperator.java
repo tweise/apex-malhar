@@ -47,10 +47,9 @@ import org.slf4j.LoggerFactory;
  * <b>logRegex</b>: defines the regex <br>
  * <b>groupMap</b>: defines the mapping from the group ids to the names <br>
  * </p>
+ *
  * @displayName Apache Log Parse Map
  * @category Tuple Converters
- * @tags apache, parse
- *
  * @since 0.9.4
  */
 @Stateless

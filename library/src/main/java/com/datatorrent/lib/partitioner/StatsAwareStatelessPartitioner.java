@@ -45,7 +45,6 @@ import com.datatorrent.common.partitioner.StatelessPartitioner;
  * <br>
  *
  * @param <T> Operator type
- *
  * @since 2.1.0
  */
 public abstract class StatsAwareStatelessPartitioner<T extends Operator> implements StatsListener, Partitioner<T>, Serializable

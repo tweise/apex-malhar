@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
  * <br>
  * <b>Benchmarks</b>: Not done as there is emit tuple is done by sub-classes<br>
  * </p>
+ *
  * @displayName Base Number Value
  * @category Algorithmic
  * @tags numeric

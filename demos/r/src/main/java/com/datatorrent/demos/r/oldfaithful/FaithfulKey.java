@@ -16,6 +16,8 @@
 package com.datatorrent.demos.r.oldfaithful;
 
 /**
+ * <p>FaithfulKey class.</p>
+ *
  * @since 2.1.0
  */
 public class FaithfulKey

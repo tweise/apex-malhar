@@ -48,7 +48,6 @@ import com.datatorrent.lib.util.KeyValPair;
  *
  * @displayName Change Key Value
  * @category Math
- * @tags change, key value
  * @since 0.3.3
  */
 public class ChangeKeyVal<K, V extends Number> extends

@@ -50,8 +50,6 @@ import com.datatorrent.lib.util.UnifierHashMapFrequent;
  *
  * @displayName Emit Least Frequent Tuple Key
  * @category Rules and Alerts
- * @tags filter, key value, count
- *
  * @since 0.3.2
  */
 

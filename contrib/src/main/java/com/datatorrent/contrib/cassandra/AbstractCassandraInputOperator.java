@@ -34,6 +34,7 @@ import com.datatorrent.netlet.util.DTThrowable;
  * <p>
  * This is an abstract class. Sub-classes need to implement {@link #queryToRetrieveData()} and {@link #getTuple(Row)}.
  * </p>
+ *
  * @param <T>
  * @displayName Abstract Cassandra Input
  * @category Input

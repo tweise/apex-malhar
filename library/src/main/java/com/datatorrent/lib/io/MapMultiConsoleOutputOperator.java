@@ -32,10 +32,10 @@ import com.datatorrent.api.DefaultInputPort;
  * node listen to a high throughput stream<br>
  * <br>
  * </p>
+ *
  * @displayName Map Console Output
  * @category Output
  * @tags output operator
- *
  * @since 0.3.4
  */
 public class MapMultiConsoleOutputOperator<K, V> extends BaseOperator

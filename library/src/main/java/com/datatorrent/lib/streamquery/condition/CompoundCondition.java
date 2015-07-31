@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
  * <b> rightCondition : </b> Right validate row condition. <br>
  * <b> logicalOr : </b> OR/AND logical metric flag. <br>
  * <br>
+ *
  * @displayName Compound Condition
  * @category Stream Manipulators
  * @tags sql condition, logical

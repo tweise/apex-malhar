@@ -51,7 +51,6 @@ import java.util.Properties;
  * @displayName Abstract Kafka Output
  * @category Messaging
  * @tags output operator
- *
  * @since 0.3.2
  */
 public abstract class AbstractKafkaOutputOperator<K, V> implements Operator

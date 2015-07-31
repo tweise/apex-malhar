@@ -22,10 +22,7 @@ import javax.validation.constraints.NotNull;
  *
  * @displayName FS Single File Writer
  * @category Output
- * @tags fs, file, output operator
- *
  * @param <INPUT> The type of the incoming tuples.
- *
  * @since 2.0.0
  */
 public abstract class AbstractSingleFileOutputOperator<INPUT> extends AbstractFileOutputOperator<INPUT>

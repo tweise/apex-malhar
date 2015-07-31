@@ -22,7 +22,7 @@ package com.datatorrent.contrib.rabbitmq;
  * @displayName Rabbit MQ input operator
  * @category Messaging
  * @tags input operator, string
- *
+ * @since 3.0.0
  */
 public class RabbitMQInputOperator extends AbstractSinglePortRabbitMQInputOperator<byte[]>
 {

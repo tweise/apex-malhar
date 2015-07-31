@@ -22,9 +22,8 @@ package com.datatorrent.contrib.zmq;
  * @displayName Single Port Zero MQ output operator
  * @category Messaging
  * @tags input operator, string
- *
+ * @since 3.0.0
  */
-
 public class ZeroMQOutputOperator extends AbstractSinglePortZeroMQOutputOperator<byte[]>{
 
 	@Override

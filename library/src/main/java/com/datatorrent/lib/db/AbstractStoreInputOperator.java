@@ -25,9 +25,9 @@ import com.datatorrent.api.InputOperator;
  * This is the base implementation of an input adapter which reads from a store.&nbsp;
  * A concrete operator should be created from this skeleton implementation.
  * <p></p>
+ *
  * @displayName Abstract Store Input
  * @category Input
- *
  * @param <T> The tuple type
  * @param <S> The store type
  * @since 0.9.3

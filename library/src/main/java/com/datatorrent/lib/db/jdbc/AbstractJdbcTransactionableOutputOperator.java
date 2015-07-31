@@ -45,10 +45,10 @@ import com.datatorrent.lib.db.AbstractPassThruTransactionableStoreOutputOperator
  * This is needed for the recovery. The operator writes a tuple exactly once in the database, which is why
  * only when all the updates are executed, the transaction is committed in the end window call.
  * </p>
+ *
  * @displayName Abstract JDBC Transactionable Output
  * @category Output
  * @tags transactional
- *
  * @param <T> type of tuple
  * @since 0.9.4
  */

@@ -28,9 +28,9 @@ import java.util.Map;
  * <p>
  * This unifier uses round robin partitioning.
  * </p>
+ *
  * @displayName Unifier Hash Map Sum Keys
  * @category Algorithmic
- * @tags numeric, key value
  * @since 0.3.2
  */
 public class UnifierHashMapSumKeys<K, V extends Number> extends BaseNumberKeyValueOperator<K,V> implements Unifier<HashMap<K, V>>

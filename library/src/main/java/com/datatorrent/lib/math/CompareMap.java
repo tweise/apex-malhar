@@ -67,9 +67,9 @@ import java.util.HashMap;
  * </table>
  * <br>
  * <br>
+ *
  * @displayName Compare Map
  * @category Math
- * @tags comparison, key value, numeric, map
  * @since 0.3.2
  */
 @Stateless

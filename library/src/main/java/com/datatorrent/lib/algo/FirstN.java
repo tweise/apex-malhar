@@ -51,8 +51,6 @@ import com.datatorrent.lib.util.AbstractBaseNOperatorMap;
  *
  * @displayName First N Keyval Pairs Matching Key
  * @category Rules and Alerts
- * @tags filter, key value
- *
  * @since 0.3.2
  */
 @OperatorAnnotation(partitionable = false)

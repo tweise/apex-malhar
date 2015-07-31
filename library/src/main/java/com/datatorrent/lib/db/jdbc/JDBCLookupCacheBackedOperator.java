@@ -34,10 +34,9 @@ import com.datatorrent.lib.db.cache.AbstractDBLookupCacheBackedOperator;
  * The cache is kept in a database which is connected to via JDBC.&nbsp;
  * Subclasses should implement the methods which are required to insert and retrieve data from the database.
  * <p></p>
+ *
  * @displayName JDBC Lookup Cache Backed
  * @category Input
- * @tags cache, key value
- *
  * @param <T> type of input tuples </T>
  * @since 0.9.1
  */

@@ -23,13 +23,11 @@ import java.net.URI;
  * Data of type {@link java.util.Map} is converted to JSON. All other types are sent in their {@link Object#toString()} representation.<br>
  * <br>
  * </p>
+ *
  * @displayName HTTP Output
  * @category Output
- * @tags http, output operator
- *
  * @param <T>
  * @since 0.3.2
- * @deprecated
  */
 @Deprecated
 public class HttpOutputOperator<T> extends HttpPostOutputOperator<T>

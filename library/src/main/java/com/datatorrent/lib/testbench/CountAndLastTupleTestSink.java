@@ -18,9 +18,9 @@ package com.datatorrent.lib.testbench;
 /**
  * A sink implementation to collect expected test results.
  * <p>
+ *
  * @displayName Count And Last Tuple Test Sink
  * @category Test Bench
- * @tags count, sink
  * @since 0.3.2
  */
 public class CountAndLastTupleTestSink<T> extends CountTestSink<T>

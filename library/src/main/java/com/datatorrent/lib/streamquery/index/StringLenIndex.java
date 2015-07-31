@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * <p>An implementation of Column Index that implements filter method using length of a string Index. </p>
  * <p>
+ *
  * @displayName String Length Index
  * @category Stream Manipulators
  * @tags alias

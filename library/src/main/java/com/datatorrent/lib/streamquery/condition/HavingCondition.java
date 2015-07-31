@@ -24,8 +24,9 @@ import com.datatorrent.lib.streamquery.function.FunctionIndex;
 
 /**
  *  A base class for Group,Having operator with aggregate index constraint.&nsbsp; Subclasses should provide the
-    implementation to check if aggregate is valid.
+ *    implementation to check if aggregate is valid.
  * <p>
+ *
  * @displayName Having Condition
  * @category Stream Manipulators
  * @tags sql condition, index, group

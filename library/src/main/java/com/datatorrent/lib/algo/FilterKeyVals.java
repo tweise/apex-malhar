@@ -58,8 +58,6 @@ import com.datatorrent.lib.util.BaseKeyOperator;
  *
  * @displayName Filter Keyval Pairs
  * @category Rules and Alerts
- * @tags filter, key value
- *
  * @since 0.3.2
  */
 @Stateless

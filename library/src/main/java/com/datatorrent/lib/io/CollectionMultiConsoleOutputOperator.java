@@ -33,10 +33,10 @@ import com.datatorrent.api.DefaultInputPort;
  * node listen to a high throughput stream<br>
  * <br>
  * </p>
+ *
  * @displayName Container Stdout Output
  * @category Output
  * @tags output operator
- *
  * @since 0.3.4
  */
 public class CollectionMultiConsoleOutputOperator<E> extends BaseOperator

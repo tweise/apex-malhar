@@ -63,6 +63,7 @@ import com.datatorrent.api.InputOperator;
  * <b>Benchmarks></b>: Send as many tuples in in-line mode, the receiver just counts the tuples and drops the object<br>
  * String schema does about 26 Million tuples/sec in throughput<br>
  * HashMap schema does about 10 Million tuples/sec in throughput<br>
+ *
  * @displayName Event Generator
  * @category Test Bench
  * @tags input operator, generator

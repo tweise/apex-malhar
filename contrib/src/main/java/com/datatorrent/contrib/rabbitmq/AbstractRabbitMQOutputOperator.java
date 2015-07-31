@@ -51,10 +51,10 @@ import org.slf4j.LoggerFactory;
  * </table><br>
  * <br>
  * </p>
+ *
  * @displayName Abstract RabbitMQ Output
  * @category Messaging
  * @tags output operator
- *
  * @since 0.3.2
  */
 public class AbstractRabbitMQOutputOperator extends BaseOperator

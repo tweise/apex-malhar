@@ -27,6 +27,11 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketServlet;
 
+/**
+ * <p>Abstract WebSocketServerInputOperator class.</p>
+ *
+ * @since 3.0.0
+ */
 public abstract class WebSocketServerInputOperator implements InputOperator
 {
   public static final String DEFAULT_EXTENSION = "/in";

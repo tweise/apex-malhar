@@ -22,7 +22,7 @@ import com.datatorrent.lib.util.BaseNumberValueOperator;
 
 /**
  * Operator compares data values arriving on input port with base value input operator.
- * 
+ *
  * <p>
  * Arriving base value is stored in operator for comparison, old base value is overwritten.&nbsp;
  * This emits &lt;change in value,percentage change&gt;.
@@ -50,9 +50,9 @@ import com.datatorrent.lib.util.BaseNumberValueOperator;
  * <br>
  *
  * <br>
+ *
  * @displayName Change
  * @category Math
- * @tags change, key value, numeric, percentage
  * @since 0.3.3
  */
 public class Change<V extends Number> extends BaseNumberValueOperator<V>

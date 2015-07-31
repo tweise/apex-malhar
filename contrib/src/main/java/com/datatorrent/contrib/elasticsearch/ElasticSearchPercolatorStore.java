@@ -25,7 +25,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import com.datatorrent.netlet.util.DTThrowable;
 
 /**
- * 
+ * <p>ElasticSearchPercolatorStore class.</p>
+ *
  * @since 2.1.0
  */
 public class ElasticSearchPercolatorStore extends ElasticSearchConnectable

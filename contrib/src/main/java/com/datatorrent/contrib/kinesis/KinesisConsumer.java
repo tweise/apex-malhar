@@ -46,9 +46,9 @@ import com.datatorrent.common.util.Pair;
 /**
  *
  * Base KinesisConsumer class used by kinesis input operator
+ *
  * @since 2.0.0
  */
-
 public class KinesisConsumer implements Closeable
 {
   private static final Logger logger = LoggerFactory.getLogger(KinesisConsumer.class);

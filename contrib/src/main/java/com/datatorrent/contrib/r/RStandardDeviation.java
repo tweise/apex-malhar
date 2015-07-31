@@ -47,7 +47,6 @@ import com.datatorrent.netlet.util.DTThrowable;
  *
  * @displayName R Standard Deviation
  * @category Scripting
- * @tags script, r
  * @since 2.1.0
  */
 

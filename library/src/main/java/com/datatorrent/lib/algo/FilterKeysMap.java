@@ -53,8 +53,6 @@ import com.datatorrent.lib.util.UnifierHashMap;
  *
  * @displayName Filter Keyval Pairs By Key Generic
  * @category Rules and Alerts
- * @tags filter, key value
- *
  * @since 0.3.2
  */
 @Stateless

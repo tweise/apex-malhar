@@ -39,6 +39,7 @@ import com.datatorrent.api.Operator.Unifier;
  * <br>
  * <b> Properties : </b> <br>
  * <b> orderByRules : </b>List of order by rules for tuples.
+ *
  * @displayName OrderBy
  * @category Stream Manipulators
  * @tags orderby operator

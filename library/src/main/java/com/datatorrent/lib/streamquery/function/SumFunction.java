@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 /**
  * <p> An implementation of sql sum function. </p>
  * <p>
+ *
  * @displayName Sum Function
  * @category Stream Manipulators
  * @tags sql sum, aggregate

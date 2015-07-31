@@ -30,9 +30,9 @@ import org.apache.hadoop.classification.InterfaceStability.Evolving;
 /**
  * Implementation of {@link MongoDBOutputOperator} that saves a POJO in the mongodb database. <br/>
  * <p>
+ *
  * @displayName MongoDb Output Operator
  * @category Output
- * @tags database, nosql, pojo, mongodb
  * @since 0.3.5
  */
 @Evolving

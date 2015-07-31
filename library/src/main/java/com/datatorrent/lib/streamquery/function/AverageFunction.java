@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
  *   <b> Properties : </b> <br>
  *   <b> column : </b> Aggregate over given column values.   <br>
  *   <b> alias  : </b> Alias name for aggregate output. <br>
+ *
  * @displayName Average Function
  * @category Stream Manipulators
  * @tags sql average

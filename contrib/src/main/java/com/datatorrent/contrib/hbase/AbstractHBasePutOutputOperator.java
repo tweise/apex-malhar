@@ -42,9 +42,9 @@ import com.datatorrent.netlet.util.DTThrowable;
  *
  * <br>
  * This class offers non-transactional put where tuples are put as they come in.
+ *
  * @displayName Abstract HBase Put Output
  * @category Output
- * @tags hbase, put
  * @param <T>
  *            The tuple type
  * @since 1.0.2

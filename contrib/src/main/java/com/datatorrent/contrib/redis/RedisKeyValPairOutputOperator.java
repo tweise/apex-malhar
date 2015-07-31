@@ -29,8 +29,6 @@ import java.util.Map;
  *
  * @displayName Redis Key Val Pair Output
  * @category Output
- * @tags redis, key value
- *
  * @param <K> The key type.
  * @param <V> The value type.
  * @since 0.3.2

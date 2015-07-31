@@ -50,7 +50,6 @@ import com.datatorrent.api.annotation.Stateless;
  * @displayName Filter Values
  * @category Rules and Alerts
  * @tags filter
- *
  * @since 0.3.2
  */
 @Stateless

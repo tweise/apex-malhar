@@ -48,8 +48,6 @@ import com.datatorrent.lib.util.BaseKeyOperator;
  *
  * @displayName Emit Distinct
  * @category Rules and Alerts
- * @tags filter, unique
- *
  * @since 0.3.3
  */
 

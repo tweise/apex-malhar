@@ -39,9 +39,11 @@ import com.datatorrent.api.Context.OperatorContext;
  *  <li>If all the queries are popped within an application window, then no more queries can be popped from the queue</li>
  *  <li>When {@link #endWindow} is called</li>
  * </ul>
+ *
  * @param <QUERY_TYPE> The type of the query.
  * @param <META_QUERY> The type of any metadata associated with the query.
  * @param <QUEUE_CONTEXT> The type of the context used to manage the queueing of the query.
+ * @since 3.0.0
  */
 public abstract class AbstractWindowEndQueueManager<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT> implements QueueManager<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT>
 {

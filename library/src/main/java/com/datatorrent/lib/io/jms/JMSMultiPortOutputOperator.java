@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>JMSMultiPortOutputOperator class.</p>
+ *
  * @since 2.1.0
  */
 public class JMSMultiPortOutputOperator extends AbstractJMSOutputOperator

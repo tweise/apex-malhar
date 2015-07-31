@@ -44,9 +44,9 @@ import com.datatorrent.api.StreamCodec;
  * <b>inverse</b>: if set to true the key in the filter will block tuple<br>
  * <b>filterBy</b>: List of keys to filter on<br>
  * <br>
+ *
  * @displayName Margin Key Value
  * @category Math
- * @tags sum, division, numeric, key value
  * @since 0.3.3
  */
 public class MarginKeyVal<K, V extends Number> extends

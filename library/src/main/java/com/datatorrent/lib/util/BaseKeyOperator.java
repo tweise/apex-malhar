@@ -20,9 +20,9 @@ import com.datatorrent.common.util.BaseOperator;
 /**
  * This is an abstract operator that allows cloneKey to allow users to use mutable objects.
  * <p></p>
+ *
  * @displayName Base Key
  * @category Algorithmic
- * @tags abstract, cloneKey
  * @since 0.3.2
  */
 public class BaseKeyOperator<K> extends BaseOperator

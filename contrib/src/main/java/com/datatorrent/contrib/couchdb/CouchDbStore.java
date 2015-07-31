@@ -35,6 +35,7 @@ import com.datatorrent.lib.db.Connectable;
  * Implements a CouchDb store. <br/>
  * <p>
  * Operates in At-most once recovery mode.
+ *
  * @displayName CouchDb Store
  * @category Output
  * @tags couchdb

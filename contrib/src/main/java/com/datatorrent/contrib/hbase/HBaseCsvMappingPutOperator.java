@@ -36,9 +36,9 @@ import com.datatorrent.lib.util.ReusableStringReader;
 /**
  * Takes a configuration string which tells us about the position of the row, or column.&nbsp; The incoming tuples are inserted accordingly.
  * <p>
+ *
  * @displayName HBase Csv Mapping Put
  * @category Output
- * @tags hbase, csv, put, String
  * @since 1.0.4
  */
 public class HBaseCsvMappingPutOperator extends AbstractHBaseWindowPutOutputOperator<String> {

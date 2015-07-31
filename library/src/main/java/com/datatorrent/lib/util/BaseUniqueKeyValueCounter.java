@@ -24,9 +24,9 @@ import org.apache.commons.lang.mutable.MutableInt;
  * <b>Benchmarks</b>: Blast as many tuples as possible in inline mode<br>
  * Operator processes > 110 million tuples/sec. Only one tuple per unique key is emitted on end of window, so this operator is not bound by outbound throughput<br>
  * </p>
+ *
  * @displayName Base Unique Key Value Counter
  * @category Algorithmic
- * @tags count, key value
  * @since 0.3.2
  */
 public class BaseUniqueKeyValueCounter<K,V> extends BaseKeyValueOperator<K,V>

@@ -41,10 +41,9 @@ import org.slf4j.LoggerFactory;
  * <b>Output</b>: No output port<br>
  * <br>
  * </p>
+ *
  * @displayName Abstract JMS Output
  * @category Messaging
- * @tags jms, output operator
- *
  * @since 0.3.2
  */
 public abstract class AbstractJMSOutputOperator extends JMSBase implements Operator

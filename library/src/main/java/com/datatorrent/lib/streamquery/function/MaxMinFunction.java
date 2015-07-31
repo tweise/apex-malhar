@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
  *   <b> column : </b> column name for values max/min computation.   <br>
  *   <b> alias  : </b> Alias name for  output value. <br>
  *   <b> isMax : </b> Flag to indicate max/min compute value. <br>
+ *
  * @displayName Max Min Function
  * @category Stream Manipulators
  * @tags sql max, sql min

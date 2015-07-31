@@ -25,7 +25,6 @@ import javax.jms.TextMessage;
  *
  * @displayName JMS Input (String)
  * @category Messaging
- * @tags jms, input operator, string
  * @since 0.3.3
  */
 public class JMSStringInputOperator extends AbstractJMSInputOperator<String>

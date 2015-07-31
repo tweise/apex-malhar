@@ -15,6 +15,11 @@
  */
 package com.datatorrent.lib.appdata;
 
+/**
+ * <p>QueueUtils class.</p>
+ *
+ * @since 3.0.0
+ */
 public class QueueUtils
 {
   /**

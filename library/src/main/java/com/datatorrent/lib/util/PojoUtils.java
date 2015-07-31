@@ -34,6 +34,8 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * <p>PojoUtils class.</p>
+ *
  * @since 2.1.0
  */
 public class PojoUtils

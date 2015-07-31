@@ -41,6 +41,7 @@ import com.datatorrent.api.Operator;
  * <b> topValue : </b> top values count. <br>
  * <b> isPercentage : </b> top values count is percentage flag.
  * <br>
+ *
  * @displayName Select Top
  * @category Stream Manipulators
  * @tags sql select, sql top operator

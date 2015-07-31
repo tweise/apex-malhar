@@ -53,10 +53,8 @@ import com.datatorrent.lib.db.AbstractStoreInputOperator;
  * @displayName Abstract Solr Input
  * @category Search Engine
  * @tags input operator
- *
  * @since 2.0.0
  */
-
 public abstract class AbstractSolrInputOperator<T, S extends SolrServerConnector> extends AbstractStoreInputOperator<T, S>
 {
   private static final Logger logger = LoggerFactory.getLogger(AbstractSolrInputOperator.class);

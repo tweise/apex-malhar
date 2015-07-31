@@ -30,6 +30,7 @@ import com.datatorrent.api.annotation.Stateless;
  * <b>data2</b>: expects K<br>
  * <b>out</b>: emits K<br>
  * <br>
+ *
  * @displayName Stream Merger
  * @category Stream Manipulators
  * @tags merge

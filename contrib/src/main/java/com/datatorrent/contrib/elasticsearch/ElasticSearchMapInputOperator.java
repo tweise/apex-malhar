@@ -26,6 +26,7 @@ import org.elasticsearch.search.SearchHit;
 import com.datatorrent.api.Context.OperatorContext;
 
 /**
+ * <p>Abstract ElasticSearchMapInputOperator class.</p>
  *
  * @since 2.1.0
  */

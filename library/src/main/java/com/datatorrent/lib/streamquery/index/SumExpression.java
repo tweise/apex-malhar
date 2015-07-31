@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
  * Implements sum on column index.
  * <p>
  * Select index class for implementing sum column index.
+ *
  * @displayName Sum Expression
  * @category Stream Manipulators
  * @tags sum

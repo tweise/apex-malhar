@@ -28,6 +28,7 @@ import java.util.Map;
  * This adaptor coverts the result of a database view to a map and emits it.<br/>
  * It uses the emitTuples implementation of {@link AbstractCouchDBInputOperator} which emits the complete result
  * of the ViewQuery every window cycle.
+ *
  * @displayName Abstract Map Based Input
  * @category Input
  * @tags input operator

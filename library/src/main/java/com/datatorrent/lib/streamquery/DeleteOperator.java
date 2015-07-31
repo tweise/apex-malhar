@@ -40,6 +40,7 @@ import com.datatorrent.lib.streamquery.condition.Condition;
  * <b> condition : </b> Select condition for selecting rows. <br>
  * <b> columns : </b> Column names/aggregate functions for select. <br>
  * <br>
+ *
  * @displayName Delete
  * @category Stream Manipulators
  * @tags sql delete operator

@@ -26,6 +26,7 @@ import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
  * If the tuples satisfy a specified filtering function, then they are emitted.&nbsp;
  * Subclasses should implement the filtering method.
  * <p></p>
+ *
  * @displayName Filter
  * @category Algorithmic
  * @tags filter

@@ -24,6 +24,7 @@ import com.datatorrent.api.Operator.Unifier;
  * <p>
  * This unifier uses round robin partitioning.
  * </p>
+ *
  * @displayName Unifier Sum Number
  * @category Algorithmic
  * @tags numeric

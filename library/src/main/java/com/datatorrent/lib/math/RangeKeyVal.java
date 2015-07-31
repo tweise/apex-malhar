@@ -42,9 +42,9 @@ import com.datatorrent.api.StreamCodec;
  * <b>inverse</b>: if set to true the key in the filter will block tuple<br>
  * <b>filterBy</b>: List of keys to filter on<br>
  * <br>
+ *
  * @displayName Range Key Value
  * @category Math
- * @tags range, number, comparison, key value
  * @since 0.3.3
  */
 public class RangeKeyVal<K, V extends Number> extends

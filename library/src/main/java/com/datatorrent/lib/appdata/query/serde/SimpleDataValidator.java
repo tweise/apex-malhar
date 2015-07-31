@@ -23,6 +23,8 @@ import com.datatorrent.lib.appdata.schemas.Message;
 
 /**
  * This is a Message validator which validates deserialized Messages using java validation.
+ *
+ * @since 3.0.0
  */
 public class SimpleDataValidator implements CustomMessageValidator
 {

@@ -43,6 +43,7 @@ import com.datatorrent.lib.streamquery.index.Index;
  * <b> condition : </b> Select condition for selecting rows. <br>
  * <b> columns : </b> Column names/aggregate functions for select. <br>
  * <br>
+ *
  * @displayName Select
  * @category Stream Manipulators
  * @tags sql select operator, index, sql condition

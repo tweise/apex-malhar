@@ -19,8 +19,8 @@ import com.datatorrent.lib.db.jdbc.AbstractJdbcNonTransactionableBatchOutputOper
 
 /**
  * This is an output operator that connects to a memsql database.
- * @param <T> The type of tuples to be processed.
  *
+ * @param <T> The type of tuples to be processed.
  * @since 1.0.5
  */
 public abstract class AbstractMemsqlOutputOperator<T> extends AbstractJdbcNonTransactionableBatchOutputOperator<T, MemsqlStore>

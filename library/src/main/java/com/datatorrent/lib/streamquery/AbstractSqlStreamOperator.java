@@ -26,10 +26,11 @@ import java.util.HashMap;
 
 /**
  * A base implementation of a BaseOperator that is a sql stream operator.&nbsp;  Subclasses should provide the
-   implementation of how to process the tuples.
+ *   implementation of how to process the tuples.
  * <p>
  * Abstract sql db input operator.
  * <p>
+ *
  * @displayName Abstract Sql Stream
  * @category Stream Manipulators
  * @tags sql operator

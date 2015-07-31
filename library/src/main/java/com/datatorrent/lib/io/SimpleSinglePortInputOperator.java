@@ -30,9 +30,9 @@ import com.datatorrent.common.util.BaseOperator;
  * {@link Runnable} to perform synchronous IO, this class will manage the thread
  * according to the operator lifecycle.
  * </p>
+ *
  * @displayName Asynchronous Input Processing
  * @category Input
- *
  * @since 0.3.2
  */
 public abstract class SimpleSinglePortInputOperator<T> extends BaseOperator implements InputOperator, Operator.ActivationListener<OperatorContext>

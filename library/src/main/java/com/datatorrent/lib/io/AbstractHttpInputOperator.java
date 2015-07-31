@@ -35,10 +35,9 @@ import com.sun.jersey.api.client.WebResource;
  * This is a base implementation for an HTTP input operator that reads from a given url using the HTTP GET command like an input stream.&nbsp;
  * Subclasses must implement the method which handles the response to the HTTP GET request.
  * <p></p>
+ *
  * @displayName Abstract HTTP Input
  * @category Input
- * @tags http, input operator
- *
  * @since 0.3.2
  */
 public abstract class AbstractHttpInputOperator<T> extends SimpleSinglePortInputOperator<T> implements Runnable

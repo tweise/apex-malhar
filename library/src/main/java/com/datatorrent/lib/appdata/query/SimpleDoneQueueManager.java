@@ -24,8 +24,10 @@ import com.datatorrent.lib.appdata.query.QueueList.QueueListNode;
 /**
  * This is simple queue whose queue context is a {@link MutableBoolean} which determines whether or not to keep the query in the queue. If the
  * queue context is true, then the query is remove, if the queue context is false, then the query stays in the queue.
+ *
  * @param <QUERY_TYPE> The type of the queries that are enqueued in the queue.
  * @param <META_QUERY> The type of any meta data associated with the queries.
+ * @since 3.0.0
  */
 public class SimpleDoneQueueManager<QUERY_TYPE, META_QUERY> extends
 AbstractWindowEndQueueManager<QUERY_TYPE, META_QUERY, MutableBoolean>

@@ -18,6 +18,8 @@ package com.datatorrent.contrib.splunk;
 import javax.validation.constraints.NotNull;
 
 /**
+ * <p>SplunkInputOperator class.</p>
+ *
  * @since 2.1.0
  */
 public class SplunkInputOperator extends AbstractSplunkInputOperator<String>

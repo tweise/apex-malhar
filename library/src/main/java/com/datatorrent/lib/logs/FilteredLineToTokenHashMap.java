@@ -45,10 +45,9 @@ import java.util.HashMap;
  * <b>filterby</b>: Only emit the keys (comma separated) that are in filterby<br>
  * <br>
  * </p>
+ *
  * @displayName Filtered Line To Token HashMap
  * @category Tuple Converters
- * @tags filter, hashmap, string
- *
  * @since 0.3.3
  */
 @Stateless

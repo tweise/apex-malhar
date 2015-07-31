@@ -74,7 +74,6 @@ import java.util.Map;
  * @displayName Abstract Exactly Once Kafka Output
  * @category Messaging
  * @tags output operator
- *
  * @since 1.0.2
  */
 public abstract class AbstractExactlyOnceKafkaOutputOperator<T, K, V> extends AbstractKafkaOutputOperator<K, V>

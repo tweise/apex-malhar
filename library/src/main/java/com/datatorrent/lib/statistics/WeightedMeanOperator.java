@@ -35,9 +35,9 @@ import com.datatorrent.lib.util.BaseNumberValueOperator;
  * <b>StateFull : Yes</b>, value are aggregated over application window. <br>
  * <b>Partitions : No</b>, no will yeild wrong results. <br>
  * <br>
+ *
  * @displayName Weighted Mean
  * @category Stats and Aggregations
- * @tags numeric, math, calculation, sum, count, mean operator, average
  * @since 0.3.4
  */
 @OperatorAnnotation(partitionable = false)

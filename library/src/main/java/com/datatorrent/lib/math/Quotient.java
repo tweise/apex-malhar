@@ -21,7 +21,7 @@ import com.datatorrent.api.annotation.OperatorAnnotation;
 import com.datatorrent.lib.util.BaseNumberValueOperator;
 
 /**
- * This operator adds all the values on "numerator" and "denominator" and emits quotient at end of window. 
+ * This operator adds all the values on "numerator" and "denominator" and emits quotient at end of window.
  * <p>
  * <br>
  * <b>StateFull : Yes </b>, Sum of values is taken over application window. <br>
@@ -36,9 +36,9 @@ import com.datatorrent.lib.util.BaseNumberValueOperator;
  * <b>Properties : </b> <br>
  * <b>mult_by : </b>Multiply by value(default = 1). <br>
  * <br>
+ *
  * @displayName Quotient
  * @category Math
- * @tags division, sum, numeric
  * @since 0.3.3
  */
 @OperatorAnnotation(partitionable = false)

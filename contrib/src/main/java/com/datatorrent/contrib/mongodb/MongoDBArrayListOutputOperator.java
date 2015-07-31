@@ -42,10 +42,10 @@ import org.slf4j.LoggerFactory;
  * <b>Benchmarks</b>:
  * <br>
  * </p>
+ *
  * @displayName MongoDB Array List Output
  * @category Output
  * @tags mongodb
- *
  * @since 0.3.2
  */
 public class MongoDBArrayListOutputOperator extends MongoDBOutputOperator<ArrayList<Object>>

@@ -49,8 +49,6 @@ import com.datatorrent.lib.util.AbstractBaseNNonUniqueOperatorMap;
  *
  * @displayName Top N Values Per Key
  * @category Stats and Aggregations
- * @tags filter, rank
- *
  * @since 0.3.3
  */
 

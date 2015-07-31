@@ -22,12 +22,13 @@ import javax.validation.constraints.NotNull;
 
 /**
  * A base class for select aggregate function implementation.&nbsp; Subclasses should provide the
-   implementation for aggregate compute functions.
+ *   implementation for aggregate compute functions.
  * <p>
  * <br>
  * <b>Properties : </b> <br>
  * <b>column : </b> Column name for aggregation.
  * <b>alias : </b> Output value alias name.
+ *
  * @displayName Function Index
  * @category Stream Manipulators
  * @tags sql aggregate

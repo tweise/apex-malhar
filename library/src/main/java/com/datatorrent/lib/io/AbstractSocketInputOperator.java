@@ -38,10 +38,9 @@ import com.datatorrent.api.Operator.ActivationListener;
  * <b>Properties</b>:<br>
  * <b>hostname</b></br> <b>port</b></br> <b>byteBufferSize</b></br> <b>scanIntervalInMilliSeconds</b></br>
  * </p>
+ *
  * @displayName Abstract Socket Input
  * @category Input
- * @tags socket, input operator
- *
  * @param <T>
  * @since 0.9.5
  */

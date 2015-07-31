@@ -28,9 +28,9 @@ import com.datatorrent.api.DefaultOutputPort;
  * This operator consumes key value pairs of strings and integers.&nbsp;
  * If the value of a pair is greater than the specified threshold then the tuple is emitted.
  * <p></p>
+ *
  * @displayName Top Occurrence
  * @category Test Bench
- * @tags numeric, compare
  * @since 0.3.2
  */
 public class TopOccurrence extends BaseOperator

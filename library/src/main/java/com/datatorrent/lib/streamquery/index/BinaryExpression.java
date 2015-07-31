@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
  * Abstract class to filter row by binary expression index.
  * <p>
  * Sub class will implement filter/getExpressionName functions.
+ *
  * @displayName Binary Expression
  * @category Stream Manipulators
  * @tags alias

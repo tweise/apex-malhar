@@ -24,6 +24,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.datatorrent.lib.appdata.schemas.FieldsDescriptor;
 
+/**
+ * <p>SerdeListGPOMutable class.</p>
+ *
+ * @since 3.0.0
+ */
 public class SerdeListGPOMutable implements Serde
 {
   public static final SerdeListGPOMutable INSTANCE = new SerdeListGPOMutable();

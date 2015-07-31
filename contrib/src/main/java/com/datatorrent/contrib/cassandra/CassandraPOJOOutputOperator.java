@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  *
  * @displayName Cassandra Output Operator
  * @category Output
- * @tags database, nosql, pojo, cassandra
  * @since 2.1.0
  */
 @Evolving

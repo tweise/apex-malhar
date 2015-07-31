@@ -58,8 +58,6 @@ import com.datatorrent.lib.util.UnifierBooleanAnd;
  *
  * @displayName Emit All Matching Values (Number)
  * @category Rules and Alerts
- * @tags filter, key value
- *
  * @since 0.3.2
  */
 

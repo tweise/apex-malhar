@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * This is the base implementation of an MQTT output operator.&nbsp;
  * A concrete operator should be created from this skeleton implementation.
  * <p></p>
+ *
  * @displayName Abstract MQTT Output
  * @category Messaging
  * @tags output operator

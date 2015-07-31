@@ -50,7 +50,6 @@ import com.datatorrent.lib.io.fs.AbstractFileInputOperator;
  * @displayName FTP Directory Input
  * @category Input
  * @tags ftp
- *
  * @since 2.0.0
  */
 public abstract class AbstractFTPInputOperator<T> extends AbstractFileInputOperator<T>

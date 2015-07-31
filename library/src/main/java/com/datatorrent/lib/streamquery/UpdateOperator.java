@@ -39,6 +39,7 @@ import com.datatorrent.lib.streamquery.condition.Condition;
  * <b> condition : </b> Select condition for selecting rows. <br>
  * <b> columns : </b> Column names/aggregate functions for select. <br>
  * <br>
+ *
  * @displayName Update
  * @category Stream Manipulators
  * @tags sql update operator, sql condition

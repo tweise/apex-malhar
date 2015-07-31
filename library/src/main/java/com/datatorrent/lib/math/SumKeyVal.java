@@ -38,9 +38,9 @@ import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
  * hence generating cumulative sum
  * across streaming windows. Default is false.<br>
  * <br>
+ *
  * @displayName Sum Key Value
  * @category Math
- * @tags  numeric, sum, key value
  * @since 0.3.2
  */
 public class SumKeyVal<K, V extends Number> extends BaseNumberKeyValueOperator<K, V>

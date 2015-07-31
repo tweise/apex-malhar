@@ -24,7 +24,6 @@ import org.apache.commons.lang.mutable.MutableInt;
  *
  * @displayName Simple Moving Average Object
  * @category Stats and Aggregations
- * @tags average, sum, count
  * @since 0.3.2
  */
 public class SimpleMovingAverageObject

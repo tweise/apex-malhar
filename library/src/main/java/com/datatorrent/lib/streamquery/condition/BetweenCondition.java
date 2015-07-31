@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
  * <b> leftValue : </b> left range of column value. <br>
  * <b> rightValue : </b> right range od column value. <br>
  * <br>
+ *
  * @displayName Between Condition
  * @category Stream Manipulators
  * @tags sql condition

@@ -26,6 +26,7 @@ import java.util.Map;
  *
  * <b> Properties : </b> <br>
  *  <b> equalMap : </b> Column equal value map store.
+ *
  * @displayName Equal Value Condition
  * @category Stream Manipulators
  * @tags sql condition

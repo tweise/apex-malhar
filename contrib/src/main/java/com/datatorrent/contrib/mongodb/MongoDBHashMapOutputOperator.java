@@ -40,6 +40,7 @@ import java.util.*;
  * <b>Benchmarks</b>:
  * <br>
  * </p>
+ *
  * @displayName MongoDB Hash Map Output
  * @category Output
  * @tags mongodb

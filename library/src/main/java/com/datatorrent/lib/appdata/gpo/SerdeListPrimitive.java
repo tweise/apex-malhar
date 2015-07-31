@@ -23,6 +23,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.datatorrent.lib.appdata.schemas.Type;
 
+/**
+ * <p>SerdeListPrimitive class.</p>
+ *
+ * @since 3.0.0
+ */
 public class SerdeListPrimitive implements Serde
 {
   public static final SerdeListPrimitive INSTANCE = new SerdeListPrimitive();

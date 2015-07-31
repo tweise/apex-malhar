@@ -19,8 +19,8 @@ import com.datatorrent.lib.db.jdbc.AbstractJdbcInputOperator;
 
 /**
  * This is an input operator that reads from a memsql database.
- * @param <T> The type of tuple to be processed.
  *
+ * @param <T> The type of tuple to be processed.
  * @since 1.0.5
  */
 public abstract class AbstractMemsqlInputOperator<T> extends AbstractJdbcInputOperator<T>

@@ -41,8 +41,6 @@ import org.slf4j.LoggerFactory;
  *
  * @displayName FS Throughput Directory Scan Input
  * @category Input
- * @tags hdfs, directory, input operator
- *
  * @since 1.0.4
  */
 public abstract class AbstractThroughputFileInputOperator<T> extends AbstractFileInputOperator<T>

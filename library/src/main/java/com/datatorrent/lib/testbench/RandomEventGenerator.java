@@ -53,6 +53,7 @@ import javax.validation.constraints.Min;
  * <br>
  * Compile time error checking includes<br>
  * </p>
+ *
  * @displayName Random Event Generator
  * @category Test Bench
  * @tags generate

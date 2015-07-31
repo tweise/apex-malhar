@@ -37,10 +37,10 @@ import com.datatorrent.lib.util.BaseLineTokenizer;
  * <br>
  * <br>
  * </p>
+ *
  * @displayName Line Tokenizer
  * @category Tuple Converters
  * @tags string
- *
  * @since 0.3.3
  */
 @Stateless

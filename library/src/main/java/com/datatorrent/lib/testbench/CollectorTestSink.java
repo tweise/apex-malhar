@@ -23,6 +23,7 @@ import java.util.List;
 /**
  * A sink implementation to collect expected test results.
  * <p>
+ *
  * @displayName Collector Test Sink
  * @category Test Bench
  * @tags sink

@@ -26,7 +26,7 @@ import com.datatorrent.common.util.Pair;
  * <p>
  * If the first value is equal to second value, then the pair is emitted on equalTo, greaterThanEqualTo, and lessThanEqualTo ports.
  * If the first value is less than second value, then the pair is emitted on notEqualTo, lessThan and lessThanEqualTo ports.
- * If the first value is greater than second value, then the pair is emitted on notEqualTo, greaterThan and greaterThanEqualTo ports. 
+ * If the first value is greater than second value, then the pair is emitted on notEqualTo, greaterThan and greaterThanEqualTo ports.
  * This is a pass through operator.
  * <br>
  * StateFull : No, output is computed during current window. <br>
@@ -41,9 +41,9 @@ import com.datatorrent.common.util.Pair;
  * <b>lessThanEqualTo</b>: emits Pair&lt;T,T&gt;<br>
  * <b>lessThan</b>: emits Pair&lt;T,T&gt;<br>
  * <br>
+ *
  * @displayName Logical Compare
  * @category Math
- * @tags comparison, logical, key value
  * @since 0.3.3
  */
 @Stateless

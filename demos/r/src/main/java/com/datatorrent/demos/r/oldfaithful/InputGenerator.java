@@ -36,7 +36,6 @@ import com.datatorrent.api.InputOperator;
  *
  * @since 2.1.0
  */
-
 public class InputGenerator implements InputOperator
 {
 

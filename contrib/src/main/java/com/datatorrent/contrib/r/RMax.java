@@ -47,10 +47,8 @@ import com.datatorrent.netlet.util.DTThrowable;
  *
  * @displayName R Max
  * @category Scripting
- * @tags script, r
  * @since 2.1.0
  */
-
 public class RMax<V extends Number> extends BaseNumberValueOperator<Number> implements Unifier<Number>
 {
   private List<Number> numList = new ArrayList<Number>();

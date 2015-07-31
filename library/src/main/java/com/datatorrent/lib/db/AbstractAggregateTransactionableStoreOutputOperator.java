@@ -21,10 +21,9 @@ package com.datatorrent.lib.db;
  * This operator provides the exactly-once gaurantee.&nbsp;
  * Subclasses should implement that method which stores the aggregate state of the operator in the store.
  * <p></p>
+ *
  * @displayName Abstract Aggregate Transactionable Store Output
  * @category Output
- * @tags transactional, output operator
- *
  * @param <T> The tuple type.
  * @param <S> The store type.
  * @since 0.9.3

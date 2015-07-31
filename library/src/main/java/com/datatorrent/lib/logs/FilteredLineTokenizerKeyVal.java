@@ -44,8 +44,6 @@ import java.util.HashMap;
  *
  * @displayName Filtered Line Tokenizer Key Value
  * @category Tuple Converters
- * @tags string, key value, string
- *
  * @since 0.3.3
  */
 @Stateless

@@ -26,9 +26,9 @@ import com.datatorrent.lib.db.TransactionableStore;
  * <p>Provides transaction support to the operators by implementing TransactionableStore abstract methods. </p>
  *
  * <p>
+ *
  * @displayName Cassandra Transactional Store
  * @category Output
- * @tags cassandra, transactional
  * @since 1.0.2
  */
 public class CassandraTransactionalStore extends CassandraStore implements TransactionableStore {

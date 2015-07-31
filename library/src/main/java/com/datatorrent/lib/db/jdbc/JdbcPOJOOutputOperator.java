@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  *
  * @displayName Jdbc Output Operator
  * @category Output
- * @tags database, sql, pojo, jdbc
  * @since 2.1.0
  */
 @Evolving

@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 /**
  * <p>An implementation of an index that overrides filter method on basis on columns. </p>
  * <p>
+ *
  * @displayName Column Index
  * @category Stream Manipulators
  * @tags alias

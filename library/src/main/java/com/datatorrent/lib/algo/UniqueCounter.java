@@ -47,7 +47,6 @@ import com.datatorrent.lib.util.UnifierHashMapSumKeys;
  * @displayName Count Unique Tuples
  * @category Stats and Aggregations
  * @tags count
- *
  * @since 0.3.2
  */
 

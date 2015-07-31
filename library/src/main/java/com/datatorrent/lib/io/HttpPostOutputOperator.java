@@ -31,10 +31,9 @@ import com.datatorrent.api.Context.OperatorContext;
  * Data of type {@link java.util.Map} is converted to JSON. All other types are sent in their {@link Object#toString()} representation.<br>
  * <br>
  * </p>
+ *
  * @displayName HTTP POST Output
  * @category Output
- * @tags http, post, output operator
- *
  * @param <T>
  * @since 0.3.2
  */

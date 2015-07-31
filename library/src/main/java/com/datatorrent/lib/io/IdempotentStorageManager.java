@@ -52,7 +52,6 @@ import com.datatorrent.common.util.FSStorageAgent;
  *
  * @since 2.0.0
  */
-
 public interface IdempotentStorageManager extends StorageAgent, Component<Context.OperatorContext>
 {
   /**

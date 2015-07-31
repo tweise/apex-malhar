@@ -23,7 +23,7 @@ import java.util.Collection;
  * Adds incoming tuple to the state and emits the result of each addition on the respective ports.
  * <p>
  * The addition would go on forever.Result is emitted on four different data type ports:floatResult,integerResult,longResult,doubleResult.
- * Input tuple object has to be an implementation of the interface Collection.Tuples are emitted on the output ports only if they are connected. 
+ * Input tuple object has to be an implementation of the interface Collection.Tuples are emitted on the output ports only if they are connected.
  * This is done to avoid the cost of calling the functions when some ports are not connected.
  * This is a stateful pass through operator<br>
  * <b>Partitions : </b>, no will yield wrong results, no unifier on output port.
@@ -35,9 +35,9 @@ import java.util.Collection;
  * <b>integerResult</b>: emits Integer<br>
  * <b>longResult</b>: emits Long<br>
  * <br>
+ *
  * @displayName Sigma
  * @category Math
- * @tags aggregate, numeric, collection
  * @param <T>
  * @since 0.3.3
  */

@@ -28,9 +28,9 @@ import com.datatorrent.api.annotation.InputPortFieldAnnotation;
  * This operator does not provide the exactly once guarantee.&nbsp;
  * A concrete operator should be created from this skeleton implementation.
  * <p></p>
+ *
  * @displayName Abstract Store Output
  * @category Output
- *
  * @param <T> The tuple type
  * @param <S> The store type
  * @since 0.9.3

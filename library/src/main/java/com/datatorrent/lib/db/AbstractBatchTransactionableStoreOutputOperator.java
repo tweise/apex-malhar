@@ -23,10 +23,9 @@ import com.google.common.collect.Lists;
  * which writes to a transactionable store.&nbsp;
  * All the writes to the store over an application window are sent in one batch.
  * <p></p>
+ *
  * @displayName Abstract Batch Transactionable Store Output
  * @category Output
- * @tags transactional, output operator
- *
  * @param <T> The tuple type.
  * @param <S> The store type.
  * @since 1.0.2

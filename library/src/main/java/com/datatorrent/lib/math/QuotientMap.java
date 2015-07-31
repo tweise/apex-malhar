@@ -28,7 +28,7 @@ import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.lib.util.BaseNumberKeyValueOperator;
 
 /**
- * Add all the values for each key on "numerator" and "denominator" and emits quotient at end of window for all keys in the denominator. 
+ * Add all the values for each key on "numerator" and "denominator" and emits quotient at end of window for all keys in the denominator.
  * <p>
  * <br>
  * Application can set multiplication value for quotient(default = 1). <br>
@@ -53,9 +53,9 @@ import com.datatorrent.lib.util.BaseNumberKeyValueOperator;
  * denominator. <br>
  * <b>mult_by :</b> Set multiply by constant value. <br>
  * <br>
+ *
  * @displayName Quotient Map
  * @category Math
- * @tags division, sum, map
  * @since 0.3.3
  */
 @OperatorAnnotation(partitionable = false)

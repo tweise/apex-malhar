@@ -56,9 +56,9 @@ import org.slf4j.LoggerFactory;
  * <br>
  * <br>
  * <b>Benchmarks</b>: This node has been benchmarked at over 5 million tuples/second in local/inline mode<br>
+ *
  * @displayName Event Classifier Number To HashDouble
  * @category Test Bench
- * @tags number, classifier
  * @since 0.3.2
  */
 public class EventClassifierNumberToHashDouble<K extends Number> extends BaseOperator

@@ -26,6 +26,7 @@ import com.datatorrent.lib.io.SimpleSinglePortInputOperator;
  * the emit the tuple.&nbsp;
  * Subclasses should implement the method which converts ZeroMQ byte messages into tuples.
  * <p></p>
+ *
  * @displayName Simple Single Port ZeroMQ Pull Input
  * @category Messaging
  * @tags input operator

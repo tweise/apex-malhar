@@ -43,6 +43,7 @@ import com.datatorrent.api.Operator.ActivationListener;
  * <b>end</b>: if the user wants to start tailing from end.<br>
  * <br>
  * </p>
+ *
  * @displayName Tail Input
  * @category Input
  * @tags local fs, file

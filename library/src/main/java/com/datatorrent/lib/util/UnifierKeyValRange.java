@@ -28,9 +28,9 @@ import java.util.Map;
  * <p>
  * This unifier uses round robin partitioning.
  * </p>
+ *
  * @displayName Unifier Key Value Range
  * @category Algorithmic
- * @tags numeric, key value
  * @since 0.3.2
  */
 public class UnifierKeyValRange<K, V extends Number> implements Unifier<KeyValPair<K, HighLow<V>>>

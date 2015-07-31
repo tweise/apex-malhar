@@ -25,9 +25,11 @@ import com.datatorrent.api.Context.OperatorContext;
 /**
  * This {@link QueueManager} functions like a standard {@link QueueManager}. Queries can be enqueued and when they are dequeued they are
  * completely removed from the queue.
+ *
  * @param <QUERY_TYPE> The type of the query to be enqueued in the queue.
  * @param <META_QUERY> The type of the meta data to be enqueued with the query.
  * @param <QUEUE_CONTEXT> The type of the queue context data.
+ * @since 3.0.0
  */
 public class SimpleQueueManager<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT>
                       implements QueueManager<QUERY_TYPE, META_QUERY, QUEUE_CONTEXT>

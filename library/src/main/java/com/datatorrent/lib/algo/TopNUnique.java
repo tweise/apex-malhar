@@ -48,8 +48,6 @@ import com.datatorrent.lib.util.AbstractBaseNUniqueOperatorMap;
  *
  * @displayName Top N Unique Values Per Key
  * @category Stats and Aggregations
- * @tags filter, rank
- *
  * @since 0.3.2
  */
 

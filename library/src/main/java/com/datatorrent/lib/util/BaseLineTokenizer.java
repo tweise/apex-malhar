@@ -31,6 +31,7 @@ import javax.validation.constraints.NotNull;
  * Ports:<br>
  * <b>data</b>: expects String<br>
  * </p>
+ *
  * @displayName Base Line Tokenizer
  * @category Stream Manipulators
  * @tags string

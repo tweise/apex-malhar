@@ -48,7 +48,6 @@ import com.datatorrent.api.annotation.Stateless;
  * @param <K>Type of Key objects</K>
  * @displayName Unique Values Per Key
  * @category Stream Manipulators
- * @tags count, key value
  * @since 0.3.5
  */
 

@@ -46,7 +46,6 @@ import java.util.Map;
  *
  * @displayName HBase Name Value Csv Put
  * @category Output
- * @tags csv, hbase, put
  * @since 1.0.2
  */
 public class HBaseNameValueCsvPutOperator extends AbstractHBaseWindowPutOutputOperator<String> {

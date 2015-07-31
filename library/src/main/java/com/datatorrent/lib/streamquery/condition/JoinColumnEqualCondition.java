@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
  * <b> Properties : </b> <br>
  * <b. equalkeys : </b> Keys for which value must be compared. <br>
  * <br>
+ *
  * @displayName Join Column Equal Condition
  * @category Stream Manipulators
  * @tags sql condition, equal join

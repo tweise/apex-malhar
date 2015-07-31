@@ -22,7 +22,7 @@ package com.datatorrent.contrib.zmq;
  * @displayName Single Port Zero MQ input operator
  * @category Messaging
  * @tags input operator, string
- *
+ * @since 3.0.0
  */
 public class ZeroMQInputOperator extends AbstractSinglePortZeroMQInputOperator<byte[]>
 {
