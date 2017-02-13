@@ -30,19 +30,19 @@
   <!-- Properties for TwitterAutoComplete, please fill out all of them to make the application work -->
   <property>
     <name>dt.application.TwitterAutoComplete.operator.tweetSampler.consumerKey</name>
-    <value></value>
+    <value>9fi6uTaLrW91suW5alIl6bfUN</value>
   </property>
   <property>
     <name>dt.application.TwitterAutoComplete.operator.tweetSampler.consumerSecret</name>
-    <value></value>
+    <value>TpsvVZzh5MLhDZuwiCWxwv9LyHJGamtZHnojlgdNa4mph7RHIK</value>
   </property>
   <property>
     <name>dt.application.TwitterAutoComplete.operator.tweetSampler.accessToken</name>
-    <value></value>
+    <value>90819718-0djLN49fDwGdvlukLCC1bXwCYJ5snZbcV3pfIzvBJ</value>
   </property>
   <property>
     <name>dt.application.TwitterAutoComplete.operator.tweetSampler.accessTokenSecret</name>
-    <value></value>
+    <value>3btrakD4YHRUdYeaDtrTtVgLXjzefsbxFx78dzmS6LOV3</value>
   </property>
 
   <!-- Properties for StreamingWordExtract -->

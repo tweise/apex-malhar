@@ -50,10 +50,10 @@ public class TwitterAutoCompleteTest
     LocalMode lma = LocalMode.newInstance();
     Configuration conf = new Configuration(false);
     //uncomment the following lines and change YOUR_XXX to the corresponding information needed.
-    //conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.consumerKey", "YOUR_CONSUMERKEY");
-    //conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.consumerSecret", "YOUR_CONSUERSECRET");
-    //conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.accessToken", "YOUR_ACCESSTOKEN");
-    //conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.accessTokenSecret", "YOUR_TOKENSECRET");
+    conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.consumerKey", "9fi6uTaLrW91suW5alIl6bfUN");
+    conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.consumerSecret", "TpsvVZzh5MLhDZuwiCWxwv9LyHJGamtZHnojlgdNa4mph7RHIK");
+    conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.accessToken", "90819718-0djLN49fDwGdvlukLCC1bXwCYJ5snZbcV3pfIzvBJ");
+    conf.set("dt.application.TwitterAutoComplete.operator.tweetSampler.accessTokenSecret", "3btrakD4YHRUdYeaDtrTtVgLXjzefsbxFx78dzmS6LOV3");
     lma.prepareDAG(new TwitterAutoComplete(), conf);
     LocalMode.Controller lc = lma.getController();
     long start = System.currentTimeMillis();
