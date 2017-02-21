@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,12 +66,64 @@ public class TwitterTopN
     }
   }
 
-  public static class TimestampExtractor implements com.google.common.base.Function<KeyValPair<String, Long>, Long>
+  public static class TempWrapper
   {
+    private KeyValPair<String, Long> value;
+    private Long timestamp;
+
+    public TempWrapper()
+    {
+
+    }
+
+    public TempWrapper(KeyValPair<String, Long> value, Long timestamp)
+    {
+      this.value = value;
+      this.timestamp = timestamp;
+    }
 
     @Override
-    public Long apply(@Nullable KeyValPair<String, Long> input) {
-      return input.getValue();
+    public String toString()
+    {
+      return this.value + "  -  " + this.timestamp;
+    }
+
+    public Long getTimestamp()
+    {
+      return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp)
+    {
+      this.timestamp = timestamp;
+    }
+
+    public KeyValPair<String, Long> getValue()
+    {
+      return value;
+    }
+
+    public void setValue(KeyValPair<String, Long> value)
+    {
+      this.value = value;
+    }
+  }
+
+  public static class TimestampExtractor implements com.google.common.base.Function<TempWrapper, Long>
+  {
+    @Override
+    public Long apply(@Nullable TempWrapper input)
+    {
+      return input.getTimestamp();
+    }
+  }
+
+  public static class Comp implements Comparator<TempWrapper>
+  {
+    @Override
+    public int compare(TempWrapper o1, TempWrapper o2)
+    {
+      return Long.compare(o1.getValue().getValue(), o2.getValue().getValue());
     }
   }
 
@@ -82,12 +131,32 @@ public class TwitterTopN
   public void TwitterTopNTest()
   {
     WindowOption windowOption = new WindowOption.TimeWindows(Duration.standardSeconds(5));
+    TopN<TempWrapper> topN = new TopN<>();
+    topN.setN(5);
+    topN.setComparator(new Comp());
 
     ApexStream<KeyValPair<String, Long>> tags = StreamFactory.fromFolder("/home/shunxin/Desktop/apache/apex-malhar/demos/highlevelapi/src/test/resources/data/sampleTweets.txt", name("tweetSampler"))
             .flatMap(new ExtractHashtags());
 
     tags.window(windowOption, new TriggerOption().accumulatingFiredPanes().withEarlyFiringsAtEvery(1))
-            .accumulate(new TopN<KeyValPair<String, Long>>())
+            .countByKey(new Function.ToKeyValue<KeyValPair<String,Long>, String, Long>()
+            {
+              @Override
+              public Tuple<KeyValPair<String, Long>> f(KeyValPair<String, Long> input)
+              {
+                return new Tuple.TimestampedTuple<>(input.getValue(), new KeyValPair<>(input.getKey(), 1L));
+              }
+            })
+            .map(new Function.MapFunction<Tuple.WindowedTuple<KeyValPair<String,Long>>, TempWrapper>()
+            {
+              @Override
+              public TempWrapper f(Tuple.WindowedTuple<KeyValPair<String, Long>> input)
+              {
+                return new TempWrapper(input.getValue(), input.getTimestamp());
+              }
+            })
+            .window(windowOption, new TriggerOption().accumulatingFiredPanes().withEarlyFiringsAtEvery(1))
+            .accumulate(topN)
             .with("timestampExtractor", new TimestampExtractor())
             .print(name("console"))
             .runEmbedded(false, 60000, new Callable<Boolean>()
@@ -98,16 +167,6 @@ public class TwitterTopN
                 return false;
               }
             });
-    /*LineByLineFileInputOperator fileInput = new LineByLineFileInputOperator();
-    fileInput.setDirectory("/home/shunxin/Desktop/apache/apex-malhar/demos/highlevelapi/src/test/resources/data/sampleTweets.txt");
 
-    WindowedOperatorImpl<String, > windowedOperator = new WindowedOperatorImpl<>();
-    Accumulation<MutablePair<Double, Double>, MutablePair<MutableLong, MutableLong>, Double> piAccumulation = new Application.PiAccumulation();
-
-    windowedOperator.setAccumulation(piAccumulation);
-    windowedOperator.setDataStorage(new InMemoryWindowedStorage<MutablePair<MutableLong, MutableLong>>());
-    windowedOperator.setWindowStateStorage(new InMemoryWindowedStorage<WindowState>());
-    windowedOperator.setWindowOption(new WindowOption.TimeWindows(Duration.standardSeconds(10)));
-    windowedOperator.setTriggerOption(TriggerOption.AtWatermark().withEarlyFiringsAtEvery(Duration.millis(1000)).accumulatingFiredPanes());*/
   }
 }
