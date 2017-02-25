@@ -1,18 +1,25 @@
 package org.apache.apex.malhar.stream.sample;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.datatorrent.api.*;
+import com.datatorrent.lib.io.ConsoleOutputOperator;
 import org.apache.apex.malhar.lib.fs.LineByLineFileInputOperator;
 import org.apache.apex.malhar.lib.window.*;
+import org.apache.apex.malhar.lib.window.accumulation.SumLong;
 import org.apache.apex.malhar.lib.window.accumulation.TopN;
+import org.apache.apex.malhar.lib.window.accumulation.TopNByKey;
+import org.apache.apex.malhar.lib.window.impl.InMemoryWindowedKeyedStorage;
 import org.apache.apex.malhar.lib.window.impl.InMemoryWindowedStorage;
+import org.apache.apex.malhar.lib.window.impl.KeyedWindowedOperatorImpl;
 import org.apache.apex.malhar.lib.window.impl.WindowedOperatorImpl;
 import org.apache.apex.malhar.lib.window.sample.pi.Application;
 import org.apache.apex.malhar.stream.api.ApexStream;
@@ -20,6 +27,7 @@ import org.apache.apex.malhar.stream.api.CompositeStreamTransform;
 import org.apache.apex.malhar.stream.api.WindowedStream;
 import org.apache.apex.malhar.stream.api.function.Function;
 import org.apache.apex.malhar.stream.api.impl.StreamFactory;
+import org.apache.apex.malhar.stream.api.operator.FunctionOperator;
 import org.apache.apex.malhar.stream.sample.complete.AutoComplete;
 import org.apache.apex.malhar.stream.sample.complete.TopWikipediaSessions;
 import org.apache.commons.io.IOUtils;
@@ -30,11 +38,6 @@ import org.apache.hadoop.conf.Configuration;
 import com.google.common.base.Throwables;
 
 import com.datatorrent.api.Context.OperatorContext;
-import com.datatorrent.api.DAG;
-import com.datatorrent.api.DefaultInputPort;
-import com.datatorrent.api.DefaultOutputPort;
-import com.datatorrent.api.InputOperator;
-import com.datatorrent.api.StreamingApplication;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.lib.util.KeyValPair;
@@ -45,20 +48,20 @@ import javax.annotation.Nullable;
 
 import static org.apache.apex.malhar.stream.api.Option.Options.name;
 
-public class TwitterTopN
+public class TwitterTopN implements StreamingApplication
 {
-  private static class ExtractHashtags implements Function.FlatMapFunction<String, KeyValPair<String, Long>>
+  private static class ExtractHashtags implements Function.FlatMapFunction<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>>
   {
     @Override
-    public Iterable<KeyValPair<String, Long>> f(String input)
+    public Iterable<Tuple.TimestampedTuple<KeyValPair<String, Long>>> f(String input)
     {
-      List<KeyValPair<String, Long>> result = new LinkedList<>();
-      String [] splited = input.split(" ", 2);
+      List<Tuple.TimestampedTuple<KeyValPair<String, Long>>> result = new LinkedList<>();
+      String[] splited = input.split(" ", 2);
 
       long timestamp = Long.parseLong(splited[0]);
       Matcher m = Pattern.compile("#\\S+").matcher(splited[1]);
       while (m.find()) {
-        KeyValPair<String, Long> entry = new KeyValPair<>(m.group().substring(1), timestamp);
+        Tuple.TimestampedTuple<KeyValPair<String, Long>> entry = new Tuple.TimestampedTuple<>(timestamp, new KeyValPair<>(m.group().substring(1), 1L));
         result.add(entry);
       }
 
@@ -66,107 +69,51 @@ public class TwitterTopN
     }
   }
 
-  public static class TempWrapper
+  @Override
+  public void populateDAG(DAG dag, Configuration conf)
   {
-    private KeyValPair<String, Long> value;
-    private Long timestamp;
+    LineByLineFileInputOperator fileInput = new LineByLineFileInputOperator();
+    fileInput.setDirectory("/home/shunxin/Desktop/apache/apex-malhar/demos/highlevelapi/src/test/resources/data/sampleTweets.txt");
 
-    public TempWrapper()
-    {
+    FunctionOperator.FlatMapFunctionOperator<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>> fmOp = new FunctionOperator.FlatMapFunctionOperator<>(new ExtractHashtags());
 
-    }
+    KeyedWindowedOperatorImpl<String, Long, MutableLong, Long> countBykeyOp = new KeyedWindowedOperatorImpl<>();
+    countBykeyOp.setAccumulation(new SumLong());
+    countBykeyOp.setDataStorage(new InMemoryWindowedKeyedStorage<String, MutableLong>());
+    countBykeyOp.setWindowOption(new WindowOption.TimeWindows(Duration.standardSeconds(5)));
+    countBykeyOp.setWindowStateStorage(new InMemoryWindowedStorage<WindowState>());
+    countBykeyOp.setTriggerOption(TriggerOption.AtWatermark().withEarlyFiringsAtEvery(1).accumulatingFiredPanes());
 
-    public TempWrapper(KeyValPair<String, Long> value, Long timestamp)
-    {
-      this.value = value;
-      this.timestamp = timestamp;
-    }
+    TopNByKey<String, Long> topNByKey = new TopNByKey<>();
+    topNByKey.setN(3);
+    WindowedOperatorImpl<KeyValPair<String, Long>, Map<String, Long>, List<KeyValPair<String, Long>>> topN = new WindowedOperatorImpl<>();
+    topN.setAccumulation(topNByKey);
+    topN.setDataStorage(new InMemoryWindowedStorage<Map<String, Long>>());
+    topN.setWindowStateStorage(new InMemoryWindowedStorage<WindowState>());
+    topN.setTriggerOption(TriggerOption.AtWatermark().withEarlyFiringsAtEvery(5).accumulatingFiredPanes());
 
-    @Override
-    public String toString()
-    {
-      return this.value + "  -  " + this.timestamp;
-    }
+    ConsoleOutputOperator console = new ConsoleOutputOperator();
 
-    public Long getTimestamp()
-    {
-      return timestamp;
-    }
+    dag.addOperator("fileInput", fileInput);
+    dag.addOperator("extractHashtags", fmOp);
+    dag.addOperator("countByKey", countBykeyOp);
+    dag.addOperator("topN", topN);
+    dag.addOperator("con", console);
 
-    public void setTimestamp(Long timestamp)
-    {
-      this.timestamp = timestamp;
-    }
+    dag.addStream("rawTweets", fileInput.output, fmOp.input);
+    dag.addStream("hashtags", fmOp.output, countBykeyOp.input);
+    dag.addStream("countingResult", countBykeyOp.output, topN.input);
+    dag.addStream("topNResult", topN.output, console.input);
 
-    public KeyValPair<String, Long> getValue()
-    {
-      return value;
-    }
-
-    public void setValue(KeyValPair<String, Long> value)
-    {
-      this.value = value;
-    }
-  }
-
-  public static class TimestampExtractor implements com.google.common.base.Function<TempWrapper, Long>
-  {
-    @Override
-    public Long apply(@Nullable TempWrapper input)
-    {
-      return input.getTimestamp();
-    }
-  }
-
-  public static class Comp implements Comparator<TempWrapper>
-  {
-    @Override
-    public int compare(TempWrapper o1, TempWrapper o2)
-    {
-      return Long.compare(o1.getValue().getValue(), o2.getValue().getValue());
-    }
   }
 
   @Test
-  public void TwitterTopNTest()
+  public void TwitterTopNTest() throws Exception
   {
-    WindowOption windowOption = new WindowOption.TimeWindows(Duration.standardSeconds(5));
-    TopN<TempWrapper> topN = new TopN<>();
-    topN.setN(5);
-    topN.setComparator(new Comp());
-
-    ApexStream<KeyValPair<String, Long>> tags = StreamFactory.fromFolder("/home/shunxin/Desktop/apache/apex-malhar/demos/highlevelapi/src/test/resources/data/sampleTweets.txt", name("tweetSampler"))
-            .flatMap(new ExtractHashtags());
-
-    tags.window(windowOption, new TriggerOption().accumulatingFiredPanes().withEarlyFiringsAtEvery(1))
-            .countByKey(new Function.ToKeyValue<KeyValPair<String,Long>, String, Long>()
-            {
-              @Override
-              public Tuple<KeyValPair<String, Long>> f(KeyValPair<String, Long> input)
-              {
-                return new Tuple.TimestampedTuple<>(input.getValue(), new KeyValPair<>(input.getKey(), 1L));
-              }
-            })
-            .map(new Function.MapFunction<Tuple.WindowedTuple<KeyValPair<String,Long>>, TempWrapper>()
-            {
-              @Override
-              public TempWrapper f(Tuple.WindowedTuple<KeyValPair<String, Long>> input)
-              {
-                return new TempWrapper(input.getValue(), input.getTimestamp());
-              }
-            })
-            .window(windowOption, new TriggerOption().accumulatingFiredPanes().withEarlyFiringsAtEvery(1))
-            .accumulate(topN)
-            .with("timestampExtractor", new TimestampExtractor())
-            .print(name("console"))
-            .runEmbedded(false, 60000, new Callable<Boolean>()
-            {
-              @Override
-              public Boolean call() throws Exception
-              {
-                return false;
-              }
-            });
-
+    LocalMode lma = LocalMode.newInstance();
+    Configuration conf = new Configuration(false);
+    lma.prepareDAG(new TwitterTopN(), conf);
+    LocalMode.Controller lc = lma.getController();
+    lc.run(60000);
   }
 }
