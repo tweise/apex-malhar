@@ -1,55 +1,39 @@
 package org.apache.apex.malhar.stream.sample;
 
-
-import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import java.net.URI;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.datatorrent.api.*;
+import com.datatorrent.lib.appdata.schemas.SchemaUtils;
+import com.datatorrent.lib.appdata.snapshot.AppDataSnapshotServerMap;
 import com.datatorrent.lib.io.ConsoleOutputOperator;
+import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
+import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
 import org.apache.apex.malhar.lib.fs.LineByLineFileInputOperator;
 import org.apache.apex.malhar.lib.window.*;
 import org.apache.apex.malhar.lib.window.accumulation.SumLong;
-import org.apache.apex.malhar.lib.window.accumulation.TopN;
 import org.apache.apex.malhar.lib.window.accumulation.TopNByKey;
 import org.apache.apex.malhar.lib.window.impl.InMemoryWindowedKeyedStorage;
 import org.apache.apex.malhar.lib.window.impl.InMemoryWindowedStorage;
 import org.apache.apex.malhar.lib.window.impl.KeyedWindowedOperatorImpl;
 import org.apache.apex.malhar.lib.window.impl.WindowedOperatorImpl;
-import org.apache.apex.malhar.lib.window.sample.pi.Application;
-import org.apache.apex.malhar.stream.api.ApexStream;
-import org.apache.apex.malhar.stream.api.CompositeStreamTransform;
-import org.apache.apex.malhar.stream.api.WindowedStream;
 import org.apache.apex.malhar.stream.api.function.Function;
-import org.apache.apex.malhar.stream.api.impl.StreamFactory;
 import org.apache.apex.malhar.stream.api.operator.FunctionOperator;
-import org.apache.apex.malhar.stream.sample.complete.AutoComplete;
-import org.apache.apex.malhar.stream.sample.complete.TopWikipediaSessions;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.mutable.MutableLong;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.hadoop.conf.Configuration;
 
-import com.google.common.base.Throwables;
-
-import com.datatorrent.api.Context.OperatorContext;
-import com.datatorrent.api.annotation.ApplicationAnnotation;
-import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.lib.util.KeyValPair;
 import org.joda.time.Duration;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
-
-import static org.apache.apex.malhar.stream.api.Option.Options.name;
-
 public class TwitterTopN implements StreamingApplication
 {
+  public static final String SCHEMA = "TwitterTopNSchema.json";
+  public static final URI uri = URI.create("ws://localhost:8890/pubsub");
+  public static final String topic = "twitter";
+
   private static class ExtractHashtags implements Function.FlatMapFunction<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>>
   {
     @Override
@@ -69,13 +53,32 @@ public class TwitterTopN implements StreamingApplication
     }
   }
 
+  private static class TupleToMap implements Function.MapFunction<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, List<Map<String, Object>>>
+  {
+    @Override
+    public List<Map<String, Object>> f(Tuple.WindowedTuple<List<KeyValPair<String, Long>>> input)
+    {
+      List<Map<String, Object>> result = new ArrayList<>();
+      Long timestamp = input.getTimestamp();
+      for (KeyValPair<String, Long> kv : input.getValue()) {
+        Map<String, Object> row = new HashMap<>();
+        row.put("hashtag", kv.getKey());
+        row.put("count", kv.getValue());
+        row.put("timestamp", timestamp);
+        result.add(row);
+      }
+      return result;
+    }
+  }
+
   @Override
   public void populateDAG(DAG dag, Configuration conf)
   {
     LineByLineFileInputOperator fileInput = new LineByLineFileInputOperator();
     fileInput.setDirectory("/home/shunxin/Desktop/apache/apex-malhar/demos/highlevelapi/src/test/resources/data/sampleTweets.txt");
 
-    FunctionOperator.FlatMapFunctionOperator<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>> fmOp = new FunctionOperator.FlatMapFunctionOperator<>(new ExtractHashtags());
+    FunctionOperator.FlatMapFunctionOperator<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>> fmOp =
+            new FunctionOperator.FlatMapFunctionOperator<>(new ExtractHashtags());
 
     KeyedWindowedOperatorImpl<String, Long, MutableLong, Long> countBykeyOp = new KeyedWindowedOperatorImpl<>();
     countBykeyOp.setAccumulation(new SumLong());
@@ -92,18 +95,39 @@ public class TwitterTopN implements StreamingApplication
     topN.setWindowStateStorage(new InMemoryWindowedStorage<WindowState>());
     topN.setTriggerOption(TriggerOption.AtWatermark().withEarlyFiringsAtEvery(5).accumulatingFiredPanes());
 
+    FunctionOperator.MapFunctionOperator<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, List<Map<String, Object>>> mapOp =
+            new FunctionOperator.MapFunctionOperator<>(new TupleToMap());
+
+    AppDataSnapshotServerMap snapshotServerMap = new AppDataSnapshotServerMap();
+    String JSON = SchemaUtils.jarResourceFileToString(SCHEMA);
+    snapshotServerMap.setSnapshotSchemaJSON(JSON);
+
+    PubSubWebSocketAppDataQuery wsQuery = new PubSubWebSocketAppDataQuery();
+    wsQuery.enableEmbeddedMode();
+    snapshotServerMap.setEmbeddableQueryInfoProvider(wsQuery);
+
+    PubSubWebSocketAppDataResult wsResult = new PubSubWebSocketAppDataResult();
+    wsResult.setUri(uri);
+    wsResult.setTopic(topic);
+
     ConsoleOutputOperator console = new ConsoleOutputOperator();
 
     dag.addOperator("fileInput", fileInput);
     dag.addOperator("extractHashtags", fmOp);
     dag.addOperator("countByKey", countBykeyOp);
     dag.addOperator("topN", topN);
+    dag.addOperator("TupleToMap", mapOp);
+    dag.addOperator("snapshotServer", snapshotServerMap);
+    dag.addOperator("QueryResult", wsResult);
     dag.addOperator("con", console);
 
     dag.addStream("rawTweets", fileInput.output, fmOp.input);
     dag.addStream("hashtags", fmOp.output, countBykeyOp.input);
     dag.addStream("countingResult", countBykeyOp.output, topN.input);
-    dag.addStream("topNResult", topN.output, console.input);
+    dag.addStream("topNResult", topN.output, mapOp.input);
+    dag.addStream("resultMap", mapOp.output, snapshotServerMap.input);
+    dag.addStream("finalResult", snapshotServerMap.queryResult, wsResult.input, console.input);
+
 
   }
 
