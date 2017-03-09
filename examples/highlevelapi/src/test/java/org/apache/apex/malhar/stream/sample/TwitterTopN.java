@@ -32,7 +32,9 @@ public class TwitterTopN implements StreamingApplication
 {
   public static final String SCHEMA = "TwitterTopNSchema.json";
   public static final URI uri = URI.create("ws://localhost:8890/pubsub");
+  // TODO: configuration
   public static final String topic = "twitter";
+  public static final String queryTopic = "twitterQuery";
 
   private static class ExtractHashtags implements Function.FlatMapFunction<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>>
   {
@@ -75,7 +77,7 @@ public class TwitterTopN implements StreamingApplication
   public void populateDAG(DAG dag, Configuration conf)
   {
     LineByLineFileInputOperator fileInput = new LineByLineFileInputOperator();
-    fileInput.setDirectory("/home/shunxin/Desktop/apache/apex-malhar/demos/highlevelapi/src/test/resources/data/sampleTweets.txt");
+    fileInput.setDirectory("./src/test/resources/data/sampleTweets.txt");
 
     FunctionOperator.FlatMapFunctionOperator<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>> fmOp =
             new FunctionOperator.FlatMapFunctionOperator<>(new ExtractHashtags());
@@ -104,6 +106,8 @@ public class TwitterTopN implements StreamingApplication
 
     PubSubWebSocketAppDataQuery wsQuery = new PubSubWebSocketAppDataQuery();
     wsQuery.enableEmbeddedMode();
+    wsQuery.setUri(uri);
+    wsQuery.setTopic(queryTopic);
     snapshotServerMap.setEmbeddableQueryInfoProvider(wsQuery);
 
     PubSubWebSocketAppDataResult wsResult = new PubSubWebSocketAppDataResult();
