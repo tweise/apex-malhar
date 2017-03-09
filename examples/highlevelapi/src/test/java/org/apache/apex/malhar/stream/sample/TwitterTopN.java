@@ -42,13 +42,22 @@ public class TwitterTopN implements StreamingApplication
     public Iterable<Tuple.TimestampedTuple<KeyValPair<String, Long>>> f(String input)
     {
       List<Tuple.TimestampedTuple<KeyValPair<String, Long>>> result = new LinkedList<>();
-      String[] splited = input.split(" ", 2);
+      String[] tokens = input.split(" ", 2);
+      if (tokens.length < 2) {
+        // TODO: error handling
+        System.out.println("Invalid data: " + input);
+        return result;
+      }
 
-      long timestamp = Long.parseLong(splited[0]);
-      Matcher m = Pattern.compile("#\\S+").matcher(splited[1]);
-      while (m.find()) {
-        Tuple.TimestampedTuple<KeyValPair<String, Long>> entry = new Tuple.TimestampedTuple<>(timestamp, new KeyValPair<>(m.group().substring(1), 1L));
-        result.add(entry);
+      try {
+        long timestamp = Long.parseLong(tokens[0]);
+        Matcher m = Pattern.compile("#\\S+").matcher(tokens[1]);
+        while (m.find()) {
+          Tuple.TimestampedTuple<KeyValPair<String, Long>> entry = new Tuple.TimestampedTuple<>(timestamp, new KeyValPair<>(m.group().substring(1), 1L));
+          result.add(entry);
+        }
+      } catch (NumberFormatException ex) {
+        System.out.println("Invalid data: " + input);
       }
 
       return result;

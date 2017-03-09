@@ -1,7 +1,7 @@
 {
   "values": [
     {"name": "hashtag",   "type": "string"},
-    {"name": "count",     "type": "integer"},
-    {"name": "timestamp", "type": "integer"}
+    {"name": "count",     "type": "long"},
+    {"name": "timestamp", "type": "long"}
   ]
 }
