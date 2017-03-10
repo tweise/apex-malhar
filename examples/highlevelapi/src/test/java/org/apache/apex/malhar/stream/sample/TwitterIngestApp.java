@@ -3,46 +3,24 @@ package org.apache.apex.malhar.stream.sample;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.joda.time.Duration;
+import org.junit.Test;
+
+import org.apache.apex.malhar.lib.window.WindowOption;
+
+import org.apache.apex.malhar.stream.api.ApexStream;
+import org.apache.apex.malhar.stream.api.function.Function;
+import org.apache.apex.malhar.stream.api.impl.StreamFactory;
+import org.apache.apex.malhar.stream.sample.complete.TwitterAutoComplete;
 
 import com.datatorrent.api.Context;
 import com.datatorrent.api.DefaultInputPort;
 import com.datatorrent.common.util.BaseOperator;
-import org.apache.apex.malhar.stream.sample.complete.TopWikipediaSessions;
-import org.apache.apex.malhar.stream.sample.complete.TwitterAutoComplete;
-import org.joda.time.Duration;
-
-import org.apache.apex.malhar.lib.window.TriggerOption;
-import org.apache.apex.malhar.lib.window.Tuple;
-import org.apache.apex.malhar.lib.window.Window;
-import org.apache.apex.malhar.lib.window.WindowOption;
-
-import org.apache.apex.malhar.stream.api.ApexStream;
-import org.apache.apex.malhar.stream.api.CompositeStreamTransform;
-import org.apache.apex.malhar.stream.api.WindowedStream;
-import org.apache.apex.malhar.stream.api.function.Function;
-import org.apache.apex.malhar.stream.api.impl.StreamFactory;
-
-import org.apache.hadoop.conf.Configuration;
-
-import com.datatorrent.api.DAG;
-import com.datatorrent.api.StreamingApplication;
-import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.contrib.twitter.TwitterSampleInput;
-import com.datatorrent.lib.util.KeyValPair;
-import org.junit.Test;
 
-import static org.apache.apex.malhar.lib.window.impl.WindowedMergeOperatorTestApplication.Collector.result;
 import static org.apache.apex.malhar.stream.api.Option.Options.name;
-
 
 public class TwitterIngestApp
 {
@@ -104,22 +82,24 @@ public class TwitterIngestApp
     WindowOption windowOption = new WindowOption.TimeWindows(Duration.standardMinutes(1));
 
     ApexStream<Object> tags = StreamFactory.fromInput(input, input.text, name("tweetSampler"))
-            .filter(new ASCIIFilter())
-            .filter(new Function.FilterFunction<String>() {
-              @Override
-              public boolean f(String input) {
-                return !input.contains("\n");
-              }
-            })
-            .map(new Function.MapFunction<String, String>()
-            {
-              @Override
-              public String f(String input)
-              {
-                return System.currentTimeMillis() + " " + input;
-              }
-            }).print()
-            .endWith(collector, collector.input);
+        .filter(new ASCIIFilter())
+        .filter(new Function.FilterFunction<String>()
+        {
+          @Override
+          public boolean f(String input)
+          {
+            return !input.contains("\n");
+          }
+        })
+        .map(new Function.MapFunction<String, String>()
+        {
+          @Override
+          public String f(String input)
+          {
+            return System.currentTimeMillis() + " " + input;
+          }
+        }).print()
+        .endWith(collector, collector.input);
 
     tags.runEmbedded(false, 60000, new Callable<Boolean>()
     {

@@ -1,18 +1,22 @@
 package org.apache.apex.malhar.stream.sample;
 
 import java.net.URI;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.datatorrent.api.*;
-import com.datatorrent.lib.appdata.schemas.SchemaUtils;
-import com.datatorrent.lib.appdata.snapshot.AppDataSnapshotServerMap;
-import com.datatorrent.lib.io.ConsoleOutputOperator;
-import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
-import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
+import org.joda.time.Duration;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apache.apex.malhar.lib.fs.LineByLineFileInputOperator;
-import org.apache.apex.malhar.lib.window.*;
+import org.apache.apex.malhar.lib.window.TriggerOption;
+import org.apache.apex.malhar.lib.window.Tuple;
+import org.apache.apex.malhar.lib.window.WindowOption;
+import org.apache.apex.malhar.lib.window.WindowState;
 import org.apache.apex.malhar.lib.window.accumulation.SumLong;
 import org.apache.apex.malhar.lib.window.accumulation.TopNByKey;
 import org.apache.apex.malhar.lib.window.impl.InMemoryWindowedKeyedStorage;
@@ -24,12 +28,19 @@ import org.apache.apex.malhar.stream.api.operator.FunctionOperator;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.hadoop.conf.Configuration;
 
+import com.datatorrent.api.DAG;
+import com.datatorrent.api.LocalMode;
+import com.datatorrent.api.StreamingApplication;
+import com.datatorrent.lib.appdata.schemas.SchemaUtils;
+import com.datatorrent.lib.appdata.snapshot.AppDataSnapshotServerMap;
+import com.datatorrent.lib.io.ConsoleOutputOperator;
+import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
+import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
 import com.datatorrent.lib.util.KeyValPair;
-import org.joda.time.Duration;
-import org.junit.Test;
 
 public class TwitterTopN implements StreamingApplication
 {
+  private static final Logger LOG = LoggerFactory.getLogger(TwitterTopN.class);
   public static final String SCHEMA = "TwitterTopNSchema.json";
   public static final URI uri = URI.create("ws://localhost:8890/pubsub");
   // TODO: configuration
@@ -45,7 +56,7 @@ public class TwitterTopN implements StreamingApplication
       String[] tokens = input.split(" ", 2);
       if (tokens.length < 2) {
         // TODO: error handling
-        System.out.println("Invalid data: " + input);
+        LOG.debug("Invalid data: " + input);
         return result;
       }
 
@@ -57,13 +68,14 @@ public class TwitterTopN implements StreamingApplication
           result.add(entry);
         }
       } catch (NumberFormatException ex) {
-        System.out.println("Invalid data: " + input);
+        LOG.debug("Invalid data: " + input);
       }
 
       return result;
     }
   }
 
+  /*
   private static class TupleToMap implements Function.MapFunction<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, List<Map<String, Object>>>
   {
     @Override
@@ -81,6 +93,26 @@ public class TwitterTopN implements StreamingApplication
       return result;
     }
   }
+  */
+
+  private static class TupleToMap implements Function.MapFunction<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, String>
+  {
+    @Override
+    public String f(Tuple.WindowedTuple<List<KeyValPair<String, Long>>> input)
+    {
+      Long timestamp = input.getTimestamp();
+      int count = 0;
+      String result = "{\"id\":\"topN\",\"event_time_window_timestamp\":\"" + timestamp.toString() + "\",\"result\":[";
+      for (KeyValPair<String, Long> kv : input.getValue()) {
+        result += "{\"hashtag\":\"" + kv.getKey() + "\",\"count\":\"" + kv.getValue().toString() + "\"}";
+        if (++count < input.getValue().size()) {
+          result += ",";
+        }
+      }
+      result += "]}";
+      return result;
+    }
+  }
 
   @Override
   public void populateDAG(DAG dag, Configuration conf)
@@ -89,7 +121,7 @@ public class TwitterTopN implements StreamingApplication
     fileInput.setDirectory("./src/test/resources/data/sampleTweets.txt");
 
     FunctionOperator.FlatMapFunctionOperator<String, Tuple.TimestampedTuple<KeyValPair<String, Long>>> fmOp =
-            new FunctionOperator.FlatMapFunctionOperator<>(new ExtractHashtags());
+        new FunctionOperator.FlatMapFunctionOperator<>(new ExtractHashtags());
 
     KeyedWindowedOperatorImpl<String, Long, MutableLong, Long> countBykeyOp = new KeyedWindowedOperatorImpl<>();
     countBykeyOp.setAccumulation(new SumLong());
@@ -106,8 +138,11 @@ public class TwitterTopN implements StreamingApplication
     topN.setWindowStateStorage(new InMemoryWindowedStorage<WindowState>());
     topN.setTriggerOption(TriggerOption.AtWatermark().withEarlyFiringsAtEvery(5).accumulatingFiredPanes());
 
-    FunctionOperator.MapFunctionOperator<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, List<Map<String, Object>>> mapOp =
-            new FunctionOperator.MapFunctionOperator<>(new TupleToMap());
+    //FunctionOperator.MapFunctionOperator<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, List<Map<String, Object>>> mapOp =
+    //        new FunctionOperator.MapFunctionOperator<>(new TupleToMap());
+
+    FunctionOperator.MapFunctionOperator<Tuple.WindowedTuple<List<KeyValPair<String, Long>>>, String> mapOp =
+        new FunctionOperator.MapFunctionOperator<>(new TupleToMap());
 
     AppDataSnapshotServerMap snapshotServerMap = new AppDataSnapshotServerMap();
     String JSON = SchemaUtils.jarResourceFileToString(SCHEMA);
@@ -130,16 +165,16 @@ public class TwitterTopN implements StreamingApplication
     dag.addOperator("countByKey", countBykeyOp);
     dag.addOperator("topN", topN);
     dag.addOperator("TupleToMap", mapOp);
-    dag.addOperator("snapshotServer", snapshotServerMap);
+    //dag.addOperator("snapshotServer", snapshotServerMap);
     dag.addOperator("QueryResult", wsResult);
-    dag.addOperator("con", console);
+    //dag.addOperator("con", console);
 
     dag.addStream("rawTweets", fileInput.output, fmOp.input);
     dag.addStream("hashtags", fmOp.output, countBykeyOp.input);
     dag.addStream("countingResult", countBykeyOp.output, topN.input);
     dag.addStream("topNResult", topN.output, mapOp.input);
-    dag.addStream("resultMap", mapOp.output, snapshotServerMap.input);
-    dag.addStream("finalResult", snapshotServerMap.queryResult, wsResult.input, console.input);
+    dag.addStream("resultStrings", mapOp.output, wsResult.input);
+   // dag.addStream("finalResult", snapshotServerMap.queryResult, wsResult.input, console.input);
 
 
   }
