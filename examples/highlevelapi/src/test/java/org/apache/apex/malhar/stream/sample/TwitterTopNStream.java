@@ -12,12 +12,12 @@ import javax.annotation.Nullable;
 import org.joda.time.Duration;
 import org.junit.Test;
 
+import org.apache.apex.malhar.lib.function.Function;
 import org.apache.apex.malhar.lib.window.TriggerOption;
 import org.apache.apex.malhar.lib.window.Tuple;
 import org.apache.apex.malhar.lib.window.WindowOption;
 import org.apache.apex.malhar.lib.window.accumulation.TopN;
 import org.apache.apex.malhar.stream.api.ApexStream;
-import org.apache.apex.malhar.stream.api.function.Function;
 import org.apache.apex.malhar.stream.api.impl.StreamFactory;
 import com.datatorrent.lib.util.KeyValPair;
 

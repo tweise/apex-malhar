@@ -8,10 +8,10 @@ import java.util.concurrent.Callable;
 import org.joda.time.Duration;
 import org.junit.Test;
 
+import org.apache.apex.malhar.lib.function.Function;
 import org.apache.apex.malhar.lib.window.WindowOption;
 
 import org.apache.apex.malhar.stream.api.ApexStream;
-import org.apache.apex.malhar.stream.api.function.Function;
 import org.apache.apex.malhar.stream.api.impl.StreamFactory;
 import org.apache.apex.malhar.stream.sample.complete.TwitterAutoComplete;
 
@@ -98,7 +98,8 @@ public class TwitterIngestApp
           {
             return System.currentTimeMillis() + " " + input;
           }
-        }).print()
+        })
+        .print()
         .endWith(collector, collector.input);
 
     tags.runEmbedded(false, 60000, new Callable<Boolean>()
