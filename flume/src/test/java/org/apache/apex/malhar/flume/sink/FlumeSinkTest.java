@@ -19,6 +19,7 @@
 package org.apache.apex.malhar.flume.sink;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,7 +43,7 @@ import com.datatorrent.netlet.util.Slice;
  */
 public class FlumeSinkTest
 {
-  static final String hostname = "localhost";
+  static final String hostname = InetAddress.getLoopbackAddress().getHostAddress();
   int port = 0;
 
   @Test
