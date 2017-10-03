@@ -19,10 +19,17 @@
 package org.apache.apex.malhar.flume.sink;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,6 +56,7 @@ public class FlumeSinkTest
   @SuppressWarnings("SleepWhileInLoop")
   public void testServer() throws InterruptedException, IOException
   {
+    luanchThreadMonitor();
     Discovery<byte[]> discovery = new Discovery<byte[]>()
     {
       @Override
@@ -143,6 +151,29 @@ public class FlumeSinkTest
       eventloop.stop();
     }
     sink.stop();
+  }
+
+  private void luanchThreadMonitor()
+  {
+    ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+    ses.scheduleAtFixedRate(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        dumpThreadDump();
+      }
+    }, 0, 2, TimeUnit.MINUTES);
+
+  }
+
+  public void  dumpThreadDump()
+  {
+    PrintStream ps = System.out;
+    ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
+    for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
+      ps.print(ti.toString());
+    }
   }
 
   private static final Logger logger = LoggerFactory.getLogger(FlumeSinkTest.class);
