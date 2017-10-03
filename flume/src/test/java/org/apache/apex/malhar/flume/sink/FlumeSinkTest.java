@@ -174,6 +174,12 @@ public class FlumeSinkTest
     for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
       ps.print(ti.toString());
     }
+    for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
+      StackTraceElement[] stackTraces = ti.getStackTrace();
+      for (StackTraceElement stack : stackTraces) {
+        ps.print(stack.toString());
+      }
+    }
   }
 
   private static final Logger logger = LoggerFactory.getLogger(FlumeSinkTest.class);
