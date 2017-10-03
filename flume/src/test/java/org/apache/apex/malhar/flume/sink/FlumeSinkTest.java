@@ -163,7 +163,7 @@ public class FlumeSinkTest
       {
         dumpThreadDump();
       }
-    }, 0, 2, TimeUnit.MINUTES);
+    }, 0, 5, TimeUnit.MINUTES);
 
   }
 
