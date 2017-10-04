@@ -93,6 +93,8 @@ public class FlumeSinkTest
       }
 
     };
+    DefaultEventLoop eventloop = new DefaultEventLoop("Eventloop-TestClient");
+    eventloop.start();
     FlumeSink sink = new FlumeSink();
     sink.setName("TeskSink");
     sink.setHostname(hostname);
@@ -139,8 +141,6 @@ public class FlumeSinkTest
       }
 
     };
-    DefaultEventLoop eventloop = new DefaultEventLoop("Eventloop-TestClient");
-    eventloop.start();
     discovery.discover();
     try {
       eventloop.connect(new InetSocketAddress(hostname, port), client);
