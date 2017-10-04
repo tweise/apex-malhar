@@ -24,9 +24,11 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -170,15 +172,24 @@ public class FlumeSinkTest
   public void  dumpThreadDump()
   {
     PrintStream ps = System.out;
+    List<String> linesToBePrinted = new ArrayList<>();
+    List<String> stackTracklinesToBePrinted = new ArrayList<>();
     ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
     for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
-      ps.print(ti.toString());
+      linesToBePrinted.add(ti.toString());
     }
     for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
       StackTraceElement[] stackTraces = ti.getStackTrace();
       for (StackTraceElement stack : stackTraces) {
-        ps.print(stack.toString());
+        stackTracklinesToBePrinted.add(stack.toString());
       }
+    }
+    for (String aLineToBePrinted: linesToBePrinted) {
+      ps.println(aLineToBePrinted);
+    }
+    ps.println("\n\n\n\n\n\n");
+    for (String aLineToBePrinted: stackTracklinesToBePrinted) {
+      ps.println(aLineToBePrinted);
     }
   }
 
