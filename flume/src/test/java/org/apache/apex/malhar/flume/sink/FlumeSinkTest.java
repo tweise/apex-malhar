@@ -181,7 +181,7 @@ public class FlumeSinkTest
       linesToBePrinted.add(ti.toString());
       linesToBePrinted.add("\n\n===Locked Info===\n\n");
       linesToBePrinted.add(" Lock info " + ti.getLockInfo() + " Lock Name " + ti.getLockName() +
-           " Lock Owner Name" + ti.getLockOwnerName() + " Lock Owner id " + ti.getLockOwnerId());
+         " Lock Owner Name" + ti.getLockOwnerName() + " Lock Owner id " + ti.getLockOwnerId());
       linesToBePrinted.add("\n\n===Locked Monitors===\n\n");
       for(MonitorInfo monitorInfo: ti.getLockedMonitors()) {
         linesToBePrinted.add(monitorInfo.getLockedStackFrame().toString());
