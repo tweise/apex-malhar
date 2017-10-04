@@ -20,7 +20,9 @@ package org.apache.apex.malhar.flume.sink;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.management.LockInfo;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.net.InetSocketAddress;
@@ -173,26 +175,32 @@ public class FlumeSinkTest
   {
     PrintStream ps = System.out;
     List<String> linesToBePrinted = new ArrayList<>();
-    List<String> stackTracklinesToBePrinted = new ArrayList<>();
     ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
     for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
+      linesToBePrinted.add("===A thread state===");
       linesToBePrinted.add(ti.toString());
+      linesToBePrinted.add("\n\n===Locked Info===\n\n");
+      linesToBePrinted.add(" Lock info " + ti.getLockInfo() + " Lock Name " + ti.getLockName() +
+           " Lock Owner Name" + ti.getLockOwnerName() + " Lock Owner id " + ti.getLockOwnerId());
+      linesToBePrinted.add("\n\n===Locked Monitors===\n\n");
+      for(MonitorInfo monitorInfo: ti.getLockedMonitors()) {
+        linesToBePrinted.add(monitorInfo.getLockedStackFrame().toString());
+      }
+      for(LockInfo lockInfo: ti.getLockedSynchronizers()) {
+        linesToBePrinted.add("lock Hash code" + lockInfo.getIdentityHashCode());
+      }
+      linesToBePrinted.add("\n\n===Stack trace for this thread===\n\n");
+      StackTraceElement[] stackTraces = ti.getStackTrace();
+      for (StackTraceElement stack : stackTraces) {
+        linesToBePrinted.add(stack.toString());
+      }
       linesToBePrinted.add("\n\n\n\n\n\n");
     }
-    for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
-      StackTraceElement[] stackTraces = ti.getStackTrace();
-      stackTracklinesToBePrinted.add("\n\n\n\n\n\n");
-      for (StackTraceElement stack : stackTraces) {
-        stackTracklinesToBePrinted.add(stack.toString());
-      }
-    }
+
     for (String aLineToBePrinted: linesToBePrinted) {
       ps.println(aLineToBePrinted);
     }
-    ps.println("\n\n\n\n\n\n");
-    for (String aLineToBePrinted: stackTracklinesToBePrinted) {
-      ps.println(aLineToBePrinted);
-    }
+
   }
 
   private static final Logger logger = LoggerFactory.getLogger(FlumeSinkTest.class);
