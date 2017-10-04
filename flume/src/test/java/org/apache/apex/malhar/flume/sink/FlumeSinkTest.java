@@ -177,9 +177,11 @@ public class FlumeSinkTest
     ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
     for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
       linesToBePrinted.add(ti.toString());
+      linesToBePrinted.add("\n\n\n\n\n\n");
     }
     for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
       StackTraceElement[] stackTraces = ti.getStackTrace();
+      stackTracklinesToBePrinted.add("\n\n\n\n\n\n");
       for (StackTraceElement stack : stackTraces) {
         stackTracklinesToBePrinted.add(stack.toString());
       }
