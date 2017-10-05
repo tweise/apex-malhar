@@ -181,12 +181,12 @@ public class FlumeSinkTest
       linesToBePrinted.add(ti.toString());
       linesToBePrinted.add("\n\n===Locked Info===\n\n");
       linesToBePrinted.add(" Lock info " + ti.getLockInfo() + " Lock Name " + ti.getLockName() +
-         " Lock Owner Name" + ti.getLockOwnerName() + " Lock Owner id " + ti.getLockOwnerId());
+          " Lock Owner Name" + ti.getLockOwnerName() + " Lock Owner id " + ti.getLockOwnerId());
       linesToBePrinted.add("\n\n===Locked Monitors===\n\n");
-      for(MonitorInfo monitorInfo: ti.getLockedMonitors()) {
+      for (MonitorInfo monitorInfo: ti.getLockedMonitors()) {
         linesToBePrinted.add(monitorInfo.getLockedStackFrame().toString());
       }
-      for(LockInfo lockInfo: ti.getLockedSynchronizers()) {
+      for (LockInfo lockInfo: ti.getLockedSynchronizers()) {
         linesToBePrinted.add("lock Hash code" + lockInfo.getIdentityHashCode());
       }
       linesToBePrinted.add("\n\n===Stack trace for this thread===\n\n");
